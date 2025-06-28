@@ -1,0 +1,26 @@
+services:
+  postgres:
+    container_name: database
+    image: postgres:17
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_PASSWORD: api
+      POSTGRES_USER: api
+      POSTGRES_DB: eemi-pay
+
+  pgAdmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:9.4
+    ports:
+      - 3001:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: some@one.com 
+      PGADMIN_DEFAULT_PASSWORD: someone
+    volumes:
+      - "./config/pgadmin/servers.json:/pgadmin4/servers.json"
+    depends_on:
+      - postgres
+
+
+ 
