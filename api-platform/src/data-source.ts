@@ -4,14 +4,20 @@ import { User } from "./entity/User"
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: "database",
+    host: "localhost",
     port: 5433,
     username: "api",
     password: "api",
     database: "eemi-pay",
-    synchronize: true,
+    synchronize: false,
     logging: false,
-    entities: [User],
-    migrations: [],
+    entities: [
+        "src/entity/*.ts",
+        "src/entity/*.js"
+        ],
+    migrations: [
+        "src/migration/*.ts",
+         "src/migration/*.js"
+    ],
     subscribers: [],
 })

@@ -12,7 +12,15 @@ export class User {
     @Column()
     lastName: string
 
-    @Column()
-    age: number
+    @Column({ unique: true })
+    email: string
 
+    @Column()
+    password: string
+
+    @Column({ default: false })
+    isActive: boolean
+
+    @Column({ default: () => "CURRENT_TIMESTAMP" })
+    createdAt: Date
 }
