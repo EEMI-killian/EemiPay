@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
 
 @Entity()
@@ -6,21 +7,21 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column("varchar", { length: 100 })
     firstName: string
 
-    @Column()
+    @Column("varchar", { length: 100 })
     lastName: string
 
-    @Column({ unique: true })
+    @Column("varchar", { length: 200 , unique: true })
     email: string
 
-    @Column()
+    @Column("varchar", { length: 200 })
     password: string
 
-    @Column({ default: false })
+    @Column( "boolean" ,{ default: false })
     isActive: boolean
 
-    @Column({ default: () => "CURRENT_TIMESTAMP" })
+    @Column( "date" ,{ default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date
 }

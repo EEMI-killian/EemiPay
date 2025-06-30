@@ -7,7 +7,7 @@ import { User } from "./entity/User"
 import { UserRepository } from "./repository/User/user.repository"
 
 
-// AppDataSource.initialize().then(async () => {
+AppDataSource.initialize().then(async () => {
 
     // // create express app
     const app = express()
@@ -44,6 +44,6 @@ import { UserRepository } from "./repository/User/user.repository"
     //     email: "Michael23@jordan.com"
     // })
 
-   // console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results")
+   console.log("Express server has started on port 3051. Open http://localhost:3051/health to see results")
 
-// }).catch(error => console.log(error))
+}).catch(error => console.log(error))

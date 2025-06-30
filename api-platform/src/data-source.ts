@@ -4,7 +4,7 @@ import { DataSource } from "typeorm"
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: "localhost",
+    host: "databaseEemiPay",
     port: 5432,
     username: "api",
     password: "api",

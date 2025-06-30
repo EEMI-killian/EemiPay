@@ -1,6 +1,5 @@
 import { DataSource, Repository } from "typeorm";
 import { User } from "../../entity/User";
-import { AppDataSource } from "../../data-source";
 
 interface IUserRepository {
   findByEmail(email: string): Promise<User | null>;
