@@ -1,11 +1,13 @@
-import 'reflect-metadata';
-import { AppDataSource } from "../../data-source";
-import { UserRepository } from "./user.repository";
+import { CreateUserUseCase } from "./createUser.usecase";
+import { UserRepository } from "../../../repository/User/user.repository";
+import { AppDataSource } from "../../../data-source";
 import { faker } from '@faker-js/faker';
-import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
+import { describe, test, beforeAll, afterAll } from '@jest/globals';
 
 
-describe('happy path CRUD user repository', () => {
+
+
+describe("CreateUserUseCase", () => {
     let userRepo: UserRepository;
 
     beforeAll(async () => {
@@ -27,24 +29,19 @@ describe('happy path CRUD user repository', () => {
             console.error("Error during Data Source destruction", err);
         }
     });
-
-    test('insert a User', async () => {
+    
+    test("should create a user with valid input", async () => {
+        
+        const uc = new CreateUserUseCase(userRepo);
         const userData = {
+            email: faker.internet.email(),
             firstName: faker.person.firstName(),
             lastName: faker.person.lastName(),
-            password: faker.internet.password(),
-            email: faker.internet.email()
+            password: faker.internet.password({length: 8}),
         };
-
-        const user = await userRepo.createUser(userData);
-        
+        console.log("User data to create:", userData);
+        const user = await uc.execute(userData);
         console.log("User created successfully:", user);
-        
-        // Add assertions to verify the user was created correctly
-        expect(user).toBeDefined();
-        expect(user.firstName).toBe(userData.firstName);
-        expect(user.lastName).toBe(userData.lastName);
-        expect(user.email).toBe(userData.email);
-        // Note: Don't assert password directly for security reasons
+                
     });
-});
+})

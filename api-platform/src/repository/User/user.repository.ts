@@ -1,13 +1,29 @@
-import { DataSource, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { User } from "../../entity/User";
 import { IUserRepository } from "./user.repository.interface";
 
 
-export class UserRepository implements IUserRepository {
-  private userRepo: Repository<User> ;
 
-  constructor(dataSource: DataSource) {
-    this.userRepo = dataSource.getRepository(User);
+export interface CreateUserDto {
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+
+}
+
+export interface UpdateUserDto {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+}
+
+
+export class UserRepository implements IUserRepository {
+  
+
+  constructor(private userRepo: Repository<User>) {
+    this.userRepo = userRepo;
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -19,7 +35,7 @@ export class UserRepository implements IUserRepository {
   }
 
 //   //todo check if partial is dangerous and check if need to do a own type 
-  async createUser(userData: Partial<User>): Promise<User> {
+  async createUser(userData: CreateUserDto): Promise<User> {
     const user = this.userRepo.create(userData);
     return await this.userRepo.save(user);
   }
