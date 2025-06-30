@@ -7,11 +7,11 @@ import { User } from "./entity/User"
 import { UserRepository } from "./repository/User/user.repository"
 
 
-AppDataSource.initialize().then(async () => {
+// AppDataSource.initialize().then(async () => {
 
     // // create express app
-    // const app = express()
-    // app.use(bodyParser.json())
+    const app = express()
+    app.use(bodyParser.json())
 
     // // register express routes from defined application routes
     // Routes.forEach(route => {
@@ -30,17 +30,20 @@ AppDataSource.initialize().then(async () => {
     // // ...
 
     // // start express server
-    // app.listen(3000)
+    app.listen(3051)
+    app.use('/health',(req: Request, res: Response) => {
+        res.send("Hello World! Express is running on port 3051")
+    })
 
     // insert new users for test
-    const userRepo = new UserRepository(AppDataSource) 
-    userRepo.createUser({
-        firstName:  "Michael",
-        lastName: "Jordan",
-        password: "Jumpman",
-        email: "Michael23@jordan.com"
-    })
+    // const userRepo = new UserRepository(AppDataSource) 
+    // userRepo.createUser({
+    //     firstName:  "Michael",
+    //     lastName: "Jordan",
+    //     password: "Jumpman",
+    //     email: "Michael23@jordan.com"
+    // })
 
    // console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results")
 
-}).catch(error => console.log(error))
+// }).catch(error => console.log(error))

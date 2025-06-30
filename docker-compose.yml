@@ -22,5 +22,17 @@ services:
     depends_on:
       - postgresEemiPay
 
+  api-platform:
+    container_name: api-platform
+    build:
+      context: ./api-platform
+      dockerfile: Dockerfile
+    ports:
+      - 3051:3051
+    depends_on:
+      - postgresEemiPay
+    volumes:
+      - ./api-platform:/app
+
 
  

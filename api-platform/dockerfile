@@ -1,0 +1,11 @@
+FROM node:24
+
+COPY package.json  .
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3051
+
+CMD ["npm", "run" , "start"]
