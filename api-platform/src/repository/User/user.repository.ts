@@ -1,12 +1,8 @@
 import { DataSource, Repository } from "typeorm";
 import { User } from "../../entity/User";
+import { IUserRepository } from "./user.repository.interface";
 
-interface IUserRepository {
-  findByEmail(email: string): Promise<User | null>;
-  findById(id: number): Promise<User | null>;
-  createUser(userData: Partial<User>): Promise<User>;
-  deleteUser(id: number): Promise<void>;
-}
+
 export class UserRepository implements IUserRepository {
   private userRepo: Repository<User> ;
 
