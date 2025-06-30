@@ -7,19 +7,19 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column("varchar", { length: 100 })
+    @Column()
     firstName: string
 
-    @Column("varchar", { length: 100 })
+    @Column()
     lastName: string
 
-    @Column("varchar", { length: 200 , unique: true })
+    @Column( {  unique: true })
     email: string
 
-    @Column("varchar", { length: 200 })
+    @Column()
     password: string
 
-    @Column( "boolean" ,{ default: false })
+    @Column({ default: false })
     isActive: boolean
 
     @Column( "date" ,{ default: () => "CURRENT_TIMESTAMP" })
