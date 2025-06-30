@@ -2,7 +2,7 @@ import { CreateUserUseCase } from "./createUser.usecase";
 import { UserRepository } from "../../../repository/User/user.repository";
 import { AppDataSource } from "../../../data-source";
 import { faker } from '@faker-js/faker';
-import { describe, test, beforeAll, afterAll } from '@jest/globals';
+import { describe, test, beforeAll, afterAll, expect } from '@jest/globals';
 
 
 
@@ -40,8 +40,12 @@ describe("CreateUserUseCase", () => {
             password: faker.internet.password({length: 8}),
         };
         console.log("User data to create:", userData);
-        const user = await uc.execute(userData);
-        console.log("User created successfully:", user);
+        await uc.execute(userData);
+        const userFromDb = await userRepo.findByEmail(userData.email);
+        console.log("User created successfully:", userFromDb);
+        expect(userFromDb).toBeDefined();
+        console.log("User from DB:", userFromDb);
+        expect(userFromDb.email).toBe(userData.email);
                 
     });
 })

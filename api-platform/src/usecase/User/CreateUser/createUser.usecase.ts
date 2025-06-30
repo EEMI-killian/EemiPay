@@ -1,5 +1,6 @@
+import { createHash  } from "crypto";
 import { UserRepository } from "../../../repository/User/user.repository";
-import { ICreateUserArgs, ICreateUserUseCase } from "./createUser.usecase.interface";
+import { ICreateUserUseCase } from "./createUser.usecase.interface";
 import * as z from "zod/v4";
  
 const schema = z.object({
@@ -22,16 +23,18 @@ export class CreateUserUseCase implements ICreateUserUseCase{
 
     const validatedData = schema.parse(args);
       
-      // 2. Vérifier si l'utilisateur existe déjà
+
     const existingUser = await this.userRepository.findByEmail(validatedData.email);
     
     if (existingUser) {
       throw new Error("Un utilisateur avec cet email existe déjà");
     }
 
-    this.userRepository.createUser({
+    const hashedPassword = createHash('sha256').update(args.password).digest('hex');
+
+    await this.userRepository.createUser({
         email: args.email,
-        password: args.password,
+        password: hashedPassword,
         firstName: args.firstName,
         lastName: args.lastName
     })
