@@ -1,60 +1,24 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class Migration1751171232745 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.createTable(
-            new Table({
-                name: "user",
-                columns: [
-                    {
-                        name: "id",
-                        type: "int",
-                        isPrimary: true,
-                        isGenerated: true,
-                        generationStrategy: "increment",
-                    },
-                    {
-                        name: "firstName",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "lastName",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "email",
-                        type: "varchar",
-                        isUnique: true,
-                        isNullable: false,
-                    },
-                    {
-                        name: "password",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "isActive",
-                        type: "boolean",
-                        isNullable: false,
-                        default: false,
-                    },
-                    {
-                        name: "createdAt",
-                        type: "timestamp",
-                        isNullable: false,
-                        default: "CURRENT_TIMESTAMP",
-                    },
-                ],
-            }),
-            true
-        );
+        await queryRunner.query(`
+            CREATE TABLE public.user (
+                "id" SERIAL NOT NULL,
+                "firstName" character varying NOT NULL,
+                "lastName" character varying NOT NULL,
+                "email" character varying NOT NULL,
+                "password" character varying NOT NULL,
+                "isActive" boolean NOT NULL DEFAULT false,
+                "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                CONSTRAINT "UQ_user_email" UNIQUE ("email"),
+                CONSTRAINT "PK_user_id" PRIMARY KEY ("id")
+            );
+        `);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable("user");
+        await queryRunner.query(`DROP TABLE public.user;`);
     }
 }
-

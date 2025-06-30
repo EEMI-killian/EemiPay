@@ -9,14 +9,17 @@
       "typescript": "^5.8.2"
    },
    "dependencies": {
-      "reflect-metadata": "^0.2.2",
-      "typeorm": "0.3.25",
-      "pg": "^8.14.1",
+      "body-parser": "^1.20.3",
       "express": "^4.21.2",
-      "body-parser": "^1.20.3"
+      "pg": "^8.14.1",
+      "reflect-metadata": "^0.2.2",
+      "typeorm": "0.3.25"
    },
    "scripts": {
       "start": "ts-node src/index.ts",
-      "typeorm": "typeorm-ts-node-commonjs"
+      "typeorm": "typeorm-ts-node-commonjs",
+      "db:migrate": "typeorm-ts-node-commonjs migration:run -t each -d src/data-source.ts",
+      "db:revert": "typeorm-ts-node-commonjs migration:revert -t each -d src/data-source.ts"
+      
    }
 }
