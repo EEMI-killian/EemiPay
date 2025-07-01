@@ -4,7 +4,7 @@ import { AppDataSource } from "../../../data-source";
 import { faker } from '@faker-js/faker';
 import { describe, test, beforeAll, afterAll, expect } from '@jest/globals';
 import { DeleteUserUseCase } from "./deleteUser.usecase";
-import { CreateUserUseCase } from "../CreateUser/createUser.usecase";
+import { CreateUserUseCase } from "../createUser/createUser.usecase";
 
 
 

@@ -41,6 +41,14 @@ export class UserRepository implements IUserRepository {
   }
 
 //   todo update is can be particular in function of case
+  async updateUserPassword(id: number, password: string): Promise<void> {
+    const user = await this.findById(id);
+    if (user) {
+      user.password = password;
+      await this.userRepo.save(user);
+    }
+  }
+
 
   async deleteUser(id: number): Promise<void> {
     const user = await this.findById(id);
