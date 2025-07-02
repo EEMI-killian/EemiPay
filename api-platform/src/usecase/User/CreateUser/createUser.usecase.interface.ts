@@ -1,5 +1,5 @@
-export interface ICreateUserUseCase {
-    execute(args: ICreateUserArgs ): Promise<void>;
+export interface ICreateUserUseCase<SuccessType, FunctionnalErrorType, AlreadyExistsType> {
+    execute(args: ICreateUserArgs ): Promise<SuccessType | FunctionnalErrorType | AlreadyExistsType>;
 }
 
 export type ICreateUserArgs = {
@@ -8,3 +8,8 @@ export type ICreateUserArgs = {
     firstName: string;
     lastName: string;
 }
+export type ICreateUserPresenter<SuccessType, FunctionnalErrorType, AlreadyExistsType> = {
+    success: (id: number) => Promise<SuccessType>;
+    error: (error: string) => Promise<FunctionnalErrorType>;
+    alreadyExists: () => Promise<AlreadyExistsType>;
+  }
