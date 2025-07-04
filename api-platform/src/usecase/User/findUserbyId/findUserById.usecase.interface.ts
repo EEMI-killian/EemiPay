@@ -1,6 +1,4 @@
-import { User } from "../../../entity/User";
-
-export interface IFindUserUseCase<
+export interface IFindUserByIdUseCase<
   SuccessType,
   FunctionnalErrorType,
   NotFoundType,

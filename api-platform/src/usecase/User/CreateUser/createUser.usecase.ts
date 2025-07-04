@@ -13,7 +13,7 @@ const schema = z.object({
 
 type createUserArgs = z.infer<typeof schema>;
 
-export type ICreateUserPresenter<
+export type ICreateUserUseCasePresenter<
   SuccessType,
   FunctionnalErrorType,
   AlreadyExistsType,
@@ -32,7 +32,7 @@ export class CreateUserUseCase<
 {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly presenter: ICreateUserPresenter<
+    private readonly presenter: ICreateUserUseCasePresenter<
       SuccessType,
       FunctionnalErrorType,
       AlreadyExistsType

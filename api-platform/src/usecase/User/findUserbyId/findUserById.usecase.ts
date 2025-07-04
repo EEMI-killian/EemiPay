@@ -1,7 +1,7 @@
 import z from "zod";
 import { User } from "../../../entity/User";
 import { UserRepository } from "../../../repository/User/user.repository";
-import { IFindUserUseCase } from "./findUser.usecase.interface";
+import { IFindUserByIdUseCase } from "./findUserById.usecase.interface";
 
 const schema = z.object({
   id: z.number(),
@@ -9,7 +9,7 @@ const schema = z.object({
 
 type findUserArgs = z.infer<typeof schema>;
 
-type IFindUserUseCasePresenter<
+type IFindUserByIdUseCasePresenter<
   SuccessType,
   FunctionnalErrorType,
   NotFoundType,
@@ -19,12 +19,12 @@ type IFindUserUseCasePresenter<
   notFound: () => Promise<NotFoundType>;
 };
 
-export class FindUserUseCase<SuccessType, FunctionnalErrorType, NotFoundType>
-  implements IFindUserUseCase<SuccessType, FunctionnalErrorType, NotFoundType>
+export class FindUserByIdUseCase<SuccessType, FunctionnalErrorType, NotFoundType>
+  implements IFindUserByIdUseCase<SuccessType, FunctionnalErrorType, NotFoundType>
 {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly presenter: IFindUserUseCasePresenter<
+    private readonly presenter: IFindUserByIdUseCasePresenter<
       SuccessType,
       FunctionnalErrorType,
       NotFoundType
