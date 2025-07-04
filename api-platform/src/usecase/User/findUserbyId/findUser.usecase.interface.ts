@@ -1,13 +1,15 @@
-export interface IDeleteUserUseCase<
+import { User } from "../../../entity/User";
+
+export interface IFindUserUseCase<
   SuccessType,
   FunctionnalErrorType,
   NotFoundType,
 > {
   execute(
-    args: deleteUserArgs,
+    args: findUserArgs,
   ): Promise<SuccessType | FunctionnalErrorType | NotFoundType>;
 }
 
-export type deleteUserArgs = {
+export type findUserArgs = {
   id: number;
 };

@@ -1,9 +1,8 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class Migration1751171232745 implements MigrationInterface {
-
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
             CREATE TABLE public.user (
                 "id" SERIAL NOT NULL,
                 "firstName" character varying NOT NULL,
@@ -16,9 +15,9 @@ export class Migration1751171232745 implements MigrationInterface {
                 CONSTRAINT "PK_user_id" PRIMARY KEY ("id")
             );
         `);
-    }
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP TABLE public.user;`);
-    }
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TABLE public.user;`);
+  }
 }

@@ -1,17 +1,16 @@
-import * as express from "express"
-import * as bodyParser from "body-parser"
-import { Request, Response } from "express"
-import { AppDataSource } from "./data-source"
-import { Routes } from "./routes"
-import { User } from "./entity/User"
-import { UserRepository } from "./repository/User/user.repository"
+import * as express from "express";
+import * as bodyParser from "body-parser";
+import { Request, Response } from "express";
+import { AppDataSource } from "./data-source";
+import { Routes } from "./routes";
+import { User } from "./entity/User";
+import { UserRepository } from "./repository/User/user.repository";
 
-
-AppDataSource.initialize().then(async () => {
-
+AppDataSource.initialize()
+  .then(async () => {
     // // create express app
-    const app = express()
-    app.use(bodyParser.json())
+    const app = express();
+    app.use(bodyParser.json());
 
     // // register express routes from defined application routes
     // Routes.forEach(route => {
@@ -30,13 +29,13 @@ AppDataSource.initialize().then(async () => {
     // // ...
 
     // // start express server
-    app.listen(3051)
-    app.use('/health',(req: Request, res: Response) => {
-        res.send("Hello World! Express is running on port 3051")
-    })
+    app.listen(3051);
+    app.use("/health", (req: Request, res: Response) => {
+      res.send("Hello World! Express is running on port 3051");
+    });
 
     // insert new users for test
-    // const userRepo = new UserRepository(AppDataSource) 
+    // const userRepo = new UserRepository(AppDataSource)
     // userRepo.createUser({
     //     firstName:  "Michael",
     //     lastName: "Jordan",
@@ -44,6 +43,8 @@ AppDataSource.initialize().then(async () => {
     //     email: "Michael23@jordan.com"
     // })
 
-   console.log("Express server has started on port 3051. Open http://localhost:3051/health to see results")
-
-}).catch(error => console.log(error))
+    console.log(
+      "Express server has started on port 3051. Open http://localhost:3051/health to see results",
+    );
+  })
+  .catch((error) => console.log(error));
