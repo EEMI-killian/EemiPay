@@ -1,7 +1,7 @@
 import { createHash } from "crypto";
-import { UserRepository } from "../../../repository/User/user.repository";
+import { IUserRepository } from "../../../repository/User/user.repository.interface";
 import { ICreateUserUseCase } from "./createUser.usecase.interface";
-import * as z from "zod/v4";
+import * as z from "zod";
 import { User } from "../../../entity/User";
 
 const schema = z.object({
@@ -31,7 +31,7 @@ export class CreateUserUseCase<
     ICreateUserUseCase<SuccessType, FunctionnalErrorType, AlreadyExistsType>
 {
   constructor(
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: IUserRepository,
     private readonly presenter: ICreateUserUseCasePresenter<
       SuccessType,
       FunctionnalErrorType,
@@ -58,15 +58,15 @@ export class CreateUserUseCase<
         return await this.presenter.alreadyExists();
       }
       const hashedPassword = createHash("sha256")
-        .update(args.password)
+        .update(validatedData.password)
         .digest("hex");
       await this.userRepository.createUser({
-        email: args.email,
+        email: validatedData.email,
         password: hashedPassword,
-        firstName: args.firstName,
-        lastName: args.lastName,
+        firstName: validatedData.firstName,
+        lastName: validatedData.lastName,
       });
-      user = await this.userRepository.findByEmail(args.email);
+      user = await this.userRepository.findByEmail(validatedData.email);
     } catch (error) {
       return await this.presenter.error(error.message);
     }
