@@ -1,23 +1,25 @@
 import { IUserRepository } from "../../../repository/User/user.repository.interface"
 import { CreateUserUseCase, ICreateUserUseCasePresenter } from "./createUser.usecase"
-import {beforeAll, beforeEach, describe, expect, jest, test} from '@jest/globals';
+import { beforeEach, describe, expect, jest, test} from '@jest/globals';
 import { faker } from "@faker-js/faker"
-import { clear } from "console";
 
 
 
 
 describe("CreateUserUseCase", () => {
-    const mockedPresenter : ICreateUserUseCasePresenter<unknown,unknown,unknown> = {
+    const mockedPresenter : ICreateUserUseCasePresenter<unknown,unknown,unknown,unknown> = {
         success : async (id : number) => {
-            return { succes : true , id}
+            return { success : true , id}
         },
         error : async (error : string) => {
             return { error }
         },
         alreadyExists : async () => {
             return { error : 'User already exist' }
-        } 
+        }, 
+        invalidArguments :  async () => {
+            return { error : 'Invalid arguments'}
+        }
     }
     const mockUserRepository: jest.Mocked<IUserRepository> = {
         findByEmail: jest.fn(),
@@ -32,11 +34,12 @@ describe("CreateUserUseCase", () => {
         email : faker.internet.email(),
         password : faker.internet.password()
     }
+
     beforeEach(() => {
         jest.clearAllMocks();
     })
 
-    test("it should be create a User", async () =>{
+    test("it should create a user", async () =>{
         mockUserRepository.findByEmail.mockResolvedValueOnce(null)
         mockUserRepository.findByEmail.mockResolvedValueOnce(
             {
@@ -53,7 +56,7 @@ describe("CreateUserUseCase", () => {
         const response = await uc.execute(userData)
         expect(mockUserRepository.createUser).toHaveBeenCalled()
         expect(mockUserRepository.findByEmail).toHaveBeenCalledTimes(2)
-        expect(response).toEqual({ succes: true, id: 1 })
+        expect(response).toEqual({ success: true, id: 1 })
 
     })
 
@@ -72,6 +75,20 @@ describe("CreateUserUseCase", () => {
         expect(mockUserRepository.findByEmail).toHaveBeenCalled()
         expect(mockUserRepository.createUser).not.toHaveBeenCalled()
         expect(response).toEqual({ error: 'User already exist' })
+
+    })
+    test("it should be return an error about invalid arguments", async () =>{
+        const userDataWrong = {
+            firstName: 's',
+            lastName: 'l',
+            email: "fake email",
+            password: "1",
+        }
+        const uc = new CreateUserUseCase(mockUserRepository,mockedPresenter)
+        const response = await uc.execute(userDataWrong)
+        expect(mockUserRepository.findByEmail).not.toHaveBeenCalled()
+        expect(mockUserRepository.createUser).not.toHaveBeenCalled()
+        expect(response).toEqual({ error : 'Invalid arguments'})
 
     })
 })

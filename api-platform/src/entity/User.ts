@@ -21,6 +21,6 @@ export class User {
   @Column({ default: false })
   isActive: boolean;
 
-  @Column("date", { default: () => "CURRENT_TIMESTAMP" })
+  @Column("timestamp", { default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
 }

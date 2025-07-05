@@ -15,33 +15,37 @@ type createUserArgs = z.infer<typeof schema>;
 
 export type ICreateUserUseCasePresenter<
   SuccessType,
-  FunctionnalErrorType,
+  FunctionalErrorType,
   AlreadyExistsType,
+  InvalidArgumentsType
 > = {
   success: (id: number) => Promise<SuccessType>;
-  error: (error: string) => Promise<FunctionnalErrorType>;
+  error: (error: string) => Promise<FunctionalErrorType>;
   alreadyExists: () => Promise<AlreadyExistsType>;
+  invalidArguments: (error: string) => Promise<InvalidArgumentsType>
 };
 
 export class CreateUserUseCase<
   SuccessType,
-  FunctionnalErrorType,
+  FunctionalErrorType,
   AlreadyExistsType,
+  InvalidArgumentsType
 > implements
-    ICreateUserUseCase<SuccessType, FunctionnalErrorType, AlreadyExistsType>
+    ICreateUserUseCase<SuccessType, FunctionalErrorType, AlreadyExistsType , InvalidArgumentsType>
 {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly presenter: ICreateUserUseCasePresenter<
       SuccessType,
-      FunctionnalErrorType,
-      AlreadyExistsType
+      FunctionalErrorType,
+      AlreadyExistsType,
+      InvalidArgumentsType
     >,
   ) {}
 
   async execute(
     args: createUserArgs,
-  ): Promise<SuccessType | FunctionnalErrorType | AlreadyExistsType> {
+  ): Promise<SuccessType | FunctionalErrorType | AlreadyExistsType | InvalidArgumentsType> {
     let validatedData: createUserArgs;
     let existingUser: User | null = null;
     let user: User | null = null;
@@ -49,7 +53,7 @@ export class CreateUserUseCase<
     try {
       validatedData = schema.parse(args);
     } catch (error) {
-      return await this.presenter.error(error.message);
+      return await this.presenter.invalidArguments(error.message);
     }
 
     try {

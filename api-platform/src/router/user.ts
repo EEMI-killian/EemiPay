@@ -22,6 +22,7 @@ router.post("/", async (req, res) => {
     alreadyExists: async () => {
       res.status(409).json({ error: "User already exists" });
     },
+ ,
   });
 
   try {

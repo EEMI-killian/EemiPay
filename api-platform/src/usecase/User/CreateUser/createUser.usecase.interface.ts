@@ -1,11 +1,12 @@
 export interface ICreateUserUseCase<
   SuccessType,
-  FunctionnalErrorType,
+  FunctionalErrorType,
   AlreadyExistsType,
+  InvalidArgumentsType
 > {
   execute(
     args: ICreateUserArgs,
-  ): Promise<SuccessType | FunctionnalErrorType | AlreadyExistsType>;
+  ): Promise<SuccessType | FunctionalErrorType | AlreadyExistsType | InvalidArgumentsType>;
 }
 
 export type ICreateUserArgs = {
