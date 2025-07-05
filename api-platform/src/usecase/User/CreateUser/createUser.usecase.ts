@@ -67,14 +67,9 @@ export class CreateUserUseCase<
         lastName: validatedData.lastName,
       });
       user = await this.userRepository.findByEmail(validatedData.email);
+      return await this.presenter.success(user.id);
     } catch (error) {
       return await this.presenter.error(error.message);
     }
-
-    if (!user) {
-      return await this.presenter.error("User not found after creation");
-    }
-
-    return await this.presenter.success(user.id);
   }
 }
