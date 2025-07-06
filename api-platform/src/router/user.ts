@@ -5,6 +5,7 @@ import { AppDataSource } from "../data-source";
 import { DeleteUserUseCase } from "../usecase/User/deleteUser/deleteUser.usecase";
 import { UpdateUserPasswordUseCase } from "../usecase/User/updateUserPassword/updateUserPassword.usecase";
 import { FindUserByIdUseCase } from "../usecase/User/findUserById/findUserById.usecase";
+import { PasswordGateway } from "../gateway/password/password.gateway";
 
 const router = express.Router();
 
@@ -12,20 +13,25 @@ router.post("/", async (req, res) => {
   const userRepository = new UserRepository(
     AppDataSource.getRepository("User"),
   );
-  const createUserUseCase = new CreateUserUseCase(userRepository, {
-    success: async (id: number) => {
-      res.status(201).json({ id });
+  const passwordGateway = new PasswordGateway();
+  const createUserUseCase = new CreateUserUseCase(
+    userRepository,
+    {
+      success: async (id: number) => {
+        res.status(201).json({ id });
+      },
+      error: async (error: string) => {
+        res.status(400).json({ error });
+      },
+      alreadyExists: async () => {
+        res.status(409).json({ error: "User already exists" });
+      },
+      invalidArguments: async (error: string) => {
+        res.status(400).json({ error });
+      },
     },
-    error: async (error: string) => {
-      res.status(400).json({ error });
-    },
-    alreadyExists: async () => {
-      res.status(409).json({ error: "User already exists" });
-    },
-    invalidArguments: async (error: string) => {
-      res.status(400).json({ error });
-    }
-  });
+    passwordGateway,
+  );
 
   try {
     const result = await createUserUseCase.execute(req.body);
@@ -76,45 +82,46 @@ router.get("/:id", async (req, res) => {
     },
   });
 
-    try {
-        return await findUserByIdUseCase.execute({ id: userId });
-    } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
-    }
+  try {
+    return await findUserByIdUseCase.execute({ id: userId });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.patch("/resetPassword/:id", async (req, res) => {
-    const userId = parseInt(req.params.id);
-    const args = req.body;
-    const userRepository = new UserRepository(
-      AppDataSource.getRepository("User"),
-    );
-    const updateUserPasswordUseCase = new UpdateUserPasswordUseCase(
-      userRepository,
-      {
-        success: async () => {
-          res.status(204).send();
-        },
-        error: async (error: string) => {
-          res.status(400).json({ error });
-        },
-        notFound: async () => {
-          res.status(404).json({ error: "User not found" });
-        },
-        invalidPassword: async () => {
-          res.status(400).json({ error: "Invalid password" });
-        },
+  const userId = parseInt(req.params.id);
+  const args = req.body;
+  const userRepository = new UserRepository(
+    AppDataSource.getRepository("User"),
+  );
+  const passwordGateway = new PasswordGateway();
+  const updateUserPasswordUseCase = new UpdateUserPasswordUseCase(
+    userRepository,
+    {
+      success: async () => {
+        res.status(204).send();
       },
-    );
-  
-    try {
-      return await updateUserPasswordUseCase.execute({
-        id: userId,
-        ...args,
-      });
-    }
-    catch (error) {
-      res.status(500).json({ error: "Internal server error" });
-    }
+      error: async (error: string) => {
+        res.status(400).json({ error });
+      },
+      notFound: async () => {
+        res.status(404).json({ error: "User not found" });
+      },
+      invalidPassword: async () => {
+        res.status(400).json({ error: "Invalid password" });
+      },
+    },
+    passwordGateway,
+  );
+
+  try {
+    return await updateUserPasswordUseCase.execute({
+      id: userId,
+      ...args,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 export default router;

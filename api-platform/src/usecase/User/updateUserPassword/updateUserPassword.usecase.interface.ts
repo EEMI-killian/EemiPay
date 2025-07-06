@@ -1,13 +1,13 @@
 export interface IUpdateUserPasswordUseCase<
   SuccessType,
-  FunctionnalErrorType,
+  FunctionalErrorType,
   NotFoundType,
   InvalidPasswordType,
 > {
   execute(
     args: updateUserPasswordArgs,
   ): Promise<
-    SuccessType | FunctionnalErrorType | NotFoundType | InvalidPasswordType
+    SuccessType | FunctionalErrorType | NotFoundType | InvalidPasswordType
   >;
 }
 

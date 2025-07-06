@@ -1,8 +1,9 @@
 import { Repository } from "typeorm";
 import { User } from "../../entity/User";
-import { ICreateUserRepositoryArgs, IUserRepository } from "./user.repository.interface";
-
-
+import {
+  ICreateUserRepositoryArgs,
+  IUserRepository,
+} from "./user.repository.interface";
 
 export class UserRepository implements IUserRepository {
   constructor(private userRepo: Repository<User>) {

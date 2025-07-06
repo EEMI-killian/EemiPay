@@ -3,6 +3,7 @@ import { IUserRepository } from "../../../repository/User/user.repository.interf
 import { ICreateUserUseCase } from "./createUser.usecase.interface";
 import * as z from "zod";
 import { User } from "../../../entity/User";
+import { IPasswordGateway } from "../../../gateway/password/password.gateway.interface";
 
 const schema = z.object({
   email: z.string().email(),
@@ -17,21 +18,26 @@ export type ICreateUserUseCasePresenter<
   SuccessType,
   FunctionalErrorType,
   AlreadyExistsType,
-  InvalidArgumentsType
+  InvalidArgumentsType,
 > = {
   success: (id: number) => Promise<SuccessType>;
   error: (error: string) => Promise<FunctionalErrorType>;
   alreadyExists: () => Promise<AlreadyExistsType>;
-  invalidArguments: (error: string) => Promise<InvalidArgumentsType>
+  invalidArguments: (error: string) => Promise<InvalidArgumentsType>;
 };
 
 export class CreateUserUseCase<
   SuccessType,
   FunctionalErrorType,
   AlreadyExistsType,
-  InvalidArgumentsType
+  InvalidArgumentsType,
 > implements
-    ICreateUserUseCase<SuccessType, FunctionalErrorType, AlreadyExistsType , InvalidArgumentsType>
+    ICreateUserUseCase<
+      SuccessType,
+      FunctionalErrorType,
+      AlreadyExistsType,
+      InvalidArgumentsType
+    >
 {
   constructor(
     private readonly userRepository: IUserRepository,
@@ -41,11 +47,14 @@ export class CreateUserUseCase<
       AlreadyExistsType,
       InvalidArgumentsType
     >,
+    private readonly passwordGateway: IPasswordGateway,
   ) {}
 
   async execute(
     args: createUserArgs,
-  ): Promise<SuccessType | FunctionalErrorType | AlreadyExistsType | InvalidArgumentsType> {
+  ): Promise<
+    SuccessType | FunctionalErrorType | AlreadyExistsType | InvalidArgumentsType
+  > {
     let validatedData: createUserArgs;
     let existingUser: User | null = null;
     let user: User | null = null;
@@ -61,9 +70,7 @@ export class CreateUserUseCase<
       if (existingUser) {
         return await this.presenter.alreadyExists();
       }
-      const hashedPassword = createHash("sha256")
-        .update(validatedData.password)
-        .digest("hex");
+      const hashedPassword = await this.passwordGateway.hash(args.password);
       await this.userRepository.createUser({
         email: validatedData.email,
         password: hashedPassword,

@@ -21,7 +21,8 @@ export type IFindUserByIdUseCasePresenter<
 };
 
 export class FindUserByIdUseCase<SuccessType, FunctionalErrorType, NotFoundType>
-  implements IFindUserByIdUseCase<SuccessType, FunctionalErrorType, NotFoundType>
+  implements
+    IFindUserByIdUseCase<SuccessType, FunctionalErrorType, NotFoundType>
 {
   constructor(
     private readonly userRepository: IUserRepository,

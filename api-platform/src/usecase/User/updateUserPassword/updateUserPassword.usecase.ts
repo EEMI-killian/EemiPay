@@ -1,57 +1,58 @@
 import z from "zod";
-import { UserRepository } from "../../../repository/User/user.repository";
 import { IUpdateUserPasswordUseCase } from "./updateUserPassword.usecase.interface";
-import { createHash } from "crypto";
+import { IUserRepository } from "../../../repository/User/user.repository.interface";
+import { IPasswordGateway } from "../../../gateway/password/password.gateway.interface";
 
 const schema = z.object({
   id: z.number(),
-  oldPassword: z.string().min(8),
+  inputOldPassword: z.string().min(8),
   newPassword: z.string().min(8),
 });
 
 type updateUserPasswordArgs = z.infer<typeof schema>;
 
-type IUpdateUserPasswordUseCasePresenter<
+export type IUpdateUserPasswordUseCasePresenter<
   SuccessType,
-  FunctionnalErrorType,
+  FunctionalErrorType,
   NotFoundType,
   InvalidPasswordType,
 > = {
   success: () => Promise<SuccessType>;
-  error: (error: string) => Promise<FunctionnalErrorType>;
+  error: (error: string) => Promise<FunctionalErrorType>;
   notFound: () => Promise<NotFoundType>;
   invalidPassword: () => Promise<InvalidPasswordType>;
 };
 
 export class UpdateUserPasswordUseCase<
   SuccessType,
-  FunctionnalErrorType,
+  FunctionalErrorType,
   NotFoundType,
   InvalidPasswordType,
 > implements
     IUpdateUserPasswordUseCase<
       SuccessType,
-      FunctionnalErrorType,
+      FunctionalErrorType,
       NotFoundType,
       InvalidPasswordType
     >
 {
   constructor(
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: IUserRepository,
     private readonly presenter: IUpdateUserPasswordUseCasePresenter<
       SuccessType,
-      FunctionnalErrorType,
+      FunctionalErrorType,
       NotFoundType,
       InvalidPasswordType
     >,
+    private readonly passwordGateway: IPasswordGateway,
   ) {}
 
   async execute(
     args: updateUserPasswordArgs,
   ): Promise<
-    SuccessType | FunctionnalErrorType | NotFoundType | InvalidPasswordType
+    SuccessType | FunctionalErrorType | NotFoundType | InvalidPasswordType
   > {
-    let validatedData;
+    let validatedData: updateUserPasswordArgs;
     try {
       validatedData = schema.parse(args);
     } catch (error) {
@@ -62,18 +63,20 @@ export class UpdateUserPasswordUseCase<
       if (!user) {
         return await this.presenter.notFound();
       }
-      const hashedOldPassword = createHash("sha256")
-        .update(validatedData.oldPassword)
-        .digest("hex");
-      if (hashedOldPassword !== user.password) {
-        return await this.presenter.invalidPassword();
+
+      const match = await this.passwordGateway.compare({
+        OldPassword: user.password,
+        inputOldPassword: validatedData.inputOldPassword,
+      });
+      if (!match) {
+        return this.presenter.invalidPassword();
       }
-      const hashedNewPassword = createHash("sha256")
-        .update(validatedData.newPassword)
-        .digest("hex");
+      const newPasswordHashed = await this.passwordGateway.hash(
+        validatedData.newPassword,
+      );
       await this.userRepository.updateUserPassword(
         validatedData.id,
-        hashedNewPassword,
+        newPasswordHashed,
       );
       return await this.presenter.success();
     } catch (error) {
