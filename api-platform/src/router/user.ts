@@ -22,7 +22,9 @@ router.post("/", async (req, res) => {
     alreadyExists: async () => {
       res.status(409).json({ error: "User already exists" });
     },
- ,
+    invalidArguments: async (error: string) => {
+      res.status(400).json({ error });
+    }
   });
 
   try {

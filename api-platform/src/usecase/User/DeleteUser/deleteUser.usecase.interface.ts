@@ -1,11 +1,11 @@
 export interface IDeleteUserUseCase<
   SuccessType,
-  FunctionnalErrorType,
+  FunctionalErrorType,
   NotFoundType,
 > {
   execute(
     args: deleteUserArgs,
-  ): Promise<SuccessType | FunctionnalErrorType | NotFoundType>;
+  ): Promise<SuccessType | FunctionalErrorType | NotFoundType>;
 }
 
 export type deleteUserArgs = {

@@ -1,6 +1,6 @@
 import z from "zod";
-import { UserRepository } from "../../../repository/User/user.repository";
 import { IDeleteUserUseCase } from "./deleteUser.usecase.interface";
+import { IUserRepository } from "../../../repository/User/user.repository.interface";
 
 const schema = z.object({
   id: z.number(),
@@ -10,29 +10,29 @@ type deleteUserArgs = z.infer<typeof schema>;
 
 export type IDeleteUserUseCasePresenter<
   SuccessType,
-  FunctionnalErrorType,
+  FunctionalErrorType,
   NotFoundType,
 > = {
   success: () => Promise<SuccessType>;
-  error: (error: string) => Promise<FunctionnalErrorType>;
+  error: (error: string) => Promise<FunctionalErrorType>;
   notFound: () => Promise<NotFoundType>;
 };
 
-export class DeleteUserUseCase<SuccessType, FunctionnalErrorType, NotFoundType>
-  implements IDeleteUserUseCase<SuccessType, FunctionnalErrorType, NotFoundType>
+export class DeleteUserUseCase<SuccessType, FunctionalErrorType, NotFoundType>
+  implements IDeleteUserUseCase<SuccessType, FunctionalErrorType, NotFoundType>
 {
   constructor(
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: IUserRepository,
     private readonly presenter: IDeleteUserUseCasePresenter<
       SuccessType,
-      FunctionnalErrorType,
+      FunctionalErrorType,
       NotFoundType
     >,
   ) {}
 
   async execute(
     args: deleteUserArgs,
-  ): Promise<SuccessType | FunctionnalErrorType | NotFoundType> {
+  ): Promise<SuccessType | FunctionalErrorType | NotFoundType> {
     let validatedData;
     try {
       validatedData = schema.parse(args);
