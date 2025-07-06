@@ -2,6 +2,7 @@ import z from "zod";
 import { User } from "../../../entity/User";
 import { UserRepository } from "../../../repository/User/user.repository";
 import { IFindUserByIdUseCase } from "./findUserById.usecase.interface";
+import { IUserRepository } from "../../../repository/User/user.repository.interface";
 
 const schema = z.object({
   id: z.number(),
@@ -9,31 +10,31 @@ const schema = z.object({
 
 type findUserArgs = z.infer<typeof schema>;
 
-type IFindUserByIdUseCasePresenter<
+export type IFindUserByIdUseCasePresenter<
   SuccessType,
-  FunctionnalErrorType,
+  FunctionalErrorType,
   NotFoundType,
 > = {
   success: (user: User) => Promise<SuccessType>;
-  error: (error: string) => Promise<FunctionnalErrorType>;
+  error: (error: string) => Promise<FunctionalErrorType>;
   notFound: () => Promise<NotFoundType>;
 };
 
-export class FindUserByIdUseCase<SuccessType, FunctionnalErrorType, NotFoundType>
-  implements IFindUserByIdUseCase<SuccessType, FunctionnalErrorType, NotFoundType>
+export class FindUserByIdUseCase<SuccessType, FunctionalErrorType, NotFoundType>
+  implements IFindUserByIdUseCase<SuccessType, FunctionalErrorType, NotFoundType>
 {
   constructor(
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: IUserRepository,
     private readonly presenter: IFindUserByIdUseCasePresenter<
       SuccessType,
-      FunctionnalErrorType,
+      FunctionalErrorType,
       NotFoundType
     >,
   ) {}
 
   async execute(
     args: findUserArgs,
-  ): Promise<SuccessType | FunctionnalErrorType | NotFoundType> {
+  ): Promise<SuccessType | FunctionalErrorType | NotFoundType> {
     let validatedData;
     try {
       validatedData = schema.parse(args);

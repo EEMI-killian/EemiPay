@@ -1,11 +1,11 @@
 export interface IFindUserByIdUseCase<
   SuccessType,
-  FunctionnalErrorType,
+  FunctionalErrorType,
   NotFoundType,
 > {
   execute(
     args: findUserArgs,
-  ): Promise<SuccessType | FunctionnalErrorType | NotFoundType>;
+  ): Promise<SuccessType | FunctionalErrorType | NotFoundType>;
 }
 
 export type findUserArgs = {

@@ -4,7 +4,7 @@ import { UserRepository } from "../repository/User/user.repository";
 import { AppDataSource } from "../data-source";
 import { DeleteUserUseCase } from "../usecase/User/deleteUser/deleteUser.usecase";
 import { UpdateUserPasswordUseCase } from "../usecase/User/updateUserPassword/updateUserPassword.usecase";
-import { FindUserByIdUseCase } from "../usecase/User/findUserbyId/findUserById.usecase";
+import { FindUserByIdUseCase } from "../usecase/User/findUserById/findUserById.usecase";
 
 const router = express.Router();
 
