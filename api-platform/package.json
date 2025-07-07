@@ -30,6 +30,7 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "db:migrate": "typeorm-ts-node-commonjs migration:run -t each -d src/data-source.ts",
     "db:revert": "typeorm-ts-node-commonjs migration:revert -t each -d src/data-source.ts",
+    "migration:gen": "typeorm migration:create src/migration/",
     "test": "jest --config jest.config.js",
     "static:write": "prettier . --write",
     "lint": "prettier . --check"
