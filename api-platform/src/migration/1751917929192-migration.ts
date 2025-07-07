@@ -16,7 +16,7 @@ export class Migration1751917929192 implements MigrationInterface {
                 "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 CONSTRAINT "UQ_merchant_company_name" UNIQUE ("company_name"),
                 CONSTRAINT "PK_merchant_id" PRIMARY KEY ("id")
-            )
+            );
         `);
   }
 

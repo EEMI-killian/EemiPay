@@ -16,7 +16,7 @@ export class MerchantContact {
   email: string;
 
   @Column({ unique: true })
-  phone_number: string;
+  phoneNumber: string;
 
   @ManyToOne(() => Merchant, (merchant) => merchant.contacts)
   merchant: Merchant;
