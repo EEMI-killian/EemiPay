@@ -6,21 +6,25 @@ export class MerchantContact {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ name: "first_name" })
   firstName: string;
 
-  @Column()
+  @Column({ name: "last_name" })
   lastName: string;
 
   @Column({ unique: true })
   email: string;
 
-  @Column({ unique: true })
+  @Column({ name: "phone_number", unique: true })
   phoneNumber: string;
 
   @ManyToOne(() => Merchant, (merchant) => merchant.contacts)
   merchant: Merchant;
 
-  @Column("timestamp", { default: () => "CURRENT_TIMESTAMP" })
+  @Column({
+    name: "created_at",
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt: Date;
 }

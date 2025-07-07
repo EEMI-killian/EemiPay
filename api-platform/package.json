@@ -26,7 +26,7 @@
     "zod": "^3.25.67"
   },
   "scripts": {
-    "start": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
+    "start": "nodemon --watch 'src/**/*.ts' --exec ts-node src/test.ts",
     "typeorm": "typeorm-ts-node-commonjs",
     "db:migrate": "typeorm-ts-node-commonjs migration:run -t each -d src/data-source.ts",
     "db:revert": "typeorm-ts-node-commonjs migration:revert -t each -d src/data-source.ts",

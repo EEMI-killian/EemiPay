@@ -12,13 +12,13 @@ export class Merchant {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ name: "company_name", unique: true })
   companyName: string;
 
-  @Column()
+  @Column({ name: "redirection_url_confirm" })
   redirectionUrlConfirm: string;
 
-  @Column()
+  @Column({ name: "redirection_url_cancel" })
   redirectionUrlCancel: string;
 
   @Column({
@@ -27,12 +27,16 @@ export class Merchant {
   })
   currency: CurrencyEnum;
 
-  @Column()
+  @Column({ name: "kbis_url" })
   kbisUrl: string;
 
   @OneToMany(() => MerchantContact, (contact) => contact.merchant)
   contacts: MerchantContact[];
 
-  @Column("timestamp", { default: () => "CURRENT_TIMESTAMP" })
+  @Column({
+    name: "created_at",
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt: Date;
 }

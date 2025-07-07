@@ -6,21 +6,25 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ name: "first_name" })
   firstName: string;
 
-  @Column()
+  @Column({ name: "last_name" })
   lastName: string;
 
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ name: "last_name" })
   password: string;
 
-  @Column({ default: false })
+  @Column({ name: "is_active", default: false })
   isActive: boolean;
 
-  @Column("timestamp", { default: () => "CURRENT_TIMESTAMP" })
+  @Column({
+    name: "created_at",
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt: Date;
 }
