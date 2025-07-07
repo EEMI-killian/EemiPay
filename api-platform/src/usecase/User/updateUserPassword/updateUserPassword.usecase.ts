@@ -69,7 +69,7 @@ export class UpdateUserPasswordUseCase<
         inputOldPassword: validatedData.inputOldPassword,
       });
       if (!match) {
-        return this.presenter.invalidPassword();
+        return await this.presenter.invalidPassword();
       }
       const newPasswordHashed = await this.passwordGateway.hash(
         validatedData.newPassword,
