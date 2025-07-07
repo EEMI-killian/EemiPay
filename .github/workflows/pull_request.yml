@@ -1,22 +1,25 @@
-name: Pull request CI workflow
+name: Pull Request CI Workflow
 
 on: [pull_request]
 
-
 jobs:
-  Ci:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository to the runner
         uses: actions/checkout@v4 
+        
+      - name: Setup Node.js
         uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
       - name: Install all dependencies
         run: npm i
 
-      - name: Run unit test
+      - name: Run unit tests
         run: npm run test
       
-      - name: Run static test 
-        run: npm run static:test
+      - name: Run static analysis
+        run: npm run lint
         
