@@ -1,0 +1,38 @@
+services:
+  postgresEemiPay:
+    container_name: databaseEemiPay
+    image: postgres:17
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: api
+      POSTGRES_USER: api
+      POSTGRES_DB: eemi-pay
+
+  pgAdminEemiPay:
+    container_name: pgAdminEemiPay
+    image: dpage/pgadmin4:9.4
+    ports:
+      - 3001:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: some@one.com 
+      PGADMIN_DEFAULT_PASSWORD: someone
+    volumes:
+      - "./config/pgadmin/servers.json:/pgadmin4/servers.json"
+    depends_on:
+      - postgresEemiPay
+
+  api-platform:
+    container_name: api-platform
+    build:
+      context: ./api-platform
+      dockerfile: Dockerfile
+    ports:
+      - 3051:3051
+    depends_on:
+      - postgresEemiPay
+    volumes:
+      - ./api-platform:/app
+
+
+ 
