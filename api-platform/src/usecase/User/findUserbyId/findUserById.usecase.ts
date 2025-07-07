@@ -1,11 +1,10 @@
 import z from "zod";
 import { User } from "../../../entity/User";
-import { UserRepository } from "../../../repository/User/user.repository";
 import { IFindUserByIdUseCase } from "./findUserById.usecase.interface";
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
 
 const schema = z.object({
-  id: z.number(),
+  id: z.string(),
 });
 
 type findUserArgs = z.infer<typeof schema>;

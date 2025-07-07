@@ -5,7 +5,8 @@ import { AppDataSource } from "../data-source";
 import { DeleteUserUseCase } from "../usecase/User/deleteUser/deleteUser.usecase";
 import { UpdateUserPasswordUseCase } from "../usecase/User/updateUserPassword/updateUserPassword.usecase";
 import { FindUserByIdUseCase } from "../usecase/User/findUserById/findUserById.usecase";
-import { PasswordGateway } from "../gateway/password/password.gateway";
+import { HashGateway } from "../gateway/hash/hash.gateway";
+import { UuidGateway } from "../gateway/uuid/uuid.gateway";
 
 const router = express.Router();
 
@@ -13,11 +14,12 @@ router.post("/", async (req, res) => {
   const userRepository = new UserRepository(
     AppDataSource.getRepository("User"),
   );
-  const passwordGateway = new PasswordGateway();
+  const hashGateway = new HashGateway();
+  const uuidGateway = new UuidGateway();
   const uc = new CreateUserUseCase(
     userRepository,
     {
-      success: async (id: number) => {
+      success: async (id: string) => {
         res.status(201).json({ id });
       },
       error: async (error: string) => {
@@ -30,7 +32,8 @@ router.post("/", async (req, res) => {
         res.status(400).json({ error });
       },
     },
-    passwordGateway,
+    hashGateway,
+    uuidGateway,
   );
 
   try {
@@ -42,7 +45,7 @@ router.post("/", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-  const userId = parseInt(req.params.id);
+  const userId = req.params.id;
   const userRepository = new UserRepository(
     AppDataSource.getRepository("User"),
   );
@@ -66,7 +69,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const userId = parseInt(req.params.id);
+  const userId = req.params.id;
   const userRepository = new UserRepository(
     AppDataSource.getRepository("User"),
   );
@@ -90,12 +93,12 @@ router.get("/:id", async (req, res) => {
 });
 
 router.patch("/reset-password/:id", async (req, res) => {
-  const userId = parseInt(req.params.id);
+  const userId = req.params.id;
   const args = req.body;
   const userRepository = new UserRepository(
     AppDataSource.getRepository("User"),
   );
-  const passwordGateway = new PasswordGateway();
+  const hashGateway = new HashGateway();
   const uc = new UpdateUserPasswordUseCase(
     userRepository,
     {
@@ -112,7 +115,7 @@ router.patch("/reset-password/:id", async (req, res) => {
         res.status(400).json({ error: "Invalid password" });
       },
     },
-    passwordGateway,
+    hashGateway,
   );
 
   try {

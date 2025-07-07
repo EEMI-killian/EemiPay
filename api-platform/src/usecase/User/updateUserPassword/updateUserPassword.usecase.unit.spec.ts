@@ -5,7 +5,7 @@ import {
   IUpdateUserPasswordUseCasePresenter,
   UpdateUserPasswordUseCase,
 } from "./updateUserPassword.usecase";
-import { IPasswordGateway } from "../../../gateway/password/password.gateway.interface";
+import { IPasswordGateway } from "../../../gateway/hash/hash.gateway.interface";
 
 describe("UpdateUserPasswordUseCase", () => {
   const mockedPresenter: IUpdateUserPasswordUseCasePresenter<

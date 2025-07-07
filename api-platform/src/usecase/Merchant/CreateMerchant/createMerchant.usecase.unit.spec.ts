@@ -77,7 +77,7 @@ describe("CreateMerchantUseCase", () => {
     mockedMerchantRepository.findByCompanyName.mockResolvedValue(null);
     mockedMerchantRepository.create.mockResolvedValue();
     const result = await uc.execute({
-      userId: 1,
+      userId:  ,
       companyName: faker.company.name(),
       redirectionUrlConfirm: faker.internet.url(),
       redirectionUrlCancel: faker.internet.url(),

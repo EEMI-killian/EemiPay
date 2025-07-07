@@ -9,5 +9,5 @@ export interface IDeleteUserUseCase<
 }
 
 export type deleteUserArgs = {
-  id: number;
+  id: string;
 };

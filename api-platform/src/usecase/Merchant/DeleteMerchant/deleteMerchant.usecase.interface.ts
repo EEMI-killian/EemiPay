@@ -10,5 +10,5 @@ export interface IDeleteMerchantUseCase<
 }
 
 export type DeleteMerchantArgs = {
-  id: number;
+  id: string;
 };

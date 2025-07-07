@@ -14,7 +14,7 @@ export interface IUpdateMerchantUseCase<
 }
 
 export type IUpdateMerchantUseCaseArgs = {
-  id: number;
+  id: string;
   redirectionUrlConfirm?: string;
   redirectionUrlCancel?: string;
   currency?: CurrencyEnum;

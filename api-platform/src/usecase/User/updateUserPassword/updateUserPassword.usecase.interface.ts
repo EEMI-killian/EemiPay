@@ -12,7 +12,7 @@ export interface IUpdateUserPasswordUseCase<
 }
 
 export type updateUserPasswordArgs = {
-  id: number;
+  id: string;
   inputOldPassword: string;
   newPassword: string;
 };

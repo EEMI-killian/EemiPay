@@ -7,7 +7,7 @@ export class Migration1751917929192 implements MigrationInterface {
               'EUR', 'USD', 'GBP'
             );
             CREATE TABLE public.merchant (
-                "id" SERIAL NOT NULL,
+                "id" character varying NOT NULL,
                 "company_name" character varying NOT NULL,
                 "redirection_url_confirm" character varying NOT NULL,
                 "redirection_url_cancel" character varying NOT NULL,
@@ -17,7 +17,7 @@ export class Migration1751917929192 implements MigrationInterface {
                 "contact_phone" character varying NOT NULL,
                 "contact_first_name" character varying NOT NULL,
                 "contact_last_name" character varying NOT NULL,
-                "user_id" integer NOT NULL,
+                "user_id" character varying NOT NULL,
                 "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 CONSTRAINT "UQ_merchant_contact_email" UNIQUE ("contact_email"),
                 CONSTRAINT "UQ_merchant_company_name" UNIQUE ("company_name"),

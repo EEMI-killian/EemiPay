@@ -2,8 +2,9 @@ import { IUserRepository } from "../../../repository/User/user.repository.interf
 
 import * as z from "zod";
 import { User } from "../../../entity/User";
-import { IPasswordGateway } from "../../../gateway/password/password.gateway.interface";
+import { IHashGateway } from "../../../gateway/hash/hash.gateway.interface";
 import { ICreateUserUseCase } from "./createUser.usecase.interface";
+import { IUuidGateway } from "../../../gateway/uuid/uuid.gateway.interface";
 
 const schema = z.object({
   email: z.string().email(),
@@ -20,7 +21,7 @@ export type ICreateUserUseCasePresenter<
   AlreadyExistsType,
   InvalidArgumentsType,
 > = {
-  success: (id: number) => Promise<SuccessType>;
+  success: (id: string) => Promise<SuccessType>;
   error: (error: string) => Promise<FunctionalErrorType>;
   alreadyExists: () => Promise<AlreadyExistsType>;
   invalidArguments: (error: string) => Promise<InvalidArgumentsType>;
@@ -47,7 +48,8 @@ export class CreateUserUseCase<
       AlreadyExistsType,
       InvalidArgumentsType
     >,
-    private readonly passwordGateway: IPasswordGateway,
+    private readonly hashGateway: IHashGateway,
+    private readonly uuidGateway: IUuidGateway,
   ) {}
 
   async execute(
@@ -70,15 +72,21 @@ export class CreateUserUseCase<
       if (existingUser) {
         return await this.presenter.alreadyExists();
       }
+<<<<<<< HEAD
       const hashedPassword = await this.passwordGateway.hash(args.password);
       await this.userRepository.create({
+=======
+      const hashedPassword = await this.hashGateway.hash(args.password);
+      const userId = await this.uuidGateway.generate("user");
+      await this.userRepository.create({
+        id: userId,
+>>>>>>> 1e4d672 (merchant repo)
         email: validatedData.email,
         password: hashedPassword,
         firstName: validatedData.firstName,
         lastName: validatedData.lastName,
       });
-      user = await this.userRepository.findByEmail(validatedData.email);
-      return await this.presenter.success(user.id);
+      return await this.presenter.success(userId);
     } catch (error) {
       return await this.presenter.error(error.message);
     }

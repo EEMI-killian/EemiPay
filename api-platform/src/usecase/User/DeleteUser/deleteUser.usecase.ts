@@ -3,7 +3,7 @@ import { IDeleteUserUseCase } from "./deleteUser.usecase.interface";
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
 
 const schema = z.object({
-  id: z.number(),
+  id: z.string().uuid(),
 });
 
 type deleteUserArgs = z.infer<typeof schema>;

@@ -1,10 +1,10 @@
 import z from "zod";
 import { IUpdateUserPasswordUseCase } from "./updateUserPassword.usecase.interface";
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
-import { IPasswordGateway } from "../../../gateway/password/password.gateway.interface";
+import { IHashGateway } from "../../../gateway/hash/hash.gateway.interface";
 
 const schema = z.object({
-  id: z.number(),
+  id: z.string().uuid(),
   inputOldPassword: z.string().min(8),
   newPassword: z.string().min(8),
 });
@@ -44,7 +44,7 @@ export class UpdateUserPasswordUseCase<
       NotFoundType,
       InvalidPasswordType
     >,
-    private readonly passwordGateway: IPasswordGateway,
+    private readonly hashGateway: IHashGateway,
   ) {}
 
   async execute(
@@ -64,14 +64,14 @@ export class UpdateUserPasswordUseCase<
         return await this.presenter.notFound();
       }
 
-      const match = await this.passwordGateway.compare({
-        OldPassword: user.password,
-        inputOldPassword: validatedData.inputOldPassword,
+      const match = await this.hashGateway.compare({
+        stringAlreadyHashed: user.password,
+        input: validatedData.inputOldPassword,
       });
       if (!match) {
         return await this.presenter.invalidPassword();
       }
-      const newPasswordHashed = await this.passwordGateway.hash(
+      const newPasswordHashed = await this.hashGateway.hash(
         validatedData.newPassword,
       );
       await this.userRepository.updatePassword(

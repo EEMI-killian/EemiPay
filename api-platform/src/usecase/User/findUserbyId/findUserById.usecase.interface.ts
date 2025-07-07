@@ -9,5 +9,5 @@ export interface IFindUserByIdUseCase<
 }
 
 export type findUserArgs = {
-  id: number;
+  id: string;
 };
