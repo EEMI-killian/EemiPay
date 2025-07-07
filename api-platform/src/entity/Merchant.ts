@@ -2,9 +2,9 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { MerchantContact } from "./MerchantContact";
 
 export enum CurrencyEnum {
-   EUR = "EUR",
-   USD = "USD",
-   GBP = "GBP",
+  EUR = "EUR",
+  USD = "USD",
+  GBP = "GBP",
 }
 
 @Entity()
@@ -13,27 +13,26 @@ export class Merchant {
   id: number;
 
   @Column({ unique: true })
-  companyName: string
+  companyName: string;
 
   @Column()
-  redirectionUrlConfirm : string
+  redirectionUrlConfirm: string;
 
   @Column()
-  redirectionUrlCancel : string
+  redirectionUrlCancel: string;
 
   @Column({
-    type : "enum",
-    enum : CurrencyEnum
+    type: "enum",
+    enum: CurrencyEnum,
   })
-  currency : CurrencyEnum
+  currency: CurrencyEnum;
 
   @Column()
-  kbisUrl: string
+  kbisUrl: string;
 
   @OneToMany(() => MerchantContact, (contact) => contact.merchant)
-  contacts : MerchantContact[]
+  contacts: MerchantContact[];
 
   @Column("timestamp", { default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
-
 }

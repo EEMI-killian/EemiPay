@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class Migration1751917929192 implements MigrationInterface {
-    public async up(queryRunner: QueryRunner): Promise<void> {
+  public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
             CREATE TYPE currency_enum AS ENUM (
               'EUR', 'USD', 'GBP'
@@ -21,6 +21,8 @@ export class Migration1751917929192 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE public.merchant; DROP TYPE currency_enum;`);
+    await queryRunner.query(
+      `DROP TABLE public.merchant; DROP TYPE currency_enum;`,
+    );
   }
 }
