@@ -89,7 +89,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.patch("/resetPassword/:id", async (req, res) => {
+router.patch("/reset-password/:id", async (req, res) => {
   const userId = parseInt(req.params.id);
   const args = req.body;
   const userRepository = new UserRepository(
