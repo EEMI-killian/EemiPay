@@ -1,8 +1,9 @@
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
-import { ICreateUserUseCase } from "./createUser.usecase.interface";
+
 import * as z from "zod";
 import { User } from "../../../entity/User";
 import { IPasswordGateway } from "../../../gateway/password/password.gateway.interface";
+import { ICreateUserUseCase } from "./createUser.usecase.interface";
 
 const schema = z.object({
   email: z.string().email(),
@@ -70,7 +71,7 @@ export class CreateUserUseCase<
         return await this.presenter.alreadyExists();
       }
       const hashedPassword = await this.passwordGateway.hash(args.password);
-      await this.userRepository.createUser({
+      await this.userRepository.create({
         email: validatedData.email,
         password: hashedPassword,
         firstName: validatedData.firstName,

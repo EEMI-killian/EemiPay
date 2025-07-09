@@ -1,11 +1,11 @@
 import { CurrencyEnum, Merchant } from "../../entity/Merchant";
 
 export interface IMerchantRepository {
-  createMerchant(args): Promise<void>;
+  create(args : ICreateMerchantArgs): Promise<void>;
   findById(id: number): Promise<Merchant | null>;
   findByCompanyName(companyName: string): Promise<Merchant | null>;
-  deleteMerchant(id: number): Promise<void>;
-  updateMerchant(args: IUpdateMerchantArgs): Promise<void>;
+  delete(id: number): Promise<void>;
+  update(args: IUpdateMerchantArgs): Promise<void>;
 }
 
 export type IUpdateMerchantArgs = {

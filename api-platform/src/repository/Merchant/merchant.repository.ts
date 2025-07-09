@@ -11,7 +11,7 @@ export class MerchantRepository implements IMerchantRepository {
     this.merchantRepo = merchantRepo;
   }
 
-  async createMerchant(args: ICreateMerchantArgs): Promise<void> {
+  async create(args: ICreateMerchantArgs): Promise<void> {
     const merchant = this.merchantRepo.create(args);
     await this.merchantRepo.save(merchant);
   }
@@ -24,7 +24,7 @@ export class MerchantRepository implements IMerchantRepository {
     return await this.merchantRepo.findOne({ where: { id } });
   }
 
-  async updateMerchant(args: IUpdateMerchantArgs): Promise<void> {
+  async update(args: IUpdateMerchantArgs): Promise<void> {
     const { id, ...updateData } = args;
     const merchant = await this.findById(id);
     if (merchant) {
@@ -33,7 +33,7 @@ export class MerchantRepository implements IMerchantRepository {
     }
   }
 
-  async deleteMerchant(id: number): Promise<void> {
+  async delete(id: number): Promise<void> {
     const merchant = await this.findById(id);
     if (merchant) {
       await this.merchantRepo.remove(merchant);

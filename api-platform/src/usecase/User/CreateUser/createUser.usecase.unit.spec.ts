@@ -30,9 +30,9 @@ describe("CreateUserUseCase", () => {
   const mockedUserRepository: jest.Mocked<IUserRepository> = {
     findByEmail: jest.fn(),
     findById: jest.fn(),
-    createUser: jest.fn(),
-    deleteUser: jest.fn(),
-    updateUserPassword: jest.fn(),
+    create: jest.fn(),
+    delete: jest.fn(),
+    updatePassword: jest.fn(),
   };
   const userData = {
     firstName: faker.person.firstName(),
@@ -67,7 +67,7 @@ describe("CreateUserUseCase", () => {
       mockedPasswordGateway,
     );
     const response = await uc.execute(userData);
-    expect(mockedUserRepository.createUser).toHaveBeenCalled();
+    expect(mockedUserRepository.create).toHaveBeenCalled();
     expect(mockedUserRepository.findByEmail).toHaveBeenCalledTimes(2);
     expect(response).toEqual({ success: true, id: 1 });
   });
@@ -89,7 +89,7 @@ describe("CreateUserUseCase", () => {
     );
     const response = await uc.execute(userData);
     expect(mockedUserRepository.findByEmail).toHaveBeenCalled();
-    expect(mockedUserRepository.createUser).not.toHaveBeenCalled();
+    expect(mockedUserRepository.create).not.toHaveBeenCalled();
     expect(response).toEqual({ error: "User already exist" });
   });
   test("it should be return an error about invalid arguments", async () => {
@@ -106,7 +106,7 @@ describe("CreateUserUseCase", () => {
     );
     const response = await uc.execute(userDataWrong);
     expect(mockedUserRepository.findByEmail).not.toHaveBeenCalled();
-    expect(mockedUserRepository.createUser).not.toHaveBeenCalled();
+    expect(mockedUserRepository.create).not.toHaveBeenCalled();
     expect(response).toEqual({ error: "Invalid arguments" });
   });
 });

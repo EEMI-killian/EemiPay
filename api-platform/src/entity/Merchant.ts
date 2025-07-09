@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { MerchantContact } from "./MerchantContact";
 
 export enum CurrencyEnum {
@@ -32,6 +32,8 @@ export class Merchant {
 
   @OneToMany(() => MerchantContact, (contact) => contact.merchant)
   contacts: MerchantContact[];
+
+
 
   @Column({
     name: "created_at",

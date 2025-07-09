@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
 
 @Entity()
 export class User {
@@ -20,6 +20,9 @@ export class User {
 
   @Column({ name: "is_active", default: false })
   isActive: boolean;
+
+  @OneToOne(() => User, (user) => user.id)
+  user: User;
 
   @Column({
     name: "created_at",

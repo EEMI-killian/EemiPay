@@ -26,9 +26,9 @@ describe("DeleteUserUseCase", () => {
   const mockedUserRepository: jest.Mocked<IUserRepository> = {
     findByEmail: jest.fn(),
     findById: jest.fn(),
-    createUser: jest.fn(),
-    deleteUser: jest.fn(),
-    updateUserPassword: jest.fn(),
+    create: jest.fn(),
+    delete: jest.fn(),
+    updatePassword: jest.fn(),
   };
 
   beforeEach(() => {
