@@ -21,6 +21,11 @@ export class MerchantContactRepository implements IMerchantContactRepository {
   async findById(id: number): Promise<MerchantContact | null> {
     return await this.merchantContactRepo.findOne({ where: { id } });
   }
+  async findByPhoneNumber(
+    phoneNumber: string,
+  ): Promise<MerchantContact | null> {
+    return await this.merchantContactRepo.findOne({ where: { phoneNumber } });
+  }
   async update(args: IUpdateMerchantContactArgs): Promise<void> {
     const { id, ...updateData } = args;
     const merchantContact = await this.findById(id);

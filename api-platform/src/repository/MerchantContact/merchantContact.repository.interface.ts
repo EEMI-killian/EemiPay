@@ -4,6 +4,7 @@ export interface IMerchantContactRepository {
   add(args: ICreateMerchantContactArgs): Promise<void>;
   findById(id: number): Promise<MerchantContact | null>;
   findByEmail(email: string): Promise<MerchantContact | null>;
+  findByPhoneNumber(phoneNumber: string): Promise<MerchantContact | null>;
   delete(id: number): Promise<void>;
   update(args: IUpdateMerchantContactArgs): Promise<void>;
 }
