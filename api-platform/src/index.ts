@@ -10,7 +10,7 @@ AppDataSource.initialize()
     const app = express();
     app.use(bodyParser.json());
     app.use("/user", userRouter);
-    app.use("/merchant", merchantRouter)
+    app.use("/merchant", merchantRouter);
     app.get("/", (req: Request, res: Response) => {
       res.send("Hello World! Express is running on port 3051");
     });

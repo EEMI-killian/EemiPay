@@ -13,6 +13,7 @@ export class Migration1751917929192 implements MigrationInterface {
                 "redirection_url_cancel" character varying NOT NULL,
                 "kbis_url" character varying NOT NULL,
                 "currency" currency_enum NOT NULL,
+                "user_id" integer NOT NULL,
                 "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 CONSTRAINT "UQ_merchant_company_name" UNIQUE ("company_name"),
                 CONSTRAINT "PK_merchant_id" PRIMARY KEY ("id")

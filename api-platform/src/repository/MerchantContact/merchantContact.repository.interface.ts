@@ -9,7 +9,7 @@ export interface IMerchantContactRepository {
 }
 
 export type ICreateMerchantContactArgs = {
-  merchantId: number; 
+  merchantId: number;
   firstName: string;
   lastName: string;
   email: string;
