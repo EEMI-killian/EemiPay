@@ -4,6 +4,7 @@ import * as express from "express";
 import { CreateMerchantUseCase } from "../usecase/Merchant/CreateMerchant/createMerchant.usecase";
 import { GetMerchantUseCase } from "../usecase/Merchant/GetMerchantById/getMerchant.usecase";
 import { UpdateMerchantUseCase } from "../usecase/Merchant/UpdateMerchant/updateMercant.usecase.interface copy";
+import { GetAllMerchantUseCase } from "../usecase/Merchant/GetAllMerchant/getAllMerchant.usecase";
 
 const router = express.Router();
 
@@ -38,6 +39,29 @@ router.post("/", async (req, res) => {
   );
   try {
     const result = await createMerchantUseCase.execute(req.body);
+    return result;
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/", async (req, res) => {
+  const merchantRepository = new MerchantRepository(
+    AppDataSource.getRepository("Merchant"),
+  );
+  const getAllMerchantUseCase = new GetAllMerchantUseCase(merchantRepository, {
+    success: async (merchants) => {
+      res.status(200).json(merchants);
+    },
+    functionalError: async (error: string) => {
+      res.status(500).json({ error });
+    },
+    invalidArguments: async (error: string) => {
+      res.status(400).json({ error });
+    },
+  });
+  try {
+    const result = await getAllMerchantUseCase.execute();
     return result;
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

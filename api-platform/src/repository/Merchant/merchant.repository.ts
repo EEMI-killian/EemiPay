@@ -24,6 +24,10 @@ export class MerchantRepository implements IMerchantRepository {
     return await this.merchantRepo.findOne({ where: { id } });
   }
 
+  async getAll(): Promise<Merchant[]> {
+    return await this.merchantRepo.find();
+  }
+
   async update(args: IUpdateMerchantArgs): Promise<void> {
     const { id, ...updateData } = args;
     const merchant = await this.findById(id);

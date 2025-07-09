@@ -4,6 +4,7 @@ export interface IMerchantRepository {
   create(args: ICreateMerchantArgs): Promise<void>;
   findById(id: number): Promise<Merchant | null>;
   findByCompanyName(companyName: string): Promise<Merchant | null>;
+  getAll(): Promise<Merchant[]>;
   delete(id: number): Promise<void>;
   update(args: IUpdateMerchantArgs): Promise<void>;
 }
