@@ -1,10 +1,7 @@
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
 import { faker } from "@faker-js/faker";
-import {
-  FindUserByIdUseCase,
-  IFindUserByIdUseCasePresenter,
-} from "./findUserById.usecase";
+import { FindUserByIdUseCase, IFindUserByIdUseCasePresenter } from "./findUserById.usecase";
 
 describe("FindUserByIdUseCase", () => {
   const mockedPresenter: IFindUserByIdUseCasePresenter<
