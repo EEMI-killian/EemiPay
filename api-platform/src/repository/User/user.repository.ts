@@ -1,40 +1,40 @@
 import { Repository } from "typeorm";
 import { User } from "../../entity/User";
 import {
-  ICreateUserRepositoryArgs,
+  CreateUserRepositoryArgs,
   IUserRepository,
 } from "./user.repository.interface";
 
 export class UserRepository implements IUserRepository {
-  constructor(private userRepo: Repository<User>) {
-    this.userRepo = userRepo;
+  constructor(private userRepository: Repository<User>) {
+    this.userRepository = userRepository;
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.userRepo.findOne({ where: { email } });
+    return await this.userRepository.findOne({ where: { email } });
   }
 
   async findById(id: number): Promise<User | null> {
-    return await this.userRepo.findOne({ where: { id } });
+    return await this.userRepository.findOne({ where: { id } });
   }
 
-  async create(args: ICreateUserRepositoryArgs): Promise<void> {
-    const user = this.userRepo.create(args);
-    await this.userRepo.save(user);
+  async create(args: CreateUserRepositoryArgs): Promise<void> {
+    const user = this.userRepository.create(args);
+    await this.userRepository.save(user);
   }
 
   async updatePassword(id: number, password: string): Promise<void> {
     const user = await this.findById(id);
     if (user) {
       user.password = password;
-      await this.userRepo.save(user);
+      await this.userRepository.save(user);
     }
   }
 
   async delete(id: number): Promise<void> {
     const user = await this.findById(id);
     if (user) {
-      await this.userRepo.remove(user);
+      await this.userRepository.remove(user);
     }
   }
 }

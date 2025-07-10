@@ -6,6 +6,7 @@ import { GetMerchantUseCase } from "../usecase/Merchant/GetMerchant/getMerchant.
 import { UpdateMerchantUseCase } from "../usecase/Merchant/UpdateMerchant/updateMercant.usecase";
 import { GetAllMerchantUseCase } from "../usecase/Merchant/GetAllMerchant/getAllMerchant.usecase";
 import { UserRepository } from "../repository/User/user.repository";
+import { DeleteMerchantUseCase } from "../usecase/Merchant/DeleteMerchant/deleteMerchant.usecase";
 
 const router = express.Router();
 
@@ -129,7 +130,7 @@ router.delete("/:id", async (req, res) => {
     AppDataSource.getRepository("Merchant"),
   );
 
-  const uc = new UpdateMerchantUseCase(merchantRepository, {
+  const uc = new DeleteMerchantUseCase(merchantRepository, {
     success: async () => {
       res.status(204).send();
     },

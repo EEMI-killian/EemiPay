@@ -7,40 +7,40 @@ import {
 } from "./merchant.repository.interface";
 
 export class MerchantRepository implements IMerchantRepository {
-  constructor(private merchantRepo: Repository<Merchant>) {
-    this.merchantRepo = merchantRepo;
+  constructor(private merchantRepository: Repository<Merchant>) {
+    this.merchantRepository = merchantRepository;
   }
 
   async create(args: ICreateMerchantArgs): Promise<void> {
-    const merchant = this.merchantRepo.create(args);
-    await this.merchantRepo.save(merchant);
+    const merchant = this.merchantRepository.create(args);
+    await this.merchantRepository.save(merchant);
   }
 
   async findByCompanyName(companyName: string): Promise<Merchant | null> {
-    return await this.merchantRepo.findOne({ where: { companyName } });
+    return await this.merchantRepository.findOne({ where: { companyName } });
   }
 
   async findById(id: number): Promise<Merchant | null> {
-    return await this.merchantRepo.findOne({ where: { id } });
+    return await this.merchantRepository.findOne({ where: { id } });
   }
 
   async getAll(): Promise<Merchant[]> {
-    return await this.merchantRepo.find();
+    return await this.merchantRepository.find();
   }
 
   async update(args: IUpdateMerchantArgs): Promise<void> {
     const { id, ...updateData } = args;
-    const merchant = await this.findById(id);
+    const merchant = await this.merchantRepository.findOne({ where: { id } });
     if (merchant) {
       Object.assign(merchant, updateData);
-      await this.merchantRepo.save(merchant);
+      await this.merchantRepository.save(merchant);
     }
   }
 
   async delete(id: number): Promise<void> {
-    const merchant = await this.findById(id);
+    const merchant = await this.merchantRepository.findOne({ where: { id } });
     if (merchant) {
-      await this.merchantRepo.remove(merchant);
+      await this.merchantRepository.remove(merchant);
     }
   }
 }
