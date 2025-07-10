@@ -5,6 +5,7 @@ import { CreateMerchantUseCase } from "../usecase/Merchant/CreateMerchant/create
 import { GetMerchantUseCase } from "../usecase/Merchant/GetMerchant/getMerchant.usecase";
 import { UpdateMerchantUseCase } from "../usecase/Merchant/UpdateMerchant/updateMercant.usecase";
 import { GetAllMerchantUseCase } from "../usecase/Merchant/GetAllMerchant/getAllMerchant.usecase";
+import { UserRepository } from "../repository/User/user.repository";
 
 const router = express.Router();
 
@@ -12,33 +13,29 @@ router.post("/", async (req, res) => {
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );
-  const userRepository = new MerchantRepository(
+  const userRepository = new UserRepository(
     AppDataSource.getRepository("User"),
   );
 
-  const createMerchantUseCase = new CreateMerchantUseCase(
-    merchantRepository,
-    userRepository,
-    {
-      success: async () => {
-        res.status(201).json({ success: true });
-      },
-      error: async (error: string) => {
-        res.status(400).json({ error });
-      },
-      alreadyExists: async () => {
-        res.status(409).json({ error: "Merchant already exists" });
-      },
-      invalidArguments: async (error: string) => {
-        res.status(400).json({ error });
-      },
-      notFound: async () => {
-        res.status(404).json({ error: "User not found" });
-      },
+  const uc = new CreateMerchantUseCase(merchantRepository, userRepository, {
+    success: async () => {
+      res.status(201).json({ success: true });
     },
-  );
+    error: async (error: string) => {
+      res.status(400).json({ error });
+    },
+    alreadyExists: async () => {
+      res.status(409).json({ error: "Merchant already exists" });
+    },
+    invalidArguments: async (error: string) => {
+      res.status(400).json({ error });
+    },
+    notFound: async () => {
+      res.status(404).json({ error: "User not found" });
+    },
+  });
   try {
-    const result = await createMerchantUseCase.execute(req.body);
+    const result = await uc.execute(req.body);
     return result;
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
@@ -49,7 +46,7 @@ router.get("/", async (req, res) => {
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );
-  const getAllMerchantUseCase = new GetAllMerchantUseCase(merchantRepository, {
+  const uc = new GetAllMerchantUseCase(merchantRepository, {
     success: async (merchants) => {
       res.status(200).json(merchants);
     },
@@ -61,7 +58,7 @@ router.get("/", async (req, res) => {
     },
   });
   try {
-    const result = await getAllMerchantUseCase.execute();
+    const result = await uc.execute();
     return result;
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
@@ -73,7 +70,7 @@ router.get("/:id", async (req, res) => {
     AppDataSource.getRepository("Merchant"),
   );
 
-  const getMerchantUseCase = new GetMerchantUseCase(merchantRepository, {
+  const uc = new GetMerchantUseCase(merchantRepository, {
     success: async (merchant) => {
       res.status(200).json(merchant);
     },
@@ -89,9 +86,7 @@ router.get("/:id", async (req, res) => {
   });
 
   try {
-    const result = await getMerchantUseCase.execute(
-      parseInt(req.params.id, 10),
-    );
+    const result = await uc.execute({ id: parseInt(req.params.id, 10) });
     return result;
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
@@ -103,7 +98,7 @@ router.patch("/:id", async (req, res) => {
     AppDataSource.getRepository("Merchant"),
   );
 
-  const updateMerchantUseCase = new UpdateMerchantUseCase(merchantRepository, {
+  const uc = new UpdateMerchantUseCase(merchantRepository, {
     success: async () => {
       res.status(200).json({ success: true });
     },
@@ -113,13 +108,13 @@ router.patch("/:id", async (req, res) => {
     notFound: async () => {
       res.status(404).json({ error: "Merchant not found" });
     },
-    invalidArgs: async (error: string) => {
+    invalidArguments: async (error: string) => {
       res.status(400).json({ error });
     },
   });
 
   try {
-    const result = await updateMerchantUseCase.execute({
+    const result = await uc.execute({
       id: parseInt(req.params.id, 10),
       ...req.body,
     });
@@ -134,15 +129,26 @@ router.delete("/:id", async (req, res) => {
     AppDataSource.getRepository("Merchant"),
   );
 
+  const uc = new UpdateMerchantUseCase(merchantRepository, {
+    success: async () => {
+      res.status(204).send();
+    },
+    notFound: async () => {
+      res.status(404).json({ error: "Merchant not found" });
+    },
+    functionalError: async (error: string) => {
+      res.status(500).json({ error });
+    },
+    invalidArguments: async (error: string) => {
+      res.status(400).json({ error });
+    },
+  });
+
   try {
-    const merchant = await merchantRepository.findById(
-      parseInt(req.params.id, 10),
-    );
-    if (!merchant) {
-      return res.status(404).json({ error: "Merchant not found" });
-    }
-    await merchantRepository.delete(merchant.id);
-    res.status(204).send();
+    const result = await uc.execute({
+      id: parseInt(req.params.id, 10),
+    });
+    return result;
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
