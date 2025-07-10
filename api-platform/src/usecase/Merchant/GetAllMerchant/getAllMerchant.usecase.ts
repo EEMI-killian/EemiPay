@@ -3,37 +3,37 @@ import { IGetAllMerchantUseCase } from "./getAllMerchant.usecase.interface";
 import { IMerchantRepository } from "../../../repository/Merchant/merchant.repository.interface";
 import { Merchant } from "../../../entity/Merchant";
 
-
-
 export type IGetAllMerchantUseCasePresenter<
   SuccessType,
   FunctionalErrorType,
   InvalidArgumentsType,
 > = {
-  success: (merchant : Merchant[]) => Promise<SuccessType>;
+  success: (merchant: Merchant[]) => Promise<SuccessType>;
   functionalError: (error: string) => Promise<FunctionalErrorType>;
   invalidArguments: (error: string) => Promise<InvalidArgumentsType>;
 };
-
 
 export class GetAllMerchantUseCase<
   SuccessType,
   FunctionalErrorType,
   InvalidArgumentsType,
-> implements IGetAllMerchantUseCase<
-  SuccessType,
-  FunctionalErrorType,
-  InvalidArgumentsType
-> {
-    constructor(
+> implements
+    IGetAllMerchantUseCase<
+      SuccessType,
+      FunctionalErrorType,
+      InvalidArgumentsType
+    >
+{
+  constructor(
     private readonly merchantRepository: IMerchantRepository,
     private readonly presenter: IGetAllMerchantUseCasePresenter<
       SuccessType,
       FunctionalErrorType,
-      InvalidArgumentsType>
- ){}
+      InvalidArgumentsType
+    >,
+  ) {}
 
-    async execute(): Promise<
+  async execute(): Promise<
     SuccessType | FunctionalErrorType | InvalidArgumentsType
   > {
     try {

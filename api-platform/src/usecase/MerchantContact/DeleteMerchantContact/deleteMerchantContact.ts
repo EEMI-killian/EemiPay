@@ -1,6 +1,3 @@
-
-
-
 import z from "zod";
 import { IMerchantContactRepository } from "../../../repository/MerchantContact/merchantContact.repository.interface";
 import { IDeleteMerchantContactUseCase } from "./deleteMerchantContact.interface";
@@ -46,20 +43,20 @@ export class DeleteMerchantContactUseCase<
     >,
   ) {}
   async execute(
-    args : DeleteMerchantContactArgs ,
+    args: DeleteMerchantContactArgs,
   ): Promise<
     SuccessType | NotFoundType | InvalidArgsType | FunctionalErrorType
   > {
     let validatedData: DeleteMerchantContactArgs;
-    
+
     try {
-        validatedData = schema.parse(args);
+      validatedData = schema.parse(args);
     } catch (error) {
-        return await this.presenter.invalidArguments(error);
+      return await this.presenter.invalidArguments(error);
     }
     try {
-      const merchantContact = await this.merchantContactRepository.findById(validatedData
-        .id
+      const merchantContact = await this.merchantContactRepository.findById(
+        validatedData.id,
       );
       if (!merchantContact) {
         return await this.presenter.notFound();

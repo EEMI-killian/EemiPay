@@ -5,6 +5,10 @@ export interface IDeleteMerchantUseCase<
   FunctionalErrorType,
 > {
   execute(
-    merchantId: number,
+    args: DeleteMerchantArgs,
   ): Promise<SuccesType | NotFoundType | InvalidArgsType | FunctionalErrorType>;
 }
+
+export type DeleteMerchantArgs = {
+  id: number;
+};

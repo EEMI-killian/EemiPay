@@ -22,7 +22,7 @@ export type IUpdateMerchantUseCasePresenter<
   success: () => Promise<SuccessType>;
   functionalError: (error: string) => Promise<FunctionalErrorType>;
   notFound: () => Promise<NotFoundType>;
-  invalidArgs: (error: string) => Promise<InvalidArgsType>;
+  invalidArguments: (error: string) => Promise<InvalidArgsType>;
 };
 
 export class UpdateMerchantUseCase<
@@ -57,7 +57,7 @@ export class UpdateMerchantUseCase<
     try {
       validatedData = schema.parse(args);
     } catch (error) {
-      return this.presenter.invalidArgs(error);
+      return this.presenter.invalidArguments(error);
     }
 
     const merchant = await this.merchantRepository.findById(validatedData.id);

@@ -21,9 +21,6 @@ export class User {
   @Column({ name: "is_active", default: false })
   isActive: boolean;
 
-  @OneToOne(() => User, (user) => user.id)
-  user: User;
-
   @Column({
     name: "created_at",
     type: "timestamp",

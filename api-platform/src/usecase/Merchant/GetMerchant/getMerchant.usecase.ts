@@ -2,6 +2,7 @@ import z from "zod";
 import { Merchant } from "../../../entity/Merchant";
 import { IMerchantRepository } from "../../../repository/Merchant/merchant.repository.interface";
 import { IGetMerchantUseCase } from "./getMerchant.usecase.interface";
+import { v } from "@faker-js/faker/dist/airline-BUL6NtOJ";
 
 const schema = z.object({
   id: z.number(),
@@ -45,14 +46,14 @@ export class GetMerchantUseCase<
   ) {}
 
   async execute(
-    id: number,
+    args: GetMerchantArgs,
   ): Promise<
     SuccessType | FunctionalErrorType | NotFoundType | InvalidArgsType
   > {
     let validatedData: GetMerchantArgs;
 
     try {
-      validatedData = schema.parse({ id });
+      validatedData = schema.parse(args);
     } catch (error) {
       return await this.presenter.invalidArguments(error);
     }

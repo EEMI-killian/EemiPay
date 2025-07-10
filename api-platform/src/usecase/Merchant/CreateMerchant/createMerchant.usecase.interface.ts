@@ -8,7 +8,7 @@ export interface ICreateMerchantUseCase<
   NotFoundType,
 > {
   execute(
-    args: ICreateMerchantUseCaseArgs,
+    args: CreateMerchantUseCaseArgs,
   ): Promise<
     | SuccessType
     | FunctionalErrorType
@@ -18,7 +18,7 @@ export interface ICreateMerchantUseCase<
   >;
 }
 
-export type ICreateMerchantUseCaseArgs = {
+export type CreateMerchantUseCaseArgs = {
   userId: number;
   companyName: string;
   redirectionUrlConfirm: string;

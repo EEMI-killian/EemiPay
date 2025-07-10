@@ -1,6 +1,12 @@
-import { I } from "@faker-js/faker/dist/airline-BUL6NtOJ";
+import z from "zod";
 import { IMerchantRepository } from "../../../repository/Merchant/merchant.repository.interface";
 import { IDeleteMerchantUseCase } from "./deleteMerchant.usecase.interface";
+
+const schema = z.object({
+  id: z.number().int().positive(),
+});
+
+type DeleteMerchantArgs = z.infer<typeof schema>;
 
 export type IDeleteMerchantPresenter<
   SuccessType,
@@ -10,7 +16,7 @@ export type IDeleteMerchantPresenter<
 > = {
   success: () => Promise<SuccessType>;
   notFound: () => Promise<NotFoundType>;
-  invalidArgs: (error: string) => Promise<InvalidArgsType>;
+  invalidArguments: (error: string) => Promise<InvalidArgsType>;
   functionalError: (error: string) => Promise<FunctionalErrorType>;
 };
 
@@ -37,16 +43,23 @@ export class DeleteMerchantUseCase<
     >,
   ) {}
   async execute(
-    merchantId: number,
+    args: DeleteMerchantArgs,
   ): Promise<
     SuccessType | NotFoundType | InvalidArgsType | FunctionalErrorType
   > {
     try {
-      const merchant = await this.merchantRepository.findById(merchantId);
+      let validatedData: DeleteMerchantArgs;
+
+      try {
+        validatedData = schema.parse(args);
+      } catch (error) {
+        return await this.presenter.invalidArguments(error.message);
+      }
+      const merchant = await this.merchantRepository.findById(validatedData.id);
       if (!merchant) {
         return this.presenter.notFound();
       }
-      await this.merchantRepository.delete(merchantId);
+      await this.merchantRepository.delete(validatedData.id);
       return this.presenter.success();
     } catch (error) {
       return this.presenter.functionalError(error);

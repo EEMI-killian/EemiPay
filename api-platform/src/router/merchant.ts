@@ -2,8 +2,8 @@ import { AppDataSource } from "../data-source";
 import { MerchantRepository } from "../repository/Merchant/merchant.repository";
 import * as express from "express";
 import { CreateMerchantUseCase } from "../usecase/Merchant/CreateMerchant/createMerchant.usecase";
-import { GetMerchantUseCase } from "../usecase/Merchant/GetMerchantById/getMerchant.usecase";
-import { UpdateMerchantUseCase } from "../usecase/Merchant/UpdateMerchant/updateMercant.usecase.interface copy";
+import { GetMerchantUseCase } from "../usecase/Merchant/GetMerchant/getMerchant.usecase";
+import { UpdateMerchantUseCase } from "../usecase/Merchant/UpdateMerchant/updateMercant.usecase";
 import { GetAllMerchantUseCase } from "../usecase/Merchant/GetAllMerchant/getAllMerchant.usecase";
 
 const router = express.Router();

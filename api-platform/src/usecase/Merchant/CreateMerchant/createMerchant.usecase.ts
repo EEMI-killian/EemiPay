@@ -2,6 +2,7 @@ import z from "zod";
 import { IMerchantRepository } from "../../../repository/Merchant/merchant.repository.interface";
 import { ICreateMerchantUseCase } from "./createMerchant.usecase.interface";
 import { CurrencyEnum } from "../../../entity/Merchant";
+import { IUserRepository } from "../../../repository/User/user.repository.interface";
 
 const schema = z.object({
   userId: z.number(),
@@ -45,7 +46,7 @@ export class CreateMerchantUseCase<
 {
   constructor(
     private readonly merchantRepository: IMerchantRepository,
-    private readonly userRepository: IMerchantRepository,
+    private readonly userRepository: IUserRepository,
     private readonly presenter: ICreateMerchantUseCasePresenter<
       SuccessType,
       FunctionalErrorType,
@@ -69,7 +70,7 @@ export class CreateMerchantUseCase<
     try {
       validatedData = schema.parse(args);
     } catch (error) {
-      return await this.presenter.invalidArguments(error);
+      return await this.presenter.invalidArguments(error.message);
     }
 
     try {
@@ -98,9 +99,7 @@ export class CreateMerchantUseCase<
 
       return await this.presenter.success();
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error occurred";
-      return await this.presenter.error(errorMessage);
+      return await this.presenter.error(error.message);
     }
   }
 }

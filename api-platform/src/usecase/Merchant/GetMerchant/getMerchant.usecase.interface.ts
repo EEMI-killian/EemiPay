@@ -5,8 +5,12 @@ export interface IGetMerchantUseCase<
   InvalidArgsType,
 > {
   execute(
-    id: number,
+    args: GetMerchantArgs,
   ): Promise<
     SuccessType | FunctionalErrorType | NotFoundType | InvalidArgsType
   >;
 }
+
+export type GetMerchantArgs = {
+  id: number;
+};

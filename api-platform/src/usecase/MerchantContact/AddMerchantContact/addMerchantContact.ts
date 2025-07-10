@@ -1,8 +1,6 @@
 import z from "zod";
 import { IMerchantContactRepository } from "../../../repository/MerchantContact/merchantContact.repository.interface";
-import {
-  IAddMerchantContactUseCase,
-} from "./addMerchantContact.interface";
+import { IAddMerchantContactUseCase } from "./addMerchantContact.interface";
 import { M } from "@faker-js/faker/dist/airline-BUL6NtOJ";
 import { MerchantContact } from "../../../entity/MerchantContact";
 
@@ -91,14 +89,13 @@ export class AddMerchantContactUseCase<
         return await this.presenter.alreadyExists();
       }
 
-      
       await this.merchantContactRepository.add({
-          merchantId: validatedData.merchantId,
-          firstName: validatedData.firstName,
-          lastName: validatedData.lastName,
-          email: validatedData.email,
-          phoneNumber: validatedData.phone,
-        });
+        merchantId: validatedData.merchantId,
+        firstName: validatedData.firstName,
+        lastName: validatedData.lastName,
+        email: validatedData.email,
+        phoneNumber: validatedData.phone,
+      });
 
       return await this.presenter.success();
     } catch (error) {
