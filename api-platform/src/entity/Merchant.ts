@@ -1,5 +1,4 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { MerchantContact } from "./MerchantContact";
 
 export enum CurrencyEnum {
   EUR = "EUR",
@@ -12,13 +11,13 @@ export class Merchant {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ name: "company_name", unique: true })
   companyName: string;
 
-  @Column()
+  @Column({ name: "redirection_url_confirm" })
   redirectionUrlConfirm: string;
 
-  @Column()
+  @Column({ name: "redirection_url_cancel" })
   redirectionUrlCancel: string;
 
   @Column({
@@ -27,12 +26,28 @@ export class Merchant {
   })
   currency: CurrencyEnum;
 
-  @Column()
+  @Column({ name: "kbis_url" })
   kbisUrl: string;
 
-  @OneToMany(() => MerchantContact, (contact) => contact.merchant)
-  contacts: MerchantContact[];
+  @Column({ name: "contact_email", unique: true })
+  contactEmail: string;
 
-  @Column("timestamp", { default: () => "CURRENT_TIMESTAMP" })
+  @Column({ name: "contact_phone" })
+  contactPhone: string;
+
+  @Column({ name: "contact_first_name" })
+  contactFirstName: string;
+
+  @Column({ name: "contact_last_name" })
+  contactLastName: string;
+
+  @Column({ name: "user_id" })
+  userId: number;
+
+  @Column({
+    name: "created_at",
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt: Date;
 }

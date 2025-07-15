@@ -33,6 +33,7 @@ services:
       - postgresEemiPay
     volumes:
       - ./api-platform:/app
+      - /Users/killianangely/Downloads:/app/uploads
 
 
  

@@ -74,7 +74,7 @@ export class UpdateUserPasswordUseCase<
       const newPasswordHashed = await this.passwordGateway.hash(
         validatedData.newPassword,
       );
-      await this.userRepository.updateUserPassword(
+      await this.userRepository.updatePassword(
         validatedData.id,
         newPasswordHashed,
       );

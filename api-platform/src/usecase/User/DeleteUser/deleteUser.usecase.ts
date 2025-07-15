@@ -44,7 +44,7 @@ export class DeleteUserUseCase<SuccessType, FunctionalErrorType, NotFoundType>
       if (!user) {
         return await this.presenter.notFound();
       }
-      await this.userRepository.deleteUser(validatedData.id);
+      await this.userRepository.delete(validatedData.id);
       return await this.presenter.success();
     } catch (error) {
       return await this.presenter.error(error.message);

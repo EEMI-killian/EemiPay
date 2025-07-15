@@ -31,9 +31,9 @@ describe("UpdateUserPasswordUseCase", () => {
   const mockedUserRepository: jest.Mocked<IUserRepository> = {
     findByEmail: jest.fn(),
     findById: jest.fn(),
-    createUser: jest.fn(),
-    deleteUser: jest.fn(),
-    updateUserPassword: jest.fn(),
+    create: jest.fn(),
+    delete: jest.fn(),
+    updatePassword: jest.fn(),
   };
 
   const mockedPasswordGateway: jest.Mocked<IPasswordGateway> = {
@@ -60,7 +60,7 @@ describe("UpdateUserPasswordUseCase", () => {
       isActive: true,
       createdAt: faker.date.past(),
     });
-    mockedUserRepository.updateUserPassword.mockResolvedValue(null);
+    mockedUserRepository.updatePassword.mockResolvedValue(null);
     mockedPasswordGateway.compare.mockResolvedValue(true);
     const uc = new UpdateUserPasswordUseCase(
       mockedUserRepository,
@@ -69,7 +69,7 @@ describe("UpdateUserPasswordUseCase", () => {
     );
     const response = await uc.execute(userArgs);
     expect(mockedUserRepository.findById).toHaveBeenCalled();
-    expect(mockedUserRepository.updateUserPassword).toHaveBeenCalled();
+    expect(mockedUserRepository.updatePassword).toHaveBeenCalled();
     expect(response).toEqual({ success: true });
   });
   test("it should be not updated because is an invalid password", async () => {
@@ -95,7 +95,7 @@ describe("UpdateUserPasswordUseCase", () => {
     );
     const response = await uc.execute(userArgs);
     expect(mockedUserRepository.findById).toHaveBeenCalled();
-    expect(mockedUserRepository.updateUserPassword).not.toHaveBeenCalled();
+    expect(mockedUserRepository.updatePassword).not.toHaveBeenCalled();
     expect(response).toEqual({ error: "invalid password" });
   });
   test("it should be not updated because the user is not found", async () => {
@@ -112,7 +112,7 @@ describe("UpdateUserPasswordUseCase", () => {
     );
     const response = await uc.execute(userArgs);
     expect(mockedUserRepository.findById).toHaveBeenCalled();
-    expect(mockedUserRepository.updateUserPassword).not.toHaveBeenCalled();
+    expect(mockedUserRepository.updatePassword).not.toHaveBeenCalled();
     expect(response).toEqual({ error: "user not found" });
   });
 });

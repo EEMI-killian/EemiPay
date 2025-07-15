@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
+
+import { IUserRepository } from "../../../repository/User/user.repository.interface";
+import { faker } from "@faker-js/faker";
 import {
   DeleteUserUseCase,
   IDeleteUserUseCasePresenter,
 } from "./deleteUser.usecase";
-import { IUserRepository } from "../../../repository/User/user.repository.interface";
-import { faker } from "@faker-js/faker";
 
 describe("DeleteUserUseCase", () => {
   const mockedPresenter: IDeleteUserUseCasePresenter<
@@ -26,9 +27,9 @@ describe("DeleteUserUseCase", () => {
   const mockedUserRepository: jest.Mocked<IUserRepository> = {
     findByEmail: jest.fn(),
     findById: jest.fn(),
-    createUser: jest.fn(),
-    deleteUser: jest.fn(),
-    updateUserPassword: jest.fn(),
+    create: jest.fn(),
+    delete: jest.fn(),
+    updatePassword: jest.fn(),
   };
 
   beforeEach(() => {
@@ -44,11 +45,11 @@ describe("DeleteUserUseCase", () => {
       isActive: false,
       createdAt: faker.date.past(),
     });
-    mockedUserRepository.deleteUser.mockResolvedValue(null);
+    mockedUserRepository.delete.mockResolvedValue(null);
     const uc = new DeleteUserUseCase(mockedUserRepository, mockedPresenter);
     const response = await uc.execute({ id: 1 });
     expect(mockedUserRepository.findById).toHaveBeenCalled();
-    expect(mockedUserRepository.deleteUser).toHaveBeenCalled();
+    expect(mockedUserRepository.delete).toHaveBeenCalled();
     expect(response).toEqual({ success: true });
   });
   test("it should be return an user has not found", async () => {
@@ -56,7 +57,7 @@ describe("DeleteUserUseCase", () => {
     const uc = new DeleteUserUseCase(mockedUserRepository, mockedPresenter);
     const response = await uc.execute({ id: 2 });
     expect(mockedUserRepository.findById).toHaveBeenCalled();
-    expect(mockedUserRepository.deleteUser).not.toHaveBeenCalled();
+    expect(mockedUserRepository.delete).not.toHaveBeenCalled();
     expect(response).toEqual({ error: "user not found" });
   });
 });
