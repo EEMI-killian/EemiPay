@@ -54,7 +54,10 @@ describe("DeleteMerchantUseCase", () => {
       userId: faker.number.int({ min: 1 }),
       redirectionUrlCancel: faker.internet.url(),
       redirectionUrlConfirm: faker.internet.url(),
-      contacts: [],
+      contactEmail: faker.internet.email(),
+      contactPhone: faker.phone.number(),
+      contactFirstName: faker.person.firstName(),
+      contactLastName: faker.person.lastName(),
       createdAt: new Date(),
       kbisUrl: faker.internet.url(),
     });

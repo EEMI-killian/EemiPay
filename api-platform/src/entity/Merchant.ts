@@ -1,5 +1,4 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { MerchantContact } from "./MerchantContact";
 
 export enum CurrencyEnum {
   EUR = "EUR",
@@ -30,8 +29,17 @@ export class Merchant {
   @Column({ name: "kbis_url" })
   kbisUrl: string;
 
-  @OneToMany(() => MerchantContact, (contact) => contact.merchant)
-  contacts: MerchantContact[];
+  @Column({ name: "contact_email", unique: true })
+  contactEmail: string;
+
+  @Column({ name: "contact_phone" })
+  contactPhone: string;
+
+  @Column({ name: "contact_first_name" })
+  contactFirstName: string;
+
+  @Column({ name: "contact_last_name" })
+  contactLastName: string;
 
   @Column({ name: "user_id" })
   userId: number;

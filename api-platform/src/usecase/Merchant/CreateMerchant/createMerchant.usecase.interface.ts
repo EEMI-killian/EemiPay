@@ -24,5 +24,9 @@ export type CreateMerchantUseCaseArgs = {
   redirectionUrlConfirm: string;
   redirectionUrlCancel: string;
   currency: CurrencyEnum;
+  contactEmail: string;
+  contactPhone: string;
+  contactFirstName: string;
+  contactLastName: string;
   kbisUrl: string;
 };

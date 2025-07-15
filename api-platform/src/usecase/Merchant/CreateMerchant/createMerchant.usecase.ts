@@ -3,6 +3,7 @@ import { IMerchantRepository } from "../../../repository/Merchant/merchant.repos
 import { ICreateMerchantUseCase } from "./createMerchant.usecase.interface";
 import { CurrencyEnum } from "../../../entity/Merchant";
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
+import { IKbisRepository } from "../../../repository/Kbis/KbisRepository.interface";
 
 const schema = z.object({
   userId: z.number(),
@@ -10,6 +11,10 @@ const schema = z.object({
   redirectionUrlConfirm: z.string().url(),
   redirectionUrlCancel: z.string().url(),
   currency: z.nativeEnum(CurrencyEnum),
+  contactEmail: z.string().email(),
+  contactPhone: z.string().min(10),
+  contactFirstName: z.string().min(1),
+  contactLastName: z.string().min(1),
   kbisUrl: z.string(),
 });
 
@@ -47,6 +52,7 @@ export class CreateMerchantUseCase<
   constructor(
     private readonly merchantRepository: IMerchantRepository,
     private readonly userRepository: IUserRepository,
+    private readonly kbisRepository: IKbisRepository,
     private readonly presenter: ICreateMerchantUseCasePresenter<
       SuccessType,
       FunctionalErrorType,
@@ -88,6 +94,8 @@ export class CreateMerchantUseCase<
         return await this.presenter.alreadyExists();
       }
 
+      await this.kbisRepository.upload(validatedData.kbisUrl);
+
       await this.merchantRepository.create({
         userId: validatedData.userId,
         companyName: validatedData.companyName,
@@ -95,6 +103,10 @@ export class CreateMerchantUseCase<
         redirectionUrlCancel: validatedData.redirectionUrlCancel,
         currency: validatedData.currency,
         kbisUrl: validatedData.kbisUrl,
+        contactEmail: validatedData.contactEmail,
+        contactPhone: validatedData.contactPhone,
+        contactFirstName: validatedData.contactFirstName,
+        contactLastName: validatedData.contactLastName,
       });
 
       return await this.presenter.success();

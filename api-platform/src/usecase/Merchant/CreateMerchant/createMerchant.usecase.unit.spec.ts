@@ -76,6 +76,10 @@ describe("CreateMerchantUseCase", () => {
       redirectionUrlCancel: faker.internet.url(),
       currency: CurrencyEnum.EUR,
       kbisUrl: faker.internet.url(),
+      contactEmail: faker.internet.email(),
+      contactPhone: faker.phone.number(),
+      contactFirstName: faker.person.firstName(),
+      contactLastName: faker.person.lastName(),
     });
     expect(result).toEqual({ success: true });
     expect(mockedMerchantRepository.create).toHaveBeenCalled();
@@ -95,6 +99,10 @@ describe("CreateMerchantUseCase", () => {
       redirectionUrlCancel: faker.internet.url(),
       currency: CurrencyEnum.EUR,
       kbisUrl: faker.internet.url(),
+      contactEmail: faker.internet.email(),
+      contactPhone: faker.phone.number(),
+      contactFirstName: faker.person.firstName(),
+      contactLastName: faker.person.lastName(),
     });
     expect(result).toEqual({ error: "User not found" });
     expect(mockedMerchantRepository.create).not.toHaveBeenCalled();
@@ -123,7 +131,10 @@ describe("CreateMerchantUseCase", () => {
       currency: CurrencyEnum.EUR,
       kbisUrl: faker.internet.url(),
       createdAt: faker.date.past(),
-      contacts: [],
+      contactEmail: faker.internet.email(),
+      contactPhone: faker.phone.number(),
+      contactFirstName: faker.person.firstName(),
+      contactLastName: faker.person.lastName(),
     });
     const result = await uc.execute({
       userId: 1,
@@ -132,6 +143,10 @@ describe("CreateMerchantUseCase", () => {
       redirectionUrlCancel: faker.internet.url(),
       currency: CurrencyEnum.EUR,
       kbisUrl: faker.internet.url(),
+      contactEmail: faker.internet.email(),
+      contactPhone: faker.phone.number(),
+      contactFirstName: faker.person.firstName(),
+      contactLastName: faker.person.lastName(),
     });
     expect(result).toEqual({ error: "Merchant already exists" });
     expect(mockedMerchantRepository.create).not.toHaveBeenCalled();

@@ -11,11 +11,9 @@ export interface IMerchantRepository {
 
 export type IUpdateMerchantArgs = {
   id: number;
-  companyName?: string;
   redirectionUrlConfirm?: string;
   redirectionUrlCancel?: string;
   currency?: CurrencyEnum;
-  kbisUrl?: string;
 };
 
 export type ICreateMerchantArgs = {
@@ -24,5 +22,9 @@ export type ICreateMerchantArgs = {
   redirectionUrlConfirm: string;
   redirectionUrlCancel: string;
   currency: CurrencyEnum;
+  contactEmail: string;
+  contactPhone: string;
+  contactFirstName: string;
+  contactLastName: string;
   kbisUrl: string;
 };

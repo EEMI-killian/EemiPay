@@ -7,6 +7,7 @@ import { UpdateMerchantUseCase } from "../usecase/Merchant/UpdateMerchant/update
 import { GetAllMerchantUseCase } from "../usecase/Merchant/GetAllMerchant/getAllMerchant.usecase";
 import { UserRepository } from "../repository/User/user.repository";
 import { DeleteMerchantUseCase } from "../usecase/Merchant/DeleteMerchant/deleteMerchant.usecase";
+import { KbisRepository } from "../repository/Kbis/KbisRepository";
 
 const router = express.Router();
 
@@ -17,24 +18,30 @@ router.post("/", async (req, res) => {
   const userRepository = new UserRepository(
     AppDataSource.getRepository("User"),
   );
+  const kbisRepository = new KbisRepository();
 
-  const uc = new CreateMerchantUseCase(merchantRepository, userRepository, {
-    success: async () => {
-      res.status(201).json({ success: true });
+  const uc = new CreateMerchantUseCase(
+    merchantRepository,
+    userRepository,
+    kbisRepository,
+    {
+      success: async () => {
+        res.status(201).json({ success: true });
+      },
+      error: async (error: string) => {
+        res.status(400).json({ error });
+      },
+      alreadyExists: async () => {
+        res.status(409).json({ error: "Merchant already exists" });
+      },
+      invalidArguments: async (error: string) => {
+        res.status(400).json({ error });
+      },
+      notFound: async () => {
+        res.status(404).json({ error: "User not found" });
+      },
     },
-    error: async (error: string) => {
-      res.status(400).json({ error });
-    },
-    alreadyExists: async () => {
-      res.status(409).json({ error: "Merchant already exists" });
-    },
-    invalidArguments: async (error: string) => {
-      res.status(400).json({ error });
-    },
-    notFound: async () => {
-      res.status(404).json({ error: "User not found" });
-    },
-  });
+  );
   try {
     const result = await uc.execute(req.body);
     return result;

@@ -2,7 +2,10 @@ import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
 import { faker } from "@faker-js/faker";
-import { DeleteUserUseCase, IDeleteUserUseCasePresenter } from "./deleteUser.usecase";
+import {
+  DeleteUserUseCase,
+  IDeleteUserUseCasePresenter,
+} from "./deleteUser.usecase";
 
 describe("DeleteUserUseCase", () => {
   const mockedPresenter: IDeleteUserUseCasePresenter<
