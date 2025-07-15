@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
 import { faker } from "@faker-js/faker";
 import { CurrencyEnum } from "../../../entity/Merchant";
+import { IKbisRepository } from "../../../repository/Kbis/KbisRepository.interface";
 
 describe("CreateMerchantUseCase", () => {
   const mockedPresenter: ICreateMerchantUseCasePresenter<
@@ -48,6 +49,11 @@ describe("CreateMerchantUseCase", () => {
     updatePassword: jest.fn(),
   };
 
+  const mockedKbisRepository: jest.Mocked<IKbisRepository> = {
+    upload: jest.fn(),
+    download: jest.fn(),
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -56,6 +62,7 @@ describe("CreateMerchantUseCase", () => {
     const uc = new CreateMerchantUseCase(
       mockedMerchantRepository,
       mockedUserRepository,
+      mockedKbisRepository,
       mockedPresenter,
     );
     mockedUserRepository.findById.mockResolvedValue({
@@ -89,6 +96,7 @@ describe("CreateMerchantUseCase", () => {
     const uc = new CreateMerchantUseCase(
       mockedMerchantRepository,
       mockedUserRepository,
+      mockedKbisRepository,
       mockedPresenter,
     );
     mockedUserRepository.findById.mockResolvedValue(null);
@@ -111,6 +119,7 @@ describe("CreateMerchantUseCase", () => {
     const uc = new CreateMerchantUseCase(
       mockedMerchantRepository,
       mockedUserRepository,
+      mockedKbisRepository,
       mockedPresenter,
     );
     mockedUserRepository.findById.mockResolvedValue({
