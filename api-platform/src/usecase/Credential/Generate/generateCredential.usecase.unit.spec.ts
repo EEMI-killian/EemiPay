@@ -30,7 +30,6 @@ describe("GenerateCredentialUsecase", () => {
     findById: jest.fn(),
     findByMerchantId: jest.fn(),
     update: jest.fn(),
-    
   };
   const mockedHashGateway: jest.Mocked<IHashGateway> = {
     hash: jest.fn(),
@@ -95,12 +94,13 @@ describe("GenerateCredentialUsecase", () => {
     expect(mockedCredentialGateway.generate).toHaveBeenCalled();
     expect(mockedHashGateway.hash).toHaveBeenCalled();
     expect(mockedCredentialRepository.save).toHaveBeenCalled();
-    expect(response).toEqual({ credential: {
-      appId: `app-123`,
-      appSecret: `secret-123`,
-    } });
+    expect(response).toEqual({
+      credential: {
+        appId: `app-123`,
+        appSecret: `secret-123`,
+      },
+    });
   });
-    
 
   // test("it should not generate a credential", async () => {
   //   const uc = new GenerateCredentialUsecase(
