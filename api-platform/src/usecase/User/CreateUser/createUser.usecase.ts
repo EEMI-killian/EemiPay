@@ -1,10 +1,9 @@
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
-
 import * as z from "zod";
 import { User } from "../../../entity/User";
 import { IHashGateway } from "../../../gateway/hash/hash.gateway.interface";
-import { ICreateUserUseCase } from "./createUser.usecase.interface";
 import { IUuidGateway } from "../../../gateway/uuid/uuid.gateway.interface";
+import { ICreateUserUseCase } from "./createUser.usecase.interface";
 
 const schema = z.object({
   email: z.string().email(),
@@ -22,8 +21,8 @@ export type ICreateUserUseCasePresenter<
   InvalidArgumentsType,
 > = {
   success: (id: string) => Promise<SuccessType>;
-  error: (error: string) => Promise<FunctionalErrorType>;
   alreadyExists: () => Promise<AlreadyExistsType>;
+  functionalError: (error: string) => Promise<FunctionalErrorType>;
   invalidArguments: (error: string) => Promise<InvalidArgumentsType>;
 };
 
@@ -72,15 +71,10 @@ export class CreateUserUseCase<
       if (existingUser) {
         return await this.presenter.alreadyExists();
       }
-<<<<<<< HEAD
-      const hashedPassword = await this.passwordGateway.hash(args.password);
-      await this.userRepository.create({
-=======
       const hashedPassword = await this.hashGateway.hash(args.password);
       const userId = await this.uuidGateway.generate("user");
       await this.userRepository.create({
         id: userId,
->>>>>>> 1e4d672 (merchant repo)
         email: validatedData.email,
         password: hashedPassword,
         firstName: validatedData.firstName,
@@ -88,7 +82,7 @@ export class CreateUserUseCase<
       });
       return await this.presenter.success(userId);
     } catch (error) {
-      return await this.presenter.error(error.message);
+      return await this.presenter.functionalError(error.message);
     }
   }
 }

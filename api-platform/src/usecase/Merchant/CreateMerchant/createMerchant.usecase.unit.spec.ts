@@ -8,6 +8,7 @@ import { IUserRepository } from "../../../repository/User/user.repository.interf
 import { faker } from "@faker-js/faker";
 import { CurrencyEnum } from "../../../entity/Merchant";
 import { IKbisRepository } from "../../../repository/Kbis/KbisRepository.interface";
+import { UuidGateway } from "../../../gateway/uuid/uuid.gateway";
 
 describe("CreateMerchantUseCase", () => {
   const mockedPresenter: ICreateMerchantUseCasePresenter<
@@ -54,6 +55,10 @@ describe("CreateMerchantUseCase", () => {
     download: jest.fn(),
   };
 
+  const mockedUuidGateway: jest.Mocked<UuidGateway> = {
+    generate: jest.fn(),
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -63,10 +68,12 @@ describe("CreateMerchantUseCase", () => {
       mockedMerchantRepository,
       mockedUserRepository,
       mockedKbisRepository,
+      mockedUuidGateway,
       mockedPresenter,
     );
+    const userId = `user_${faker.string.uuid()}`;
     mockedUserRepository.findById.mockResolvedValue({
-      id: 1,
+      id: userId,
       email: faker.internet.email(),
       password: faker.internet.password(),
       firstName: faker.person.firstName(),
@@ -77,7 +84,7 @@ describe("CreateMerchantUseCase", () => {
     mockedMerchantRepository.findByCompanyName.mockResolvedValue(null);
     mockedMerchantRepository.create.mockResolvedValue();
     const result = await uc.execute({
-      userId:  ,
+      userId: userId,
       companyName: faker.company.name(),
       redirectionUrlConfirm: faker.internet.url(),
       redirectionUrlCancel: faker.internet.url(),
@@ -97,11 +104,13 @@ describe("CreateMerchantUseCase", () => {
       mockedMerchantRepository,
       mockedUserRepository,
       mockedKbisRepository,
+      mockedUuidGateway,
       mockedPresenter,
     );
     mockedUserRepository.findById.mockResolvedValue(null);
+    const userId = `user_${faker.string.uuid()}`;
     const result = await uc.execute({
-      userId: 1,
+      userId: userId,
       companyName: faker.company.name(),
       redirectionUrlConfirm: faker.internet.url(),
       redirectionUrlCancel: faker.internet.url(),
@@ -115,15 +124,16 @@ describe("CreateMerchantUseCase", () => {
     expect(result).toEqual({ error: "User not found" });
     expect(mockedMerchantRepository.create).not.toHaveBeenCalled();
   });
-  test("it should create not create a merchant company already exist", async () => {
+  test("it should not create a merchant company already exist", async () => {
     const uc = new CreateMerchantUseCase(
       mockedMerchantRepository,
       mockedUserRepository,
       mockedKbisRepository,
+      mockedUuidGateway,
       mockedPresenter,
     );
     mockedUserRepository.findById.mockResolvedValue({
-      id: 2,
+      id: `user_${faker.string.uuid()}`,
       email: faker.internet.email(),
       password: faker.internet.password(),
       firstName: faker.person.firstName(),
@@ -132,8 +142,8 @@ describe("CreateMerchantUseCase", () => {
       isActive: true,
     });
     mockedMerchantRepository.findByCompanyName.mockResolvedValue({
-      id: 1,
-      userId: 2,
+      id: `merchant_${faker.string.uuid()}`,
+      userId: `user_${faker.string.uuid()}`,
       companyName: faker.company.name(),
       redirectionUrlConfirm: faker.internet.url(),
       redirectionUrlCancel: faker.internet.url(),
@@ -146,7 +156,7 @@ describe("CreateMerchantUseCase", () => {
       contactLastName: faker.person.lastName(),
     });
     const result = await uc.execute({
-      userId: 1,
+      userId: `user_1`,
       companyName: faker.company.name(),
       redirectionUrlConfirm: faker.internet.url(),
       redirectionUrlCancel: faker.internet.url(),

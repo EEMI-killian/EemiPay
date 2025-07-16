@@ -1,7 +1,7 @@
 import z from "zod";
 import {
   Credential,
-  CredentialGatewayInterface,
+  ICredentialGateway,
 } from "../../../gateway/credential/credential.gateway.interface";
 import { IGenerateCredentialUsecase } from "./generateCredential.usecase.interface";
 import { IMerchantRepository } from "../../../repository/Merchant/merchant.repository.interface";
@@ -40,7 +40,7 @@ export class GenerateCredentialUsecase<
     >
 {
   constructor(
-    private readonly credentialGateway: CredentialGatewayInterface,
+    private readonly credentialGateway: ICredentialGateway,
     private readonly presenter: IGenerateCredentialUsecasePresenter<
       SuccesType,
       FunctionalErrorType,

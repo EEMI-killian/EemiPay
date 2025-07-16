@@ -46,12 +46,12 @@ describe("DeleteMerchantUseCase", () => {
       mockedMerchantRepository,
       mockedPresenter,
     );
-    const merchantId = faker.number.int({ min: 1 });
+    const merchantId = `merchant_${faker.string.uuid()}`;
     mockedMerchantRepository.findById.mockResolvedValue({
       id: merchantId,
       companyName: faker.company.name(),
       currency: CurrencyEnum.EUR,
-      userId: faker.number.int({ min: 1 }),
+      userId: `user_${faker.string.uuid()}`,
       redirectionUrlCancel: faker.internet.url(),
       redirectionUrlConfirm: faker.internet.url(),
       contactEmail: faker.internet.email(),
@@ -71,7 +71,7 @@ describe("DeleteMerchantUseCase", () => {
       mockedMerchantRepository,
       mockedPresenter,
     );
-    const merchantId = faker.number.int({ min: 1 });
+    const merchantId = `merchant_${faker.string.uuid()}`;
     mockedMerchantRepository.findById.mockResolvedValue(null);
     const result = await uc.execute({ id: merchantId });
     expect(result).toEqual({ error: "Merchant not found" });

@@ -40,9 +40,9 @@ describe("GetAllMerchantUseCase", () => {
   test("it should get all merchant", async () => {
     const datafixtures = [
       {
-        id: 1,
+        id: `merchant_${faker.string.uuid()}§`,
         companyName: faker.company.name(),
-        userId: 1,
+        userId: `user_${faker.string.uuid()}`,
         redirectionUrlCancel: faker.internet.url(),
         redirectionUrlConfirm: faker.internet.url(),
         contactEmail: faker.internet.email(),
@@ -54,9 +54,9 @@ describe("GetAllMerchantUseCase", () => {
         kbisUrl: faker.internet.url(),
       },
       {
-        id: 2,
+        id: `merchant_${faker.string.uuid()}`,
         companyName: faker.company.name(),
-        userId: 2,
+        userId: `user_${faker.string.uuid()}`,
         redirectionUrlCancel: faker.internet.url(),
         redirectionUrlConfirm: faker.internet.url(),
         contactEmail: faker.internet.email(),

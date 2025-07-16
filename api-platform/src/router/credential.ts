@@ -90,12 +90,11 @@ router.post("/rotate", async (req, res) => {
   }
 });
 
-
 router.delete("/", async (req, res) => {
-   const merchantRepository = new MerchantRepository(
+  const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );
-   const credentialRepository = new CredentialRepository(
+  const credentialRepository = new CredentialRepository(
     AppDataSource.getRepository("Credential"),
   );
   const presenter = {
@@ -127,6 +126,6 @@ router.delete("/", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
-}); 
+});
 
 export default router;

@@ -1,4 +1,4 @@
-export interface CredentialGatewayInterface {
+export interface ICredentialGateway {
   generate(): Promise<Credential>;
   rotate(appId: string): Promise<Credential>;
 }

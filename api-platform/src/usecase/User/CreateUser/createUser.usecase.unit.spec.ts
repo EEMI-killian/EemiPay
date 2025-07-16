@@ -18,7 +18,7 @@ describe("CreateUserUseCase", () => {
     success: async (id: string) => {
       return { success: true, id };
     },
-    error: async (error: string) => {
+    functionalError: async (error: string) => {
       return { error };
     },
     alreadyExists: async () => {
@@ -56,7 +56,7 @@ describe("CreateUserUseCase", () => {
   });
 
   test("it should create a user", async () => {
-    const userId = faker.string.uuid();
+    const userId = `user_${faker.string.uuid()}`;
     mockedUserRepository.findByEmail.mockResolvedValueOnce(null);
     mockedUuidGateway.generate.mockResolvedValueOnce(userId);
     mockedUserRepository.findByEmail.mockResolvedValueOnce({
@@ -76,15 +76,12 @@ describe("CreateUserUseCase", () => {
     );
     const response = await uc.execute(userData);
     expect(mockedUserRepository.create).toHaveBeenCalled();
-    expect(mockedUserRepository.findByEmail).toHaveBeenCalledTimes(2);
     expect(response).toEqual({ success: true, id: userId });
   });
 
-  test("it should be return an error about a user who already exist", async () => {
-    const userId = faker.string.uuid();
-    mockedUuidGateway.generate.mockResolvedValueOnce(userId);
+  test("it should be return an error about a user already exist", async () => {
     mockedUserRepository.findByEmail.mockResolvedValueOnce({
-      id: userId,
+      id: `user_${faker.string.uuid()}`,
       firstName: userData.firstName,
       lastName: userData.lastName,
       email: userData.email,

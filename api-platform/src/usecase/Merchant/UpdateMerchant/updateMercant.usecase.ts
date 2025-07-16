@@ -5,7 +5,7 @@ import { I } from "@faker-js/faker/dist/airline-BUL6NtOJ";
 import { IUpdateMerchantUseCase } from "./updateMercant.usecase.interface";
 
 const schema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   redirectionUrlConfirm: z.string().optional(),
   redirectionUrlCancel: z.string().optional(),
   currency: z.nativeEnum(CurrencyEnum).optional(),

@@ -4,7 +4,7 @@ import { IUserRepository } from "../../../repository/User/user.repository.interf
 import { IHashGateway } from "../../../gateway/hash/hash.gateway.interface";
 
 const schema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   inputOldPassword: z.string().min(8),
   newPassword: z.string().min(8),
 });
@@ -16,9 +16,11 @@ export type IUpdateUserPasswordUseCasePresenter<
   FunctionalErrorType,
   NotFoundType,
   InvalidPasswordType,
+  InvalidArgumentsType,
 > = {
   success: () => Promise<SuccessType>;
-  error: (error: string) => Promise<FunctionalErrorType>;
+  functionalError: (error: string) => Promise<FunctionalErrorType>;
+  invalidArguments: (error: string) => Promise<InvalidArgumentsType>;
   notFound: () => Promise<NotFoundType>;
   invalidPassword: () => Promise<InvalidPasswordType>;
 };
@@ -28,12 +30,14 @@ export class UpdateUserPasswordUseCase<
   FunctionalErrorType,
   NotFoundType,
   InvalidPasswordType,
+  InvalidArgumentsType,
 > implements
     IUpdateUserPasswordUseCase<
       SuccessType,
       FunctionalErrorType,
       NotFoundType,
-      InvalidPasswordType
+      InvalidPasswordType,
+      InvalidArgumentsType
     >
 {
   constructor(
@@ -42,7 +46,8 @@ export class UpdateUserPasswordUseCase<
       SuccessType,
       FunctionalErrorType,
       NotFoundType,
-      InvalidPasswordType
+      InvalidPasswordType,
+      InvalidArgumentsType
     >,
     private readonly hashGateway: IHashGateway,
   ) {}
@@ -50,13 +55,17 @@ export class UpdateUserPasswordUseCase<
   async execute(
     args: updateUserPasswordArgs,
   ): Promise<
-    SuccessType | FunctionalErrorType | NotFoundType | InvalidPasswordType
+    | SuccessType
+    | FunctionalErrorType
+    | NotFoundType
+    | InvalidPasswordType
+    | InvalidArgumentsType
   > {
     let validatedData: updateUserPasswordArgs;
     try {
       validatedData = schema.parse(args);
     } catch (error) {
-      return await this.presenter.error(error.message);
+      return await this.presenter.invalidArguments(error);
     }
     try {
       const user = await this.userRepository.findById(validatedData.id);
@@ -80,7 +89,7 @@ export class UpdateUserPasswordUseCase<
       );
       return await this.presenter.success();
     } catch (error) {
-      return await this.presenter.error(error.message);
+      return await this.presenter.functionalError(error.message);
     }
   }
 }

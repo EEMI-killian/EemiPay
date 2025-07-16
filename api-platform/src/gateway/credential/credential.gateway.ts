@@ -1,10 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import {
-  Credential,
-  CredentialGatewayInterface,
-} from "./credential.gateway.interface";
+import { Credential, ICredentialGateway } from "./credential.gateway.interface";
 
-export class CredentialGateway implements CredentialGatewayInterface {
+export class CredentialGateway implements ICredentialGateway {
   async generate(): Promise<Credential> {
     return { appId: "app_" + uuidv4(), appSecret: "secret_" + uuidv4() };
   }

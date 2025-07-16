@@ -42,10 +42,11 @@ describe("GetMerchantUseCase", () => {
   });
 
   test("it should get a merchant by id", async () => {
+    const merchantId = `merchant_${faker.string.uuid()}`;
     mockedMerchantRepository.findById.mockResolvedValue({
-      id: 1,
+      id: merchantId,
       companyName: faker.company.name(),
-      userId: 1,
+      userId: `user_${faker.string.uuid()}`,
       redirectionUrlCancel: faker.internet.url(),
       redirectionUrlConfirm: faker.internet.url(),
       contactEmail: faker.internet.email(),
@@ -61,7 +62,7 @@ describe("GetMerchantUseCase", () => {
       mockedPresenter,
     );
     const result = await uc.execute({
-      id: 1,
+      id: merchantId,
     });
     expect(result).toEqual({ success: true });
     expect(mockedMerchantRepository.findById).toHaveBeenCalled();
@@ -73,7 +74,7 @@ describe("GetMerchantUseCase", () => {
       mockedPresenter,
     );
     const result = await uc.execute({
-      id: 1,
+      id: `merchant_${faker.string.uuid()}`,
     });
     expect(result).toEqual({ error: "Merchant not found" });
     expect(mockedMerchantRepository.findById).toHaveBeenCalled();

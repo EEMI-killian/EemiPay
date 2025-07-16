@@ -1,7 +1,7 @@
 import z from "zod";
 import {
   Credential,
-  CredentialGatewayInterface,
+  ICredentialGateway,
 } from "../../../gateway/credential/credential.gateway.interface";
 import { IHashGateway } from "../../../gateway/hash/hash.gateway.interface";
 import { ICredentialRepository } from "../../../repository/Credential/CredentialRepository.interface";
@@ -41,7 +41,7 @@ export class RotateCredentialUsecase<
     >
 {
   constructor(
-    private readonly credentialGateway: CredentialGatewayInterface,
+    private readonly credentialGateway: ICredentialGateway,
     private readonly presenter: IRotateCredentialUsecasePresenter<
       SuccessType,
       FunctionalErrorType,

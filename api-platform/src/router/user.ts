@@ -1,10 +1,10 @@
 import * as express from "express";
-import { CreateUserUseCase } from "../usecase/User/createUser/createUser.usecase";
+import { CreateUserUseCase } from "../usecase/User/CreateUser/createUser.usecase";
 import { UserRepository } from "../repository/User/user.repository";
 import { AppDataSource } from "../data-source";
-import { DeleteUserUseCase } from "../usecase/User/deleteUser/deleteUser.usecase";
+import { DeleteUserUseCase } from "../usecase/User/DeleteUser/deleteUser.usecase";
 import { UpdateUserPasswordUseCase } from "../usecase/User/updateUserPassword/updateUserPassword.usecase";
-import { FindUserByIdUseCase } from "../usecase/User/findUserById/findUserById.usecase";
+import { FindUserByIdUseCase } from "../usecase/User/findUserbyId/findUserById.usecase";
 import { HashGateway } from "../gateway/hash/hash.gateway";
 import { UuidGateway } from "../gateway/uuid/uuid.gateway";
 
@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
       success: async (id: string) => {
         res.status(201).json({ id });
       },
-      error: async (error: string) => {
+      functionalError: async (error: string) => {
         res.status(400).json({ error });
       },
       alreadyExists: async () => {
@@ -53,11 +53,14 @@ router.delete("/:id", async (req, res) => {
     success: async () => {
       res.status(204).send();
     },
-    error: async (error: string) => {
+    functionalError: async (error: string) => {
       res.status(400).json({ error });
     },
     notFound: async () => {
       res.status(404).json({ error: "User not found" });
+    },
+    invalidArguments: async (error: string) => {
+      res.status(400).json({ error });
     },
   });
 
@@ -77,11 +80,14 @@ router.get("/:id", async (req, res) => {
     success: async (user) => {
       res.status(200).json(user);
     },
-    error: async (error: string) => {
+    functionalError: async (error: string) => {
       res.status(400).json({ error });
     },
     notFound: async () => {
       res.status(404).json({ error: "User not found" });
+    },
+    invalidArguments: async (error: string) => {
+      res.status(400).json({ error });
     },
   });
 
@@ -105,7 +111,7 @@ router.patch("/reset-password/:id", async (req, res) => {
       success: async () => {
         res.status(204).send();
       },
-      error: async (error: string) => {
+      functionalError: async (error: string) => {
         res.status(400).json({ error });
       },
       notFound: async () => {
@@ -113,6 +119,9 @@ router.patch("/reset-password/:id", async (req, res) => {
       },
       invalidPassword: async () => {
         res.status(400).json({ error: "Invalid password" });
+      },
+      invalidArguments: async (error: string) => {
+        res.status(400).json({ error });
       },
     },
     hashGateway,
