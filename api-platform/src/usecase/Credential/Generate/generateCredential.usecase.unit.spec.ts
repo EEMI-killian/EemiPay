@@ -102,13 +102,23 @@ describe("GenerateCredentialUsecase", () => {
     });
   });
 
-  // test("it should not generate a credential", async () => {
-  //   const uc = new GenerateCredentialUsecase(
-  //     mockedCredentialGateway,
-  //     mockedPresenter,
-  //     mockedMerchantRepository,
-  //     mockedCredentialRepository,
-  //     mockedHashGateway,
-  //   );
-  // });
+  test("it should not generate a credential", async () => {
+    mockedMerchantRepository.findById.mockResolvedValue(null);
+
+    const uc = new GenerateCredentialUsecase(
+      mockedCredentialGateway,
+      mockedPresenter,
+      mockedMerchantRepository,
+      mockedCredentialRepository,
+      mockedHashGateway,
+    );
+    const response = await uc.execute({
+      merchantId: `merchant-${faker.string.uuid()}`,
+    });
+    expect(mockedMerchantRepository.findById).toHaveBeenCalled();
+    expect(mockedCredentialGateway.generate).not.toHaveBeenCalled();
+    expect(mockedHashGateway.hash).not.toHaveBeenCalled();
+    expect(mockedCredentialRepository.save).not.toHaveBeenCalled();
+    expect(response).toEqual({ error: "Not found" });
+  });
 });
