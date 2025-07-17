@@ -11,6 +11,6 @@ export interface IFindUserByIdUseCase<
   >;
 }
 
-export type findUserArgs = {
+type findUserArgs = {
   id: string;
 };

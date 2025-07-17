@@ -11,7 +11,7 @@ export interface ICreateUserUseCase<
   >;
 }
 
-export type ICreateUserArgs = {
+type ICreateUserArgs = {
   email: string;
   password: string;
   firstName: string;

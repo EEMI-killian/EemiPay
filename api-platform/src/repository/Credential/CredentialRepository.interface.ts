@@ -17,7 +17,7 @@ export type IUpdateCredentialArgs = {
   appSecret?: string;
 };
 
-export type Credential = {
+type Credential = {
   id: string;
   appSecret: string;
   merchantId: string;

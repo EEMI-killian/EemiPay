@@ -16,7 +16,7 @@ export interface IUpdateUserPasswordUseCase<
   >;
 }
 
-export type updateUserPasswordArgs = {
+type updateUserPasswordArgs = {
   id: string;
   inputOldPassword: string;
   newPassword: string;

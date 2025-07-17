@@ -11,7 +11,7 @@ export interface IDeleteCredentialUsecase<
   >;
 }
 
-export type DeleteCredentialArgs = {
+type DeleteCredentialArgs = {
   merchantId: string;
   appId: string;
 };

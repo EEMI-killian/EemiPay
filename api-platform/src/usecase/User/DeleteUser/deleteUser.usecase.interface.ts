@@ -11,6 +11,6 @@ export interface IDeleteUserUseCase<
   >;
 }
 
-export type deleteUserArgs = {
+type deleteUserArgs = {
   id: string;
 };

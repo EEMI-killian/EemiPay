@@ -18,7 +18,7 @@ export interface ICreateMerchantUseCase<
   >;
 }
 
-export type CreateMerchantUseCaseArgs = {
+type CreateMerchantUseCaseArgs = {
   userId: string;
   companyName: string;
   redirectionUrlConfirm: string;
