@@ -10,16 +10,20 @@ describe("FindUserByIdUseCase", () => {
   const mockedPresenter: IFindUserByIdUseCasePresenter<
     unknown,
     unknown,
+    unknown,
     unknown
   > = {
     success: async () => {
       return { success: true };
     },
-    error: async (error: string) => {
-      return { error };
-    },
     notFound: async () => {
       return { error: "user not found" };
+    },
+    functionalError: async (error: string) => {
+      return { error };
+    },
+    invalidArguments: async (error: string) => {
+      return { error };
     },
   };
 
@@ -35,8 +39,9 @@ describe("FindUserByIdUseCase", () => {
     jest.clearAllMocks();
   });
   test("it should find a User", async () => {
+    const userId = `user_${faker.string.uuid()}`;
     mockedUserRepository.findById.mockResolvedValue({
-      id: 1,
+      id: userId,
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       email: faker.internet.email(),
@@ -45,14 +50,14 @@ describe("FindUserByIdUseCase", () => {
       createdAt: faker.date.past(),
     });
     const uc = new FindUserByIdUseCase(mockedUserRepository, mockedPresenter);
-    const response = await uc.execute({ id: 1 });
+    const response = await uc.execute({ id: userId });
     expect(mockedUserRepository.findById).toHaveBeenCalled();
     expect(response).toEqual({ success: true });
   });
   test("it should not found a User", async () => {
     mockedUserRepository.findById.mockResolvedValue(null);
     const uc = new FindUserByIdUseCase(mockedUserRepository, mockedPresenter);
-    const response = await uc.execute({ id: 2 });
+    const response = await uc.execute({ id: `user_${faker.string.uuid()}` });
     expect(mockedUserRepository.findById).toHaveBeenCalled();
     expect(response).toEqual({ error: "user not found" });
   });

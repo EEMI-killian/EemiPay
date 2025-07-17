@@ -1,11 +1,10 @@
 import z from "zod";
 import { User } from "../../../entity/User";
-import { UserRepository } from "../../../repository/User/user.repository";
 import { IFindUserByIdUseCase } from "./findUserById.usecase.interface";
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
 
 const schema = z.object({
-  id: z.number(),
+  id: z.string(),
 });
 
 type findUserArgs = z.infer<typeof schema>;
@@ -14,38 +13,56 @@ export type IFindUserByIdUseCasePresenter<
   SuccessType,
   FunctionalErrorType,
   NotFoundType,
+  InvalidArgumentsType,
 > = {
   success: (user: User) => Promise<SuccessType>;
-  error: (error: string) => Promise<FunctionalErrorType>;
   notFound: () => Promise<NotFoundType>;
+  functionalError: (error: string) => Promise<FunctionalErrorType>;
+  invalidArguments: (error: string) => Promise<InvalidArgumentsType>;
 };
 
-export class FindUserByIdUseCase<SuccessType, FunctionalErrorType, NotFoundType>
-  implements
-    IFindUserByIdUseCase<SuccessType, FunctionalErrorType, NotFoundType>
+export class FindUserByIdUseCase<
+  SuccessType,
+  FunctionalErrorType,
+  NotFoundType,
+  InvalidArgumentsType,
+> implements
+    IFindUserByIdUseCase<
+      SuccessType,
+      FunctionalErrorType,
+      NotFoundType,
+      InvalidArgumentsType
+    >
 {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly presenter: IFindUserByIdUseCasePresenter<
       SuccessType,
       FunctionalErrorType,
-      NotFoundType
+      NotFoundType,
+      InvalidArgumentsType
     >,
   ) {}
 
   async execute(
     args: findUserArgs,
-  ): Promise<SuccessType | FunctionalErrorType | NotFoundType> {
+  ): Promise<
+    SuccessType | FunctionalErrorType | NotFoundType | InvalidArgumentsType
+  > {
     let validatedData;
     try {
       validatedData = schema.parse(args);
     } catch (error) {
-      return await this.presenter.error(error.message);
+      return await this.presenter.invalidArguments(error.message);
     }
-    const user = await this.userRepository.findById(validatedData.id);
-    if (!user) {
-      return await this.presenter.notFound();
+    try {
+      const user = await this.userRepository.findById(validatedData.id);
+      if (!user) {
+        return await this.presenter.notFound();
+      }
+      return await this.presenter.success(user);
+    } catch (error) {
+      return await this.presenter.functionalError(error.message);
     }
-    return await this.presenter.success(user);
   }
 }

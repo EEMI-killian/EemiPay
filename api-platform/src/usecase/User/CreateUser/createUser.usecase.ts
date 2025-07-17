@@ -1,8 +1,8 @@
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
-
 import * as z from "zod";
 import { User } from "../../../entity/User";
-import { IPasswordGateway } from "../../../gateway/password/password.gateway.interface";
+import { IHashGateway } from "../../../gateway/hash/hash.gateway.interface";
+import { IUuidGateway } from "../../../gateway/uuid/uuid.gateway.interface";
 import { ICreateUserUseCase } from "./createUser.usecase.interface";
 
 const schema = z.object({
@@ -20,9 +20,9 @@ export type ICreateUserUseCasePresenter<
   AlreadyExistsType,
   InvalidArgumentsType,
 > = {
-  success: (id: number) => Promise<SuccessType>;
-  error: (error: string) => Promise<FunctionalErrorType>;
+  success: (id: string) => Promise<SuccessType>;
   alreadyExists: () => Promise<AlreadyExistsType>;
+  functionalError: (error: string) => Promise<FunctionalErrorType>;
   invalidArguments: (error: string) => Promise<InvalidArgumentsType>;
 };
 
@@ -47,7 +47,8 @@ export class CreateUserUseCase<
       AlreadyExistsType,
       InvalidArgumentsType
     >,
-    private readonly passwordGateway: IPasswordGateway,
+    private readonly hashGateway: IHashGateway,
+    private readonly uuidGateway: IUuidGateway,
   ) {}
 
   async execute(
@@ -70,17 +71,18 @@ export class CreateUserUseCase<
       if (existingUser) {
         return await this.presenter.alreadyExists();
       }
-      const hashedPassword = await this.passwordGateway.hash(args.password);
+      const hashedPassword = await this.hashGateway.hash(args.password);
+      const userId = await this.uuidGateway.generate("user");
       await this.userRepository.create({
+        id: userId,
         email: validatedData.email,
         password: hashedPassword,
         firstName: validatedData.firstName,
         lastName: validatedData.lastName,
       });
-      user = await this.userRepository.findByEmail(validatedData.email);
-      return await this.presenter.success(user.id);
+      return await this.presenter.success(userId);
     } catch (error) {
-      return await this.presenter.error(error.message);
+      return await this.presenter.functionalError(error.message);
     }
   }
 }

@@ -47,14 +47,14 @@ describe("UpdateMerchantUseCase", () => {
       mockedPresenter,
     );
     const updateArgs = {
-      id: 1,
+      id: `merchant_${faker.string.uuid()}`,
       companyName: faker.company.name(),
     };
 
     mockedMerchantRepository.findById.mockResolvedValue({
-      id: 1,
+      id: updateArgs.id,
       companyName: faker.company.name(),
-      userId: 1,
+      userId: `user_${faker.string.uuid()}`,
       redirectionUrlCancel: faker.internet.url(),
       redirectionUrlConfirm: faker.internet.url(),
       contactEmail: faker.internet.email(),
@@ -79,7 +79,7 @@ describe("UpdateMerchantUseCase", () => {
       mockedPresenter,
     );
     const updateArgs = {
-      id: 1,
+      id: `merchant_${faker.string.uuid()}`,
       companyName: faker.company.name(),
       redirectionUrlConfirm: faker.internet.url(),
     };

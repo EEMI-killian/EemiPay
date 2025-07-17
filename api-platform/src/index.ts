@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { AppDataSource } from "./data-source";
 import userRouter from "./router/user";
 import merchantRouter from "./router/merchant";
+import credentialRouter from "./router/credential";
 
 AppDataSource.initialize()
   .then(async () => {
@@ -11,6 +12,7 @@ AppDataSource.initialize()
     app.use(bodyParser.json());
     app.use("/user", userRouter);
     app.use("/merchant", merchantRouter);
+    app.use("/credential", credentialRouter);
     app.get("/", (req: Request, res: Response) => {
       res.send("Hello World! Express is running on port 3051");
     });

@@ -20,7 +20,7 @@ export class MerchantRepository implements IMerchantRepository {
     return await this.merchantRepository.findOne({ where: { companyName } });
   }
 
-  async findById(id: number): Promise<Merchant | null> {
+  async findById(id: string): Promise<Merchant | null> {
     return await this.merchantRepository.findOne({ where: { id } });
   }
 
@@ -37,7 +37,7 @@ export class MerchantRepository implements IMerchantRepository {
     }
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     const merchant = await this.merchantRepository.findOne({ where: { id } });
     if (merchant) {
       await this.merchantRepository.remove(merchant);

@@ -8,6 +8,7 @@ import { GetAllMerchantUseCase } from "../usecase/Merchant/GetAllMerchant/getAll
 import { UserRepository } from "../repository/User/user.repository";
 import { DeleteMerchantUseCase } from "../usecase/Merchant/DeleteMerchant/deleteMerchant.usecase";
 import { KbisRepository } from "../repository/Kbis/KbisRepository";
+import { UuidGateway } from "../gateway/uuid/uuid.gateway";
 
 const router = express.Router();
 
@@ -19,11 +20,13 @@ router.post("/", async (req, res) => {
     AppDataSource.getRepository("User"),
   );
   const kbisRepository = new KbisRepository();
+  const uuidGateway = new UuidGateway();
 
   const uc = new CreateMerchantUseCase(
     merchantRepository,
     userRepository,
     kbisRepository,
+    uuidGateway,
     {
       success: async () => {
         res.status(201).json({ success: true });
@@ -94,7 +97,7 @@ router.get("/:id", async (req, res) => {
   });
 
   try {
-    const result = await uc.execute({ id: parseInt(req.params.id, 10) });
+    const result = await uc.execute({ id: req.params.id });
     return result;
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
@@ -123,7 +126,7 @@ router.patch("/:id", async (req, res) => {
 
   try {
     const result = await uc.execute({
-      id: parseInt(req.params.id, 10),
+      id: req.params.id,
       ...req.body,
     });
     return result;
@@ -154,7 +157,7 @@ router.delete("/:id", async (req, res) => {
 
   try {
     const result = await uc.execute({
-      id: parseInt(req.params.id, 10),
+      id: req.params.id,
     });
     return result;
   } catch (error) {

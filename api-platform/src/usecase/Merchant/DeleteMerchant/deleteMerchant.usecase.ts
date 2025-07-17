@@ -3,7 +3,7 @@ import { IMerchantRepository } from "../../../repository/Merchant/merchant.repos
 import { IDeleteMerchantUseCase } from "./deleteMerchant.usecase.interface";
 
 const schema = z.object({
-  id: z.number().int().positive(),
+  id: z.string(),
 });
 
 type DeleteMerchantArgs = z.infer<typeof schema>;

@@ -1,9 +1,9 @@
 import z from "zod";
-import { IDeleteUserUseCase } from "./deleteUser.usecase.interface";
-import { IUserRepository } from "../../../repository/User/user.repository.interface";
+import { IDeleteUserUseCase } from "./deleteUser.usecase.interface.js";
+import { IUserRepository } from "../../../repository/User/user.repository.interface.js";
 
 const schema = z.object({
-  id: z.number(),
+  id: z.string(),
 });
 
 type deleteUserArgs = z.infer<typeof schema>;
@@ -12,32 +12,47 @@ export type IDeleteUserUseCasePresenter<
   SuccessType,
   FunctionalErrorType,
   NotFoundType,
+  InvalidArgumentsType,
 > = {
   success: () => Promise<SuccessType>;
-  error: (error: string) => Promise<FunctionalErrorType>;
   notFound: () => Promise<NotFoundType>;
+  functionalError: (error: string) => Promise<FunctionalErrorType>;
+  invalidArguments: (error: string) => Promise<InvalidArgumentsType>;
 };
 
-export class DeleteUserUseCase<SuccessType, FunctionalErrorType, NotFoundType>
-  implements IDeleteUserUseCase<SuccessType, FunctionalErrorType, NotFoundType>
+export class DeleteUserUseCase<
+  SuccessType,
+  FunctionalErrorType,
+  NotFoundType,
+  InvalidArgumentsType,
+> implements
+    IDeleteUserUseCase<
+      SuccessType,
+      FunctionalErrorType,
+      NotFoundType,
+      InvalidArgumentsType
+    >
 {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly presenter: IDeleteUserUseCasePresenter<
       SuccessType,
       FunctionalErrorType,
-      NotFoundType
+      NotFoundType,
+      InvalidArgumentsType
     >,
   ) {}
 
   async execute(
     args: deleteUserArgs,
-  ): Promise<SuccessType | FunctionalErrorType | NotFoundType> {
+  ): Promise<
+    SuccessType | FunctionalErrorType | NotFoundType | InvalidArgumentsType
+  > {
     let validatedData;
     try {
       validatedData = schema.parse(args);
     } catch (error) {
-      return await this.presenter.error(error.message);
+      return await this.presenter.invalidArguments(error.message);
     }
     try {
       const user = await this.userRepository.findById(validatedData.id);
@@ -47,7 +62,7 @@ export class DeleteUserUseCase<SuccessType, FunctionalErrorType, NotFoundType>
       await this.userRepository.delete(validatedData.id);
       return await this.presenter.success();
     } catch (error) {
-      return await this.presenter.error(error.message);
+      return await this.presenter.functionalError(error.message);
     }
   }
 }

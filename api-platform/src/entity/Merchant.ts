@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
 export enum CurrencyEnum {
   EUR = "EUR",
@@ -8,8 +8,8 @@ export enum CurrencyEnum {
 
 @Entity()
 export class Merchant {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn({ type: "character varying" })
+  id!: string;
 
   @Column({ name: "company_name", unique: true })
   companyName: string;
@@ -42,7 +42,7 @@ export class Merchant {
   contactLastName: string;
 
   @Column({ name: "user_id" })
-  userId: number;
+  userId: string;
 
   @Column({
     name: "created_at",

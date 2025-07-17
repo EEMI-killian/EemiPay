@@ -5,10 +5,11 @@ import {
   IUpdateUserPasswordUseCasePresenter,
   UpdateUserPasswordUseCase,
 } from "./updateUserPassword.usecase";
-import { IPasswordGateway } from "../../../gateway/password/password.gateway.interface";
+import { IHashGateway } from "../../../gateway/hash/hash.gateway.interface";
 
 describe("UpdateUserPasswordUseCase", () => {
   const mockedPresenter: IUpdateUserPasswordUseCasePresenter<
+    unknown,
     unknown,
     unknown,
     unknown,
@@ -17,7 +18,7 @@ describe("UpdateUserPasswordUseCase", () => {
     success: async () => {
       return { success: true };
     },
-    error: async (error: string) => {
+    functionalError: async (error: string) => {
       return { error };
     },
     notFound: async () => {
@@ -25,6 +26,9 @@ describe("UpdateUserPasswordUseCase", () => {
     },
     invalidPassword: async () => {
       return { error: "invalid password" };
+    },
+    invalidArguments: async (error: string) => {
+      return { error };
     },
   };
 
@@ -36,7 +40,7 @@ describe("UpdateUserPasswordUseCase", () => {
     updatePassword: jest.fn(),
   };
 
-  const mockedPasswordGateway: jest.Mocked<IPasswordGateway> = {
+  const mockedHashGateway: jest.Mocked<IHashGateway> = {
     hash: jest.fn(),
     compare: jest.fn(),
   };
@@ -47,7 +51,7 @@ describe("UpdateUserPasswordUseCase", () => {
 
   test("it should be update the password", async () => {
     const userArgs = {
-      id: faker.number.int(),
+      id: `user_${faker.string.uuid()}`,
       inputOldPassword: faker.internet.password(),
       newPassword: faker.internet.password(),
     };
@@ -61,11 +65,11 @@ describe("UpdateUserPasswordUseCase", () => {
       createdAt: faker.date.past(),
     });
     mockedUserRepository.updatePassword.mockResolvedValue(null);
-    mockedPasswordGateway.compare.mockResolvedValue(true);
+    mockedHashGateway.compare.mockResolvedValue(true);
     const uc = new UpdateUserPasswordUseCase(
       mockedUserRepository,
       mockedPresenter,
-      mockedPasswordGateway,
+      mockedHashGateway,
     );
     const response = await uc.execute(userArgs);
     expect(mockedUserRepository.findById).toHaveBeenCalled();
@@ -74,7 +78,7 @@ describe("UpdateUserPasswordUseCase", () => {
   });
   test("it should be not updated because is an invalid password", async () => {
     const userArgs = {
-      id: faker.number.int(),
+      id: `user_${faker.string.uuid()}`,
       inputOldPassword: faker.internet.password(),
       newPassword: faker.internet.password(),
     };
@@ -87,11 +91,11 @@ describe("UpdateUserPasswordUseCase", () => {
       isActive: true,
       createdAt: faker.date.past(),
     });
-    mockedPasswordGateway.compare.mockResolvedValue(false);
+    mockedHashGateway.compare.mockResolvedValue(false);
     const uc = new UpdateUserPasswordUseCase(
       mockedUserRepository,
       mockedPresenter,
-      mockedPasswordGateway,
+      mockedHashGateway,
     );
     const response = await uc.execute(userArgs);
     expect(mockedUserRepository.findById).toHaveBeenCalled();
@@ -100,7 +104,7 @@ describe("UpdateUserPasswordUseCase", () => {
   });
   test("it should be not updated because the user is not found", async () => {
     const userArgs = {
-      id: faker.number.int(),
+      id: `user_${faker.string.uuid()}`,
       inputOldPassword: faker.internet.password(),
       newPassword: faker.internet.password(),
     };
@@ -108,7 +112,7 @@ describe("UpdateUserPasswordUseCase", () => {
     const uc = new UpdateUserPasswordUseCase(
       mockedUserRepository,
       mockedPresenter,
-      mockedPasswordGateway,
+      mockedHashGateway,
     );
     const response = await uc.execute(userArgs);
     expect(mockedUserRepository.findById).toHaveBeenCalled();

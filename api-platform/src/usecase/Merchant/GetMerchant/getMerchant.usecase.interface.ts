@@ -11,6 +11,6 @@ export interface IGetMerchantUseCase<
   >;
 }
 
-export type GetMerchantArgs = {
-  id: number;
+type GetMerchantArgs = {
+  id: string;
 };

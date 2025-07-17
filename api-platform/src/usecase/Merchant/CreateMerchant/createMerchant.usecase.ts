@@ -4,9 +4,10 @@ import { ICreateMerchantUseCase } from "./createMerchant.usecase.interface";
 import { CurrencyEnum } from "../../../entity/Merchant";
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
 import { IKbisRepository } from "../../../repository/Kbis/KbisRepository.interface";
+import { IUuidGateway } from "../../../gateway/uuid/uuid.gateway.interface";
 
 const schema = z.object({
-  userId: z.number(),
+  userId: z.string(),
   companyName: z.string().min(3),
   redirectionUrlConfirm: z.string().url(),
   redirectionUrlCancel: z.string().url(),
@@ -27,7 +28,7 @@ export type ICreateMerchantUseCasePresenter<
   InvalidArgumentsType,
   NotFoundType,
 > = {
-  success: () => Promise<SuccessType>;
+  success: (id: string) => Promise<SuccessType>;
   error: (error: string) => Promise<FunctionalErrorType>;
   alreadyExists: () => Promise<AlreadyExistsType>;
   invalidArguments: (error: string) => Promise<InvalidArgumentsType>;
@@ -53,6 +54,7 @@ export class CreateMerchantUseCase<
     private readonly merchantRepository: IMerchantRepository,
     private readonly userRepository: IUserRepository,
     private readonly kbisRepository: IKbisRepository,
+    private readonly uuidGateway: IUuidGateway,
     private readonly presenter: ICreateMerchantUseCasePresenter<
       SuccessType,
       FunctionalErrorType,
@@ -95,8 +97,9 @@ export class CreateMerchantUseCase<
       }
 
       await this.kbisRepository.upload(validatedData.kbisUrl);
-
+      const id = await this.uuidGateway.generate("merchant");
       await this.merchantRepository.create({
+        id: id,
         userId: validatedData.userId,
         companyName: validatedData.companyName,
         redirectionUrlConfirm: validatedData.redirectionUrlConfirm,
@@ -109,7 +112,7 @@ export class CreateMerchantUseCase<
         contactLastName: validatedData.contactLastName,
       });
 
-      return await this.presenter.success();
+      return await this.presenter.success(id);
     } catch (error) {
       return await this.presenter.error(error.message);
     }

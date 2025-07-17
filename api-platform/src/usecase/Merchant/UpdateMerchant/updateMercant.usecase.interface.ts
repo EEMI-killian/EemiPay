@@ -13,8 +13,8 @@ export interface IUpdateMerchantUseCase<
   >;
 }
 
-export type IUpdateMerchantUseCaseArgs = {
-  id: number;
+type IUpdateMerchantUseCaseArgs = {
+  id: string;
   redirectionUrlConfirm?: string;
   redirectionUrlCancel?: string;
   currency?: CurrencyEnum;

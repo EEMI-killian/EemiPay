@@ -9,6 +9,6 @@ export interface IDeleteMerchantUseCase<
   ): Promise<SuccesType | NotFoundType | InvalidArgsType | FunctionalErrorType>;
 }
 
-export type DeleteMerchantArgs = {
-  id: number;
+type DeleteMerchantArgs = {
+  id: string;
 };

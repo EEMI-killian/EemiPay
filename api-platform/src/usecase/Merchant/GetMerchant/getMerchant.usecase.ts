@@ -2,10 +2,9 @@ import z from "zod";
 import { Merchant } from "../../../entity/Merchant";
 import { IMerchantRepository } from "../../../repository/Merchant/merchant.repository.interface";
 import { IGetMerchantUseCase } from "./getMerchant.usecase.interface";
-import { v } from "@faker-js/faker/dist/airline-BUL6NtOJ";
 
 const schema = z.object({
-  id: z.number(),
+  id: z.string(),
 });
 
 type GetMerchantArgs = z.infer<typeof schema>;

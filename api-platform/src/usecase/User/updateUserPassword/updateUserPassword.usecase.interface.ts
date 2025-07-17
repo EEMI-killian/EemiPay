@@ -3,16 +3,21 @@ export interface IUpdateUserPasswordUseCase<
   FunctionalErrorType,
   NotFoundType,
   InvalidPasswordType,
+  InvalidArgumentsType,
 > {
   execute(
     args: updateUserPasswordArgs,
   ): Promise<
-    SuccessType | FunctionalErrorType | NotFoundType | InvalidPasswordType
+    | SuccessType
+    | FunctionalErrorType
+    | NotFoundType
+    | InvalidPasswordType
+    | InvalidArgumentsType
   >;
 }
 
-export type updateUserPasswordArgs = {
-  id: number;
+type updateUserPasswordArgs = {
+  id: string;
   inputOldPassword: string;
   newPassword: string;
 };

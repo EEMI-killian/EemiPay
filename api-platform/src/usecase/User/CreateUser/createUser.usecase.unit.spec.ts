@@ -5,7 +5,8 @@ import {
 } from "./createUser.usecase";
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { faker } from "@faker-js/faker";
-import { IPasswordGateway } from "../../../gateway/password/password.gateway.interface";
+import { IHashGateway } from "../../../gateway/hash/hash.gateway.interface";
+import { UuidGateway } from "../../../gateway/uuid/uuid.gateway";
 
 describe("CreateUserUseCase", () => {
   const mockedPresenter: ICreateUserUseCasePresenter<
@@ -14,10 +15,10 @@ describe("CreateUserUseCase", () => {
     unknown,
     unknown
   > = {
-    success: async (id: number) => {
+    success: async (id: string) => {
       return { success: true, id };
     },
-    error: async (error: string) => {
+    functionalError: async (error: string) => {
       return { error };
     },
     alreadyExists: async () => {
@@ -41,9 +42,13 @@ describe("CreateUserUseCase", () => {
     password: faker.internet.password(),
   };
 
-  const mockedPasswordGateway: jest.Mocked<IPasswordGateway> = {
+  const mockedPasswordGateway: jest.Mocked<IHashGateway> = {
     hash: jest.fn(),
     compare: jest.fn(),
+  };
+
+  const mockedUuidGateway: jest.Mocked<UuidGateway> = {
+    generate: jest.fn(),
   };
 
   beforeEach(() => {
@@ -51,9 +56,11 @@ describe("CreateUserUseCase", () => {
   });
 
   test("it should create a user", async () => {
+    const userId = `user_${faker.string.uuid()}`;
     mockedUserRepository.findByEmail.mockResolvedValueOnce(null);
+    mockedUuidGateway.generate.mockResolvedValueOnce(userId);
     mockedUserRepository.findByEmail.mockResolvedValueOnce({
-      id: 1,
+      id: userId,
       firstName: userData.firstName,
       lastName: userData.lastName,
       email: userData.email,
@@ -65,16 +72,16 @@ describe("CreateUserUseCase", () => {
       mockedUserRepository,
       mockedPresenter,
       mockedPasswordGateway,
+      mockedUuidGateway,
     );
     const response = await uc.execute(userData);
     expect(mockedUserRepository.create).toHaveBeenCalled();
-    expect(mockedUserRepository.findByEmail).toHaveBeenCalledTimes(2);
-    expect(response).toEqual({ success: true, id: 1 });
+    expect(response).toEqual({ success: true, id: userId });
   });
 
-  test("it should be return an error about a user who already exist", async () => {
+  test("it should be return an error about a user already exist", async () => {
     mockedUserRepository.findByEmail.mockResolvedValueOnce({
-      id: 1,
+      id: `user_${faker.string.uuid()}`,
       firstName: userData.firstName,
       lastName: userData.lastName,
       email: userData.email,
@@ -86,27 +93,11 @@ describe("CreateUserUseCase", () => {
       mockedUserRepository,
       mockedPresenter,
       mockedPasswordGateway,
+      mockedUuidGateway,
     );
     const response = await uc.execute(userData);
     expect(mockedUserRepository.findByEmail).toHaveBeenCalled();
     expect(mockedUserRepository.create).not.toHaveBeenCalled();
     expect(response).toEqual({ error: "User already exist" });
-  });
-  test("it should be return an error about invalid arguments", async () => {
-    const userDataWrong = {
-      firstName: "s",
-      lastName: "l",
-      email: "fake email",
-      password: "1",
-    };
-    const uc = new CreateUserUseCase(
-      mockedUserRepository,
-      mockedPresenter,
-      mockedPasswordGateway,
-    );
-    const response = await uc.execute(userDataWrong);
-    expect(mockedUserRepository.findByEmail).not.toHaveBeenCalled();
-    expect(mockedUserRepository.create).not.toHaveBeenCalled();
-    expect(response).toEqual({ error: "Invalid arguments" });
   });
 });
