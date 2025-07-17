@@ -3,8 +3,9 @@ name: Pull Request CI Workflow
 on: [pull_request]
 
 jobs:
-  ci:
+  unit-tests:
     runs-on: ubuntu-latest
+    needs: []
     defaults:
       run:
         working-directory: ./api-platform
@@ -22,7 +23,25 @@ jobs:
 
       - name: Run unit tests
         run: npm run test
-      
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: []
+    defaults:
+      run:
+        working-directory: ./api-platform
+    steps:
+      - name: Check out the repository to the runner
+        uses: actions/checkout@v4 
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install all dependencies
+        run: npm i  
+
       - name: Run static analysis
         run: npm run lint
         
