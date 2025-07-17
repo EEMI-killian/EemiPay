@@ -45,7 +45,7 @@ describe("GenerateCredentialUsecase", () => {
     success: async (credential) => {
       return { credential };
     },
-    error: async (error) => {
+    functionalError: async (error) => {
       return { error };
     },
     notFound: async () => {

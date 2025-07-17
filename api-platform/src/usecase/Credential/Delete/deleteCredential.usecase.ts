@@ -17,7 +17,7 @@ export type IDeleteCredentialUsecasePresenter<
   InvalidArgumentsType,
 > = {
   success: () => Promise<SuccessType>;
-  error: (error: string) => Promise<FunctionalErrorType>;
+  functionalError: (error: string) => Promise<FunctionalErrorType>;
   notFound: () => Promise<NotFoundType>;
   invalidArguments: (error: string) => Promise<InvalidArgumentsType>;
 };
@@ -74,7 +74,7 @@ export class DeleteCredentialUseCase<
       await this.credentialRepository.delete(validatedData.appId);
       return await this.presenter.success();
     } catch (error) {
-      return await this.presenter.error(error.message);
+      return await this.presenter.functionalError(error.message);
     }
   }
 }

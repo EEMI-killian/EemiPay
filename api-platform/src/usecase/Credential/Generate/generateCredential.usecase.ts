@@ -21,7 +21,7 @@ export type IGenerateCredentialUsecasePresenter<
   InvalidArgumentsType,
 > = {
   success: (credential: Credential) => Promise<SuccesType>;
-  error: (error: string) => Promise<FunctionalErrorType>;
+  functionalError: (error: string) => Promise<FunctionalErrorType>;
   notFound: () => Promise<NotFound>;
   invalidArguments: (error: string) => Promise<InvalidArgumentsType>;
 };
@@ -80,7 +80,7 @@ export class GenerateCredentialUsecase<
       });
       return await this.presenter.success(credentials);
     } catch (error) {
-      return await this.presenter.error(error.message);
+      return await this.presenter.functionalError(error.message);
     }
   }
 }

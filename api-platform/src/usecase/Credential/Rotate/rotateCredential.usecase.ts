@@ -22,7 +22,7 @@ export type IRotateCredentialUsecasePresenter<
   InvalidArgumentsType,
 > = {
   success: (credential: Credential) => Promise<SuccessType>;
-  error: (error: string) => Promise<FunctionalErrorType>;
+  functionalError: (error: string) => Promise<FunctionalErrorType>;
   notFound: () => Promise<NotFoundType>;
   invalidArguments: (error: string) => Promise<InvalidArgumentsType>;
 };
@@ -82,7 +82,7 @@ export class RotateCredentialUsecase<
       });
       return await this.presenter.success(credentials);
     } catch (error) {
-      return await this.presenter.error(error.message);
+      return await this.presenter.functionalError(error.message);
     }
   }
 }
