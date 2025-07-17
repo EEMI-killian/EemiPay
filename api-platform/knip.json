@@ -1,1 +1,1 @@
-{ "ignore": ["migration/**/*"] }
+{ "ignore": ["src/migration/**/*"] }
