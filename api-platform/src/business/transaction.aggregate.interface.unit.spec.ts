@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { test, describe, expect } from "@jest/globals";
 import { TransactionAggregate } from "./transaction.aggregate";
+import { CurrencyEnum } from "../entity/Merchant";
 
 describe("TransactionAggregate", () => {
   test("it should create a transaction capture and refund it", () => {
@@ -15,12 +16,12 @@ describe("TransactionAggregate", () => {
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
-      "USD",
+      CurrencyEnum.USD,
     );
     transaction.addOperation({
       type: "CAPTURE",
       amount: 100,
-      currency: "USD",
+      currency: CurrencyEnum.USD,
       customerCardInfo: {
         ...mockedData,
       },
@@ -33,7 +34,7 @@ describe("TransactionAggregate", () => {
     transaction.addOperation({
       type: "REFUND",
       amount: 50,
-      currency: "USD",
+      currency: CurrencyEnum.USD,
       customerCardInfo: {
         ...mockedData,
       },
@@ -58,12 +59,12 @@ describe("TransactionAggregate", () => {
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
-      "USD",
+      CurrencyEnum.USD,
     );
     transaction.addOperation({
       type: "CAPTURE",
       amount: 100,
-      currency: "USD",
+      currency: CurrencyEnum.USD,
       customerCardInfo: {
         ...mockedData,
       },
@@ -72,7 +73,7 @@ describe("TransactionAggregate", () => {
     const result = transaction.addOperation({
       type: "REFUND",
       amount: 50,
-      currency: "USD",
+      currency: CurrencyEnum.USD,
       customerCardInfo: {
         ...mockedData,
       },
@@ -95,12 +96,12 @@ describe("TransactionAggregate", () => {
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
-      "USD",
+      CurrencyEnum.USD,
     );
     const captureResult = transaction.addOperation({
       type: "CAPTURE",
       amount: 100,
-      currency: "USD",
+      currency: CurrencyEnum.USD,
       customerCardInfo: {
         ...mockedData,
       },
@@ -113,7 +114,7 @@ describe("TransactionAggregate", () => {
     const result = transaction.addOperation({
       type: "REFUND",
       amount: 50,
-      currency: "USD",
+      currency: CurrencyEnum.USD,
       customerCardInfo: {
         ...mockedData,
       },
@@ -140,12 +141,12 @@ describe("TransactionAggregate", () => {
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
-      "USD",
+      CurrencyEnum.USD,
     );
     transaction.addOperation({
       type: "CAPTURE",
       amount: 100,
-      currency: "USD",
+      currency: CurrencyEnum.USD,
       customerCardInfo: {
         ...mockedData,
       },
@@ -158,7 +159,7 @@ describe("TransactionAggregate", () => {
     const result = transaction.addOperation({
       type: "REFUND",
       amount: 150,
-      currency: "USD",
+      currency: CurrencyEnum.USD,
       customerCardInfo: {
         ...mockedData,
       },
@@ -181,12 +182,12 @@ describe("TransactionAggregate", () => {
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
-      "USD",
+      CurrencyEnum.USD,
     );
     const result = transaction.addOperation({
       type: "REFUND",
       amount: 150,
-      currency: "USD",
+      currency: CurrencyEnum.USD,
       customerCardInfo: {
         ...mockedData,
       },
