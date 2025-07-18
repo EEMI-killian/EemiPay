@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 import { test, describe, expect } from "@jest/globals";
-import { TransactionArggregate } from "./transaction.aggregate";
+import { TransactionAggregate } from "./transaction.aggregate";
 
-describe("TransactionArggregate", () => {
+describe("TransactionAggregate", () => {
   test("it should create a transaction capture and refund it", () => {
     const mockedData = {
       cardNumber: faker.finance.creditCardNumber(),
@@ -11,7 +11,7 @@ describe("TransactionArggregate", () => {
       cvv: faker.finance.creditCardCVV(),
       merchantIban: `iban-${faker.finance.iban()}`,
     };
-    const transaction = new TransactionArggregate(
+    const transaction = new TransactionAggregate(
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
@@ -54,7 +54,7 @@ describe("TransactionArggregate", () => {
       cvv: faker.finance.creditCardCVV(),
       merchantIban: `iban-${faker.finance.iban()}`,
     };
-    const transaction = new TransactionArggregate(
+    const transaction = new TransactionAggregate(
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
@@ -91,7 +91,7 @@ describe("TransactionArggregate", () => {
       cvv: faker.finance.creditCardCVV(),
       merchantIban: `iban-${faker.finance.iban()}`,
     };
-    const transaction = new TransactionArggregate(
+    const transaction = new TransactionAggregate(
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
@@ -136,7 +136,7 @@ describe("TransactionArggregate", () => {
       cvv: faker.finance.creditCardCVV(),
       merchantIban: `iban-${faker.finance.iban()}`,
     };
-    const transaction = new TransactionArggregate(
+    const transaction = new TransactionAggregate(
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
@@ -177,7 +177,7 @@ describe("TransactionArggregate", () => {
       cvv: faker.finance.creditCardCVV(),
       merchantIban: `iban-${faker.finance.iban()}`,
     };
-    const transaction = new TransactionArggregate(
+    const transaction = new TransactionAggregate(
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,

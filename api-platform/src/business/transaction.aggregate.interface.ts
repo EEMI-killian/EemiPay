@@ -1,6 +1,6 @@
 import { cardInfo, transactionDto } from "./transaction.aggregate";
 
-export interface ITransactionArggregate {
+export interface ITransactionAggregate {
   addOperation(args: {
     type: "CAPTURE" | "REFUND";
     amount: number;

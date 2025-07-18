@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { ITransactionArggregate } from "./transaction.aggregate.interface";
+import { ITransactionAggregate } from "./transaction.aggregate.interface";
 
 export interface operation {
   id: string;
@@ -30,7 +30,7 @@ export interface transactionDto {
   operations: operation[];
 }
 
-class TransactionArggregate implements ITransactionArggregate {
+export class TransactionAggregate implements ITransactionAggregate {
   constructor(
     public readonly merchantId: string,
     public readonly customerId: string,
@@ -39,14 +39,7 @@ class TransactionArggregate implements ITransactionArggregate {
     public readonly createdAt: Date = new Date(),
     public readonly id: string = `transaction-${uuidv4()}`,
     public readonly operations: operation[] = [],
-  ) {
-    this.merchantId = merchantId;
-    this.customerId = customerId;
-    this.amount = amount;
-    this.currency = currency;
-    this.createdAt = createdAt;
-    this.id = id;
-  }
+  ) {}
 
   addOperation({
     type,
@@ -61,7 +54,7 @@ class TransactionArggregate implements ITransactionArggregate {
     customerCardInfo: cardInfo;
     merchantIban: string;
   }): { success: boolean; message: string } | { error: string } {
-    if (type == "REFUND") {
+    if (type === "REFUND") {
       if (this.operations.length === 0) {
         return { error: "Cannot refund without a capture operation." };
       }
