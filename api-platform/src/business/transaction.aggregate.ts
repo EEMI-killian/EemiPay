@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { ITransactionAggregate } from "./transaction.aggregate.interface";
 
-export interface operation {
+interface operation {
   id: string;
   type: "CAPTURE" | "REFUND";
   amount: number;
