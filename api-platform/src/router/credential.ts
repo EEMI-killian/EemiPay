@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
     success: async (credential) => {
       res.status(201).json(credential);
     },
-    error: async (error) => {
+    functionalError: async (error) => {
       res.status(400).json({ error });
     },
     notFound: async () => {
@@ -63,7 +63,7 @@ router.post("/rotate", async (req, res) => {
     success: async (credential) => {
       res.status(200).json(credential);
     },
-    error: async (error) => {
+    functionalError: async (error) => {
       res.status(400).json({ error });
     },
     notFound: async () => {
@@ -101,7 +101,7 @@ router.delete("/", async (req, res) => {
     success: async () => {
       res.status(204).send();
     },
-    error: async (error) => {
+    functionalError: async (error) => {
       res.status(400).json({ error });
     },
     notFound: async () => {

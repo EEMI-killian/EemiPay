@@ -5,12 +5,14 @@ import { AppDataSource } from "./data-source";
 import userRouter from "./router/user";
 import merchantRouter from "./router/merchant";
 import credentialRouter from "./router/credential";
+import transactionRouter from "./router/transaction";
 
 AppDataSource.initialize()
   .then(async () => {
     const app = express();
     app.use(bodyParser.json());
     app.use("/user", userRouter);
+    app.use("/transaction", transactionRouter);
     app.use("/merchant", merchantRouter);
     app.use("/credential", credentialRouter);
     app.get("/", (req: Request, res: Response) => {

@@ -1,11 +1,12 @@
 import { v4 as uuidv4 } from "uuid";
 import { ITransactionAggregate } from "./transaction.aggregate.interface";
+import { CurrencyEnum } from "../entity/Merchant";
 
 interface operation {
   id: string;
   type: "CAPTURE" | "REFUND";
   amount: number;
-  currency: string;
+  currency: CurrencyEnum;
   customerCardInfo: cardInfo;
   createdAt: Date;
   updatedAt: Date;
@@ -23,9 +24,9 @@ export interface cardInfo {
 export interface transactionDto {
   id: string;
   merchantId: string;
-  customerId: string;
+  externalRef: string;
   amount: number;
-  currency: string;
+  currency: CurrencyEnum;
   createdAt: string;
   operations: operation[];
 }
@@ -33,9 +34,9 @@ export interface transactionDto {
 export class TransactionAggregate implements ITransactionAggregate {
   constructor(
     public readonly merchantId: string,
-    public readonly customerId: string,
+    public readonly externalRef: string,
     public readonly amount: number,
-    public readonly currency: string,
+    public readonly currency: CurrencyEnum,
     public readonly createdAt: Date = new Date(),
     public readonly id: string = `transaction-${uuidv4()}`,
     public readonly operations: operation[] = [],
@@ -50,7 +51,7 @@ export class TransactionAggregate implements ITransactionAggregate {
   }: {
     type: "CAPTURE" | "REFUND";
     amount: number;
-    currency: string;
+    currency: CurrencyEnum;
     customerCardInfo: cardInfo;
     merchantIban: string;
   }): { success: boolean; message: string } | { error: string } {
@@ -121,7 +122,7 @@ export class TransactionAggregate implements ITransactionAggregate {
     return {
       id: this.id,
       merchantId: this.merchantId,
-      customerId: this.customerId,
+      externalRef: this.externalRef,
       amount: this.amount,
       currency: this.currency,
       createdAt: this.createdAt.toISOString(),

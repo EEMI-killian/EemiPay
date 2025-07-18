@@ -1,10 +1,11 @@
+import { CurrencyEnum } from "../entity/Merchant";
 import { cardInfo, transactionDto } from "./transaction.aggregate";
 
 export interface ITransactionAggregate {
   addOperation(args: {
     type: "CAPTURE" | "REFUND";
     amount: number;
-    currency: string;
+    currency: CurrencyEnum;
     customerCardInfo: cardInfo;
     merchantIban: string;
   }): { success: boolean; message: string } | { error: string };
