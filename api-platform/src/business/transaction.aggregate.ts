@@ -30,7 +30,7 @@ export interface transactionDto {
   operations: operation[];
 }
 
-export class TransactionArggregate implements ITransactionArggregate {
+class TransactionArggregate implements ITransactionArggregate {
   constructor(
     public readonly merchantId: string,
     public readonly customerId: string,
