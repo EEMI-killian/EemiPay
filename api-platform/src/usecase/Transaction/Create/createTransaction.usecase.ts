@@ -4,6 +4,7 @@ import { IMerchantRepository } from "../../../repository/Merchant/merchant.repos
 import { ICreateTransactionUseCase } from "./createTransaction.usecase.interface";
 import { CurrencyEnum } from "../../../entity/Merchant";
 import { ITransactionRepository } from "../../../repository/Transaction/transaction.repository.interface";
+import { v4 as uuidv4 } from "uuid";
 
 const schema = z.object({
   merchantId: z.string(),
@@ -73,11 +74,16 @@ export class CreateTransactionUseCase<
         await this.presenter.notFound("Merchant not found");
       }
 
+      // i need to charge the real amount of transaction
+
       const transaction = new TransactionAggregate(
+        `transaction-${uuidv4()}`,
         merchantId,
         externalRef,
         amount,
         currency,
+        new Date(),
+        [],
       );
 
       await this.transactionRepository.save({

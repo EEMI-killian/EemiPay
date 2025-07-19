@@ -13,13 +13,15 @@ describe("TransactionAggregate", () => {
       merchantIban: `iban-${faker.finance.iban()}`,
     };
     const transaction = new TransactionAggregate(
+      `transaction-${faker.string.uuid()}`,
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
       CurrencyEnum.USD,
+      new Date(),
+      [],
     );
-    transaction.addOperation({
-      type: "CAPTURE",
+    transaction.capture({
       amount: 100,
       currency: CurrencyEnum.USD,
       customerCardInfo: {
@@ -31,8 +33,7 @@ describe("TransactionAggregate", () => {
       operationId: transaction.operations[0].id,
       status: "COMPLETED",
     });
-    transaction.addOperation({
-      type: "REFUND",
+    transaction.refund({
       amount: 50,
       currency: CurrencyEnum.USD,
       customerCardInfo: {
@@ -56,13 +57,15 @@ describe("TransactionAggregate", () => {
       merchantIban: `iban-${faker.finance.iban()}`,
     };
     const transaction = new TransactionAggregate(
+      `transaction-${faker.string.uuid()}`,
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
       CurrencyEnum.USD,
+      new Date(),
+      [],
     );
-    transaction.addOperation({
-      type: "CAPTURE",
+    transaction.capture({
       amount: 100,
       currency: CurrencyEnum.USD,
       customerCardInfo: {
@@ -70,8 +73,7 @@ describe("TransactionAggregate", () => {
       },
       merchantIban: mockedData.merchantIban,
     });
-    const result = transaction.addOperation({
-      type: "REFUND",
+    const result = transaction.refund({
       amount: 50,
       currency: CurrencyEnum.USD,
       customerCardInfo: {
@@ -93,13 +95,15 @@ describe("TransactionAggregate", () => {
       merchantIban: `iban-${faker.finance.iban()}`,
     };
     const transaction = new TransactionAggregate(
+      `transaction-${faker.string.uuid()}`,
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
       CurrencyEnum.USD,
+      new Date(),
+      [],
     );
-    const captureResult = transaction.addOperation({
-      type: "CAPTURE",
+    const captureResult = transaction.capture({
       amount: 100,
       currency: CurrencyEnum.USD,
       customerCardInfo: {
@@ -111,8 +115,7 @@ describe("TransactionAggregate", () => {
       operationId: transaction.operations[0].id,
       status: "FAILED",
     });
-    const result = transaction.addOperation({
-      type: "REFUND",
+    const result = transaction.refund({
       amount: 50,
       currency: CurrencyEnum.USD,
       customerCardInfo: {
@@ -122,7 +125,7 @@ describe("TransactionAggregate", () => {
     });
     expect(captureResult).toEqual({
       success: true,
-      message: "Capture operation added successfully.",
+      message: "Transaction captured successfully.",
     });
     expect(result).toEqual({
       error: "No capture operation found to refund against.",
@@ -138,13 +141,15 @@ describe("TransactionAggregate", () => {
       merchantIban: `iban-${faker.finance.iban()}`,
     };
     const transaction = new TransactionAggregate(
+      `transaction-${faker.string.uuid()}`,
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
       CurrencyEnum.USD,
+      new Date(),
+      [],
     );
-    transaction.addOperation({
-      type: "CAPTURE",
+    transaction.capture({
       amount: 100,
       currency: CurrencyEnum.USD,
       customerCardInfo: {
@@ -156,8 +161,7 @@ describe("TransactionAggregate", () => {
       operationId: transaction.operations[0].id,
       status: "COMPLETED",
     });
-    const result = transaction.addOperation({
-      type: "REFUND",
+    const result = transaction.refund({
       amount: 150,
       currency: CurrencyEnum.USD,
       customerCardInfo: {
@@ -166,7 +170,7 @@ describe("TransactionAggregate", () => {
       merchantIban: mockedData.merchantIban,
     });
     expect(result).toEqual({
-      error: "Refund amount exceeds the initial capture amount.",
+      error: "Refund amount exceeds captured amount.",
     });
     expect(transaction.operations.length).toBe(1);
   });
@@ -179,13 +183,15 @@ describe("TransactionAggregate", () => {
       merchantIban: `iban-${faker.finance.iban()}`,
     };
     const transaction = new TransactionAggregate(
+      `transaction-${faker.string.uuid()}`,
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
       CurrencyEnum.USD,
+      new Date(),
+      [],
     );
-    const result = transaction.addOperation({
-      type: "REFUND",
+    const result = transaction.refund({
       amount: 150,
       currency: CurrencyEnum.USD,
       customerCardInfo: {
@@ -194,7 +200,7 @@ describe("TransactionAggregate", () => {
       merchantIban: mockedData.merchantIban,
     });
     expect(result).toEqual({
-      error: "Cannot refund without a capture operation.",
+      error: "No capture operation found to refund against.",
     });
     expect(transaction.operations.length).toBe(0);
   });

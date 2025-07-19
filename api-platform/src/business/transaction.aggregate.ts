@@ -1,107 +1,145 @@
 import { v4 as uuidv4 } from "uuid";
 import { ITransactionAggregate } from "./transaction.aggregate.interface";
 import { CurrencyEnum } from "../entity/Merchant";
+import { tr } from "@faker-js/faker/.";
 
-interface operation {
+type operation = {
   id: string;
   type: "CAPTURE" | "REFUND";
   amount: number;
   currency: CurrencyEnum;
-  customerCardInfo: cardInfo;
-  createdAt: Date;
-  updatedAt: Date;
+  customerCardInfo: {
+    cardNumber: string;
+    cardHolderName: string;
+    expiryDate: string;
+    cvv: string;
+  };
   merchantIban: string;
   status: "PENDING" | "COMPLETED" | "FAILED";
-}
-
-export interface cardInfo {
-  cardNumber: string;
-  cardHolderName: string;
-  expiryDate: string;
-  cvv: string;
-}
-
-export interface transactionDto {
-  id: string;
-  merchantId: string;
-  externalRef: string;
-  amount: number;
-  currency: CurrencyEnum;
-  createdAt: string;
-  operations: operation[];
-}
+  createdAt: Date;
+};
 
 export class TransactionAggregate implements ITransactionAggregate {
   constructor(
+    public readonly id: string,
     public readonly merchantId: string,
     public readonly externalRef: string,
     public readonly amount: number,
     public readonly currency: CurrencyEnum,
-    public readonly createdAt: Date = new Date(),
-    public readonly id: string = `transaction-${uuidv4()}`,
-    public readonly operations: operation[] = [],
+    public readonly createdAt: Date,
+    public operations: operation[],
   ) {}
-
-  addOperation({
-    type,
+  capture({
     amount,
     currency,
     customerCardInfo,
     merchantIban,
   }: {
-    type: "CAPTURE" | "REFUND";
     amount: number;
     currency: CurrencyEnum;
-    customerCardInfo: cardInfo;
+    customerCardInfo: {
+      cardNumber: string;
+      cardHolderName: string;
+      expiryDate: string;
+      cvv: string;
+    };
     merchantIban: string;
   }): { success: boolean; message: string } | { error: string } {
-    if (type === "REFUND") {
-      if (this.operations.length === 0) {
-        return { error: "Cannot refund without a capture operation." };
-      }
-      const initialCapture = this.operations.find(
-        (op) => op.type === "CAPTURE" && op.status === "COMPLETED",
-      );
-      if (!initialCapture) {
-        return { error: "No capture operation found to refund against." };
-      }
-      const totalRefunded = this.operations
-        .filter(
-          (op) =>
-            op.type === "REFUND" &&
-            (op.status === "COMPLETED" || op.status === "PENDING"),
-        )
-        .reduce((sum, op) => sum + op.amount, 0);
-      if (totalRefunded + amount > initialCapture.amount) {
-        return { error: "Refund amount exceeds the initial capture amount." };
-      }
-      this.operations.push({
-        id: `operation-${uuidv4()}`,
-        type,
-        amount,
-        currency,
-        customerCardInfo,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        merchantIban: merchantIban,
-        status: "PENDING",
-      });
-      return { success: true, message: "Refund operation added successfully." };
+    if (amount <= 0) {
+      return { error: "Amount must be greater than 0." };
     }
-    this.operations.push({
-      id: `operation-${uuidv4()}`,
-      type,
+    if (currency !== this.currency) {
+      return { error: "Currency mismatch." };
+    }
+    if (amount > this.amount) {
+      return { error: "Amount exceeds transaction limit." };
+    }
+    const capturedAmount = this.operations.reduce((acc, op) => {
+      if (op.type === "CAPTURE" && op.status === "COMPLETED") {
+        return acc + op.amount;
+      }
+      return acc;
+    }, 0);
+    if (capturedAmount + amount > this.amount) {
+      return { error: "Total captured amount exceeds transaction limit." };
+    }
+    const operation: operation = {
+      id: uuidv4(),
+      type: "CAPTURE",
       amount,
       currency,
       customerCardInfo,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      merchantIban: merchantIban,
+      merchantIban,
       status: "PENDING",
-    });
-    return { success: true, message: "Capture operation added successfully." };
-  }
+      createdAt: new Date(),
+    };
 
+    this.operations.push(operation);
+
+    return {
+      success: true,
+      message: "Transaction captured successfully.",
+    };
+  }
+  refund({
+    amount,
+    currency,
+    customerCardInfo,
+    merchantIban,
+  }: {
+    amount: number;
+    currency: CurrencyEnum;
+    customerCardInfo: {
+      cardNumber: string;
+      cardHolderName: string;
+      expiryDate: string;
+      cvv: string;
+    };
+    merchantIban: string;
+  }): { success: boolean; message: string } | { error: string } {
+    //can't refund more than captured amount
+    const captureOperation = this.operations.find(
+      (op) => op.type === "CAPTURE" && op.status === "COMPLETED",
+    );
+    if (!captureOperation) {
+      return { error: "No capture operation found to refund against." };
+    }
+    if (amount <= 0) {
+      return { error: "Amount must be greater than 0." };
+    }
+    if (currency !== this.currency) {
+      return { error: "Currency mismatch." };
+    }
+    if (amount > captureOperation.amount) {
+      return { error: "Refund amount exceeds captured amount." };
+    }
+    const refundedAmount = this.operations.reduce((acc, op) => {
+      if (op.type === "REFUND" && op.status === "COMPLETED") {
+        return acc + op.amount;
+      }
+      return acc;
+    }, 0);
+    if (refundedAmount + amount > this.amount) {
+      return { error: "Total refunded amount exceeds transaction limit." };
+    }
+    const operation: operation = {
+      id: uuidv4(),
+      type: "REFUND",
+      amount,
+      currency,
+      customerCardInfo,
+      merchantIban,
+      status: "PENDING",
+      createdAt: new Date(),
+    };
+
+    this.operations.push(operation);
+
+    return {
+      success: true,
+      message: "Transaction refunded successfully.",
+    };
+  }
   updateOperationStatus({
     operationId,
     status,
@@ -114,29 +152,6 @@ export class TransactionAggregate implements ITransactionAggregate {
       return { error: "Operation not found." };
     }
     operation.status = status;
-    operation.updatedAt = new Date();
     return { success: true, message: "Operation status updated successfully." };
-  }
-
-  toDto(): transactionDto {
-    return {
-      id: this.id,
-      merchantId: this.merchantId,
-      externalRef: this.externalRef,
-      amount: this.amount,
-      currency: this.currency,
-      createdAt: this.createdAt.toISOString(),
-      operations: this.operations.map((op) => ({
-        id: op.id,
-        type: op.type,
-        amount: op.amount,
-        currency: op.currency,
-        customerCardInfo: op.customerCardInfo,
-        createdAt: op.createdAt,
-        updatedAt: op.updatedAt,
-        merchantIban: op.merchantIban,
-        status: op.status,
-      })),
-    };
   }
 }

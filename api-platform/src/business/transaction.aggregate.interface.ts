@@ -1,12 +1,36 @@
 import { CurrencyEnum } from "../entity/Merchant";
-import { cardInfo, transactionDto } from "./transaction.aggregate";
 
 export interface ITransactionAggregate {
-  addOperation(args: {
-    type: "CAPTURE" | "REFUND";
+  capture({
+    amount,
+    currency,
+    customerCardInfo,
+    merchantIban,
+  }: {
     amount: number;
     currency: CurrencyEnum;
-    customerCardInfo: cardInfo;
+    customerCardInfo: {
+      cardNumber: string;
+      cardHolderName: string;
+      expiryDate: string;
+      cvv: string;
+    };
+    merchantIban: string;
+  }): { success: boolean; message: string } | { error: string };
+  refund({
+    amount,
+    currency,
+    customerCardInfo,
+    merchantIban,
+  }: {
+    amount: number;
+    currency: CurrencyEnum;
+    customerCardInfo: {
+      cardNumber: string;
+      cardHolderName: string;
+      expiryDate: string;
+      cvv: string;
+    };
     merchantIban: string;
   }): { success: boolean; message: string } | { error: string };
   updateOperationStatus({
@@ -16,5 +40,4 @@ export interface ITransactionAggregate {
     operationId: string;
     status: "PENDING" | "COMPLETED" | "FAILED";
   }): { success: boolean; message: string } | { error: string };
-  toDto(): transactionDto;
 }
