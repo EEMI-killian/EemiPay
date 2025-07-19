@@ -4,11 +4,13 @@ import { IMerchantRepository } from "../../../repository/Merchant/merchant.repos
 import { ICreateTransactionUseCase } from "./createTransaction.usecase.interface";
 import { CurrencyEnum } from "../../../entity/Merchant";
 import { ITransactionRepository } from "../../../repository/Transaction/transaction.repository.interface";
+import { v4 as uuidv4 } from "uuid";
+
 
 const schema = z.object({
-  merchantId: z.string(),
-  externalRef: z.string(),
-  amount: z.number().min(0),
+  merchantId: z.string().min(1, "Merchant ID is required"),
+  externalRef: z.string().min(1, "External reference is required"),
+  amount: z.number().min(0, "Amount must be positive"),
   currency: z.nativeEnum(CurrencyEnum),
 });
 
@@ -68,16 +70,21 @@ export class CreateTransactionUseCase<
     }
 
     try {
-      const merchant = await this.merchantRepository.findById(merchantId);
+      const merchant = await this.merchantRepository.findById(
+        validateData.merchantId,
+      );
       if (!merchant) {
-        await this.presenter.notFound("Merchant not found");
+        return await this.presenter.notFound("Merchant not found");
       }
 
       const transaction = new TransactionAggregate(
-        merchantId,
-        externalRef,
-        amount,
-        currency,
+        `transaction-${uuidv4()}`,
+        validateData.merchantId,
+        validateData.externalRef,
+        validateData.amount,
+        validateData.currency,
+        new Date(),
+        [],
       );
 
       await this.transactionRepository.save({

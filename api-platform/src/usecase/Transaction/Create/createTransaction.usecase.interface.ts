@@ -1,3 +1,4 @@
+import type { operation } from "../../../business/transaction.aggregate";
 import { CurrencyEnum } from "../../../entity/Merchant";
 
 export interface ICreateTransactionUseCase<
@@ -7,14 +8,20 @@ export interface ICreateTransactionUseCase<
   NotFoundType,
 > {
   execute({
+    id,
     merchantId,
-    customerId,
+    externalRef,
     amount,
     currency,
+    operations,
+    createdAt,
   }: {
+    id: string;
     merchantId: string;
-    customerId: string;
+    externalRef: string;
     amount: number;
+    operations: operation[];
+    createdAt: Date;
     currency: CurrencyEnum;
   }): Promise<
     SuccessType | FunctionalErrorType | InvalidArgumentsType | NotFoundType

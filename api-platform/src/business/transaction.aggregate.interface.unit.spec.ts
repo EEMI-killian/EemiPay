@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import { test, describe, expect } from "@jest/globals";
 import { TransactionAggregate } from "./transaction.aggregate";
 import { CurrencyEnum } from "../entity/Merchant";
+import { v4 as uuidv4 } from "uuid";
 
 describe("TransactionAggregate", () => {
   test("it should create a transaction capture and refund it", () => {
@@ -13,10 +14,13 @@ describe("TransactionAggregate", () => {
       merchantIban: `iban-${faker.finance.iban()}`,
     };
     const transaction = new TransactionAggregate(
+      `transaction-${uuidv4()}`,
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
       CurrencyEnum.USD,
+      new Date(),
+      [],
     );
     transaction.addOperation({
       type: "CAPTURE",
@@ -56,10 +60,13 @@ describe("TransactionAggregate", () => {
       merchantIban: `iban-${faker.finance.iban()}`,
     };
     const transaction = new TransactionAggregate(
+      `transaction-${uuidv4()}`,
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
       CurrencyEnum.USD,
+      new Date(),
+      [],
     );
     transaction.addOperation({
       type: "CAPTURE",
@@ -93,10 +100,13 @@ describe("TransactionAggregate", () => {
       merchantIban: `iban-${faker.finance.iban()}`,
     };
     const transaction = new TransactionAggregate(
+      `transaction-${uuidv4()}`,
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
       CurrencyEnum.USD,
+      new Date(),
+      [],
     );
     const captureResult = transaction.addOperation({
       type: "CAPTURE",
@@ -138,10 +148,13 @@ describe("TransactionAggregate", () => {
       merchantIban: `iban-${faker.finance.iban()}`,
     };
     const transaction = new TransactionAggregate(
+      `transaction-${uuidv4()}`,
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
       CurrencyEnum.USD,
+      new Date(),
+      [],
     );
     transaction.addOperation({
       type: "CAPTURE",
@@ -179,10 +192,13 @@ describe("TransactionAggregate", () => {
       merchantIban: `iban-${faker.finance.iban()}`,
     };
     const transaction = new TransactionAggregate(
+      `transaction-${uuidv4()}`,
       `merchant-${faker.string.uuid()}`,
       `customer-${faker.string.uuid()}`,
       100,
       CurrencyEnum.USD,
+      new Date(),
+      [],
     );
     const result = transaction.addOperation({
       type: "REFUND",

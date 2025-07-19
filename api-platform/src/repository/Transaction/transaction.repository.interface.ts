@@ -1,4 +1,5 @@
 import { CurrencyEnum } from "../../entity/Merchant";
+import { Transaction } from "../../entity/Transaction";
 
 export interface ITransactionRepository {
   save(transaction: {
@@ -8,4 +9,5 @@ export interface ITransactionRepository {
     amount: number;
     currency: CurrencyEnum;
   }): Promise<void>;
+  findById(id: string): Promise<Transaction | null>;
 }

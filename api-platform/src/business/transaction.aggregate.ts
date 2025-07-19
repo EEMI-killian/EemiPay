@@ -1,8 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import { ITransactionAggregate } from "./transaction.aggregate.interface";
 import { CurrencyEnum } from "../entity/Merchant";
 
-interface operation {
+export type operation = {
   id: string;
   type: "CAPTURE" | "REFUND";
   amount: number;
@@ -12,16 +11,16 @@ interface operation {
   updatedAt: Date;
   merchantIban: string;
   status: "PENDING" | "COMPLETED" | "FAILED";
-}
+};
 
-export interface cardInfo {
+export type cardInfo = {
   cardNumber: string;
   cardHolderName: string;
-  expiryDate: string;
+  expiryDate: Date;
   cvv: string;
-}
+};
 
-export interface transactionDto {
+export type transactionDto = {
   id: string;
   merchantId: string;
   externalRef: string;
@@ -29,17 +28,17 @@ export interface transactionDto {
   currency: CurrencyEnum;
   createdAt: string;
   operations: operation[];
-}
+};
 
-export class TransactionAggregate implements ITransactionAggregate {
+export class TransactionAggregate {
   constructor(
+    public readonly id: string,
     public readonly merchantId: string,
     public readonly externalRef: string,
     public readonly amount: number,
     public readonly currency: CurrencyEnum,
-    public readonly createdAt: Date = new Date(),
-    public readonly id: string = `transaction-${uuidv4()}`,
-    public readonly operations: operation[] = [],
+    public readonly createdAt: Date,
+    public readonly operations: operation[],
   ) {}
 
   addOperation({
@@ -86,7 +85,11 @@ export class TransactionAggregate implements ITransactionAggregate {
         merchantIban: merchantIban,
         status: "PENDING",
       });
+
       return { success: true, message: "Refund operation added successfully." };
+    }
+    if (amount <= 0) {
+      return { error: "Amount must be greater than zero." };
     }
     this.operations.push({
       id: `operation-${uuidv4()}`,

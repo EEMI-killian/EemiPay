@@ -3,6 +3,9 @@ import { CurrencyEnum } from "../../entity/Merchant";
 import { Transaction } from "../../entity/Transaction";
 
 export class TransactionRepository {
+  updateTransactionStatus(id: string, arg1: string, arg2: Date) {
+    throw new Error("Method not implemented.");
+  }
   constructor(private transactionRepository: Repository<Transaction>) {
     this.transactionRepository = transactionRepository;
   }
@@ -29,5 +32,8 @@ export class TransactionRepository {
       currency,
       createdAt,
     });
+  }
+  async findById(id: string): Promise<Transaction | null> {
+    return await this.transactionRepository.findOne({ where: { id } });
   }
 }
