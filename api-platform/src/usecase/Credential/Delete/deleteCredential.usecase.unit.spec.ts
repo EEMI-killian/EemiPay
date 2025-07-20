@@ -73,6 +73,7 @@ describe("DeleteCredentialUsecase", () => {
       contactPhone: faker.phone.number(),
       redirectionUrlCancel: faker.internet.url(),
       redirectionUrlConfirm: faker.internet.url(),
+      iban: faker.finance.iban(),
     });
     mockedCredentialRepository.findById.mockResolvedValue({
       id: args.appId,

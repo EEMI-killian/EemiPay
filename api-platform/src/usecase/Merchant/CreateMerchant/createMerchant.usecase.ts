@@ -17,6 +17,7 @@ const schema = z.object({
   contactFirstName: z.string().min(1),
   contactLastName: z.string().min(1),
   kbisUrl: z.string(),
+  iban: z.string().min(15).max(34),
 });
 
 type CreateMerchantArgs = z.infer<typeof schema>;
@@ -110,6 +111,7 @@ export class CreateMerchantUseCase<
         contactPhone: validatedData.contactPhone,
         contactFirstName: validatedData.contactFirstName,
         contactLastName: validatedData.contactLastName,
+        iban: validatedData.iban,
       });
 
       return await this.presenter.success(id);

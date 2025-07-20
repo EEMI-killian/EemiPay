@@ -1,11 +1,12 @@
 import { v4 as uuidv4 } from "uuid";
 import { ITransactionAggregate } from "./transaction.aggregate.interface";
 import { CurrencyEnum } from "../entity/Merchant";
-import { tr } from "@faker-js/faker/.";
+import { OperationStatus, TransactionType } from "../entity/Operation";
 
-type operation = {
+export type operation = {
   id: string;
-  type: "CAPTURE" | "REFUND";
+  transactionId: string;
+  type: TransactionType;
   amount: number;
   currency: CurrencyEnum;
   customerCardInfo: {
@@ -15,8 +16,9 @@ type operation = {
     cvv: string;
   };
   merchantIban: string;
-  status: "PENDING" | "COMPLETED" | "FAILED";
+  status: OperationStatus;
   createdAt: Date;
+  updatedAt?: Date;
 };
 
 export class TransactionAggregate implements ITransactionAggregate {
@@ -46,13 +48,13 @@ export class TransactionAggregate implements ITransactionAggregate {
     merchantIban: string;
   }): { success: boolean; message: string } | { error: string } {
     if (amount <= 0) {
-      return { error: "Amount must be greater than 0." };
+      throw new Error("Amount must be greater than 0.");
     }
     if (currency !== this.currency) {
-      return { error: "Currency mismatch." };
+      throw new Error("Currency mismatch.");
     }
     if (amount > this.amount) {
-      return { error: "Amount exceeds transaction limit." };
+      throw new Error("Amount exceeds transaction limit.");
     }
     const capturedAmount = this.operations.reduce((acc, op) => {
       if (op.type === "CAPTURE" && op.status === "COMPLETED") {
@@ -61,19 +63,19 @@ export class TransactionAggregate implements ITransactionAggregate {
       return acc;
     }, 0);
     if (capturedAmount + amount > this.amount) {
-      return { error: "Total captured amount exceeds transaction limit." };
+      throw new Error("Total captured amount exceeds transaction limit.");
     }
     const operation: operation = {
       id: uuidv4(),
-      type: "CAPTURE",
+      transactionId: this.id,
+      type: TransactionType.CAPTURE,
       amount,
       currency,
       customerCardInfo,
       merchantIban,
-      status: "PENDING",
+      status: OperationStatus.PENDING,
       createdAt: new Date(),
     };
-
     this.operations.push(operation);
 
     return {
@@ -97,21 +99,20 @@ export class TransactionAggregate implements ITransactionAggregate {
     };
     merchantIban: string;
   }): { success: boolean; message: string } | { error: string } {
-    //can't refund more than captured amount
     const captureOperation = this.operations.find(
       (op) => op.type === "CAPTURE" && op.status === "COMPLETED",
     );
     if (!captureOperation) {
-      return { error: "No capture operation found to refund against." };
+      throw new Error("No capture operation found to refund against.");
     }
     if (amount <= 0) {
-      return { error: "Amount must be greater than 0." };
+      throw new Error("Amount must be greater than 0.");
     }
     if (currency !== this.currency) {
-      return { error: "Currency mismatch." };
+      throw new Error("Currency mismatch.");
     }
     if (amount > captureOperation.amount) {
-      return { error: "Refund amount exceeds captured amount." };
+      throw new Error("Refund amount exceeds captured amount.");
     }
     const refundedAmount = this.operations.reduce((acc, op) => {
       if (op.type === "REFUND" && op.status === "COMPLETED") {
@@ -120,19 +121,19 @@ export class TransactionAggregate implements ITransactionAggregate {
       return acc;
     }, 0);
     if (refundedAmount + amount > this.amount) {
-      return { error: "Total refunded amount exceeds transaction limit." };
+      throw new Error("Total refunded amount exceeds transaction limit.");
     }
     const operation: operation = {
       id: uuidv4(),
-      type: "REFUND",
+      transactionId: this.id,
+      type: TransactionType.REFUND,
       amount,
       currency,
       customerCardInfo,
       merchantIban,
-      status: "PENDING",
+      status: OperationStatus.PENDING,
       createdAt: new Date(),
     };
-
     this.operations.push(operation);
 
     return {
@@ -145,13 +146,14 @@ export class TransactionAggregate implements ITransactionAggregate {
     status,
   }: {
     operationId: string;
-    status: "PENDING" | "COMPLETED" | "FAILED";
+    status: OperationStatus;
   }): { success: boolean; message: string } | { error: string } {
     const operation = this.operations.find((op) => op.id === operationId);
     if (!operation) {
-      return { error: "Operation not found." };
+      throw new Error("Operation not found.");
     }
     operation.status = status;
+    operation.updatedAt = new Date();
     return { success: true, message: "Operation status updated successfully." };
   }
 }

@@ -30,4 +30,9 @@ export class TransactionRepository {
       createdAt,
     });
   }
+  async findById(transactionId: string): Promise<Transaction | null> {
+    return this.transactionRepository.findOne({
+      where: { id: transactionId },
+    });
+  }
 }

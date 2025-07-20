@@ -80,6 +80,7 @@ describe("RotateCredentialUsecase", () => {
       redirectionUrlCancel: faker.internet.url(),
       redirectionUrlConfirm: faker.internet.url(),
       createdAt: faker.date.past(),
+      iban: faker.finance.iban(),
     });
     mockedCredentialGateway.rotate.mockResolvedValue({
       appId: args.appId,

@@ -28,4 +28,5 @@ export type ICreateMerchantArgs = {
   contactFirstName: string;
   contactLastName: string;
   kbisUrl: string;
+  iban: string;
 };

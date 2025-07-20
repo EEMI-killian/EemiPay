@@ -1,4 +1,5 @@
 import { CurrencyEnum } from "../entity/Merchant";
+import { OperationStatus } from "../entity/Operation";
 
 export interface ITransactionAggregate {
   capture({
@@ -38,6 +39,6 @@ export interface ITransactionAggregate {
     status,
   }: {
     operationId: string;
-    status: "PENDING" | "COMPLETED" | "FAILED";
+    status: OperationStatus;
   }): { success: boolean; message: string } | { error: string };
 }
