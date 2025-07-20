@@ -28,7 +28,7 @@ describe("CreateMerchantUseCase", () => {
       return { error: "Merchant already exists" };
     },
     invalidArguments: async (error: string) => {
-      return { error: "Invalid arguments" };
+      return { error };
     },
     notFound: async () => {
       return { error: "User not found" };
@@ -94,6 +94,7 @@ describe("CreateMerchantUseCase", () => {
       contactPhone: faker.phone.number(),
       contactFirstName: faker.person.firstName(),
       contactLastName: faker.person.lastName(),
+      iban: faker.finance.iban(),
     });
     expect(result).toEqual({ success: true });
     expect(mockedMerchantRepository.create).toHaveBeenCalled();
@@ -120,6 +121,7 @@ describe("CreateMerchantUseCase", () => {
       contactPhone: faker.phone.number(),
       contactFirstName: faker.person.firstName(),
       contactLastName: faker.person.lastName(),
+      iban: faker.finance.iban(),
     });
     expect(result).toEqual({ error: "User not found" });
     expect(mockedMerchantRepository.create).not.toHaveBeenCalled();
@@ -167,6 +169,7 @@ describe("CreateMerchantUseCase", () => {
       contactPhone: faker.phone.number(),
       contactFirstName: faker.person.firstName(),
       contactLastName: faker.person.lastName(),
+      iban: faker.finance.iban(),
     });
     expect(result).toEqual({ error: "Merchant already exists" });
     expect(mockedMerchantRepository.create).not.toHaveBeenCalled();

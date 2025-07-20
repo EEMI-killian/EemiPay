@@ -74,17 +74,20 @@ describe("TransactionAggregate", () => {
       },
       merchantIban: mockedData.merchantIban,
     });
-    const result = transaction.refund({
-      amount: 50,
-      currency: CurrencyEnum.USD,
-      customerCardInfo: {
-        ...mockedData,
-      },
-      merchantIban: mockedData.merchantIban,
-    });
-    expect(result).toEqual({
-      error: "No capture operation found to refund against.",
-    });
+    try {
+      const result = transaction.refund({
+        amount: 50,
+        currency: CurrencyEnum.USD,
+        customerCardInfo: {
+          ...mockedData,
+        },
+        merchantIban: mockedData.merchantIban,
+      });
+    } catch (error) {
+      expect(error).toEqual(
+        new Error("No capture operation found to refund against."),
+      );
+    }
     expect(transaction.operations.length).toBe(1);
   });
   test("it should create a transaction capture but not refund cause the operation is failed", () => {
@@ -104,7 +107,7 @@ describe("TransactionAggregate", () => {
       new Date(),
       [],
     );
-    const captureResult = transaction.capture({
+    transaction.capture({
       amount: 100,
       currency: CurrencyEnum.USD,
       customerCardInfo: {
@@ -116,21 +119,20 @@ describe("TransactionAggregate", () => {
       operationId: transaction.operations[0].id,
       status: OperationStatus.FAILED,
     });
-    const result = transaction.refund({
-      amount: 50,
-      currency: CurrencyEnum.USD,
-      customerCardInfo: {
-        ...mockedData,
-      },
-      merchantIban: mockedData.merchantIban,
-    });
-    expect(captureResult).toEqual({
-      success: true,
-      message: "Transaction captured successfully.",
-    });
-    expect(result).toEqual({
-      error: "No capture operation found to refund against.",
-    });
+    try {
+      transaction.refund({
+        amount: 50,
+        currency: CurrencyEnum.USD,
+        customerCardInfo: {
+          ...mockedData,
+        },
+        merchantIban: mockedData.merchantIban,
+      });
+    } catch (error) {
+      expect(error).toEqual(
+        new Error("No capture operation found to refund against."),
+      );
+    }
     expect(transaction.operations.length).toBe(1);
   });
   test("it should create a transaction capture but not refund cause the amount exceeds the initial capture", () => {
@@ -162,17 +164,20 @@ describe("TransactionAggregate", () => {
       operationId: transaction.operations[0].id,
       status: OperationStatus.COMPLETED,
     });
-    const result = transaction.refund({
-      amount: 150,
-      currency: CurrencyEnum.USD,
-      customerCardInfo: {
-        ...mockedData,
-      },
-      merchantIban: mockedData.merchantIban,
-    });
-    expect(result).toEqual({
-      error: "Refund amount exceeds captured amount.",
-    });
+    try {
+      transaction.refund({
+        amount: 150,
+        currency: CurrencyEnum.USD,
+        customerCardInfo: {
+          ...mockedData,
+        },
+        merchantIban: mockedData.merchantIban,
+      });
+    } catch (error) {
+      expect(error).toEqual(
+        new Error("Refund amount exceeds captured amount."),
+      );
+    }
     expect(transaction.operations.length).toBe(1);
   });
   test("it should not refund a transaction without a capture", () => {
@@ -192,17 +197,20 @@ describe("TransactionAggregate", () => {
       new Date(),
       [],
     );
-    const result = transaction.refund({
-      amount: 150,
-      currency: CurrencyEnum.USD,
-      customerCardInfo: {
-        ...mockedData,
-      },
-      merchantIban: mockedData.merchantIban,
-    });
-    expect(result).toEqual({
-      error: "No capture operation found to refund against.",
-    });
+    try {
+      transaction.refund({
+        amount: 50,
+        currency: CurrencyEnum.USD,
+        customerCardInfo: {
+          ...mockedData,
+        },
+        merchantIban: mockedData.merchantIban,
+      });
+    } catch (error) {
+      expect(error).toEqual(
+        new Error("No capture operation found to refund against."),
+      );
+    }
     expect(transaction.operations.length).toBe(0);
   });
 });
