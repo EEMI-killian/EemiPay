@@ -6,6 +6,7 @@ import { IPaymentMethodRepository } from "../../../repository/PaymentMethod/paym
 import { OperationStatus, TransactionType } from "../../../entity/Operation";
 import { IOperationRepository } from "../../../repository/Operation/operation.repository.interface";
 import { v4 as uuidv4 } from "uuid";
+import { set } from "zod";
 
 export interface ICaptureTransactionPresenter<
   SuccessType,
@@ -91,8 +92,9 @@ export class captureTransactionUseCase<
         expiryDate,
         cardNumber,
       });
+      const operationId = `operation-${uuidv4()}`;
       await this.operationRepository.save({
-        id: currentTransaction.id,
+        id: operationId,
         createdAt: new Date(),
         type: TransactionType.CAPTURE,
         status: OperationStatus.PENDING,
@@ -101,6 +103,13 @@ export class captureTransactionUseCase<
         currency: transaction.currency,
         amount: transaction.amount,
       });
+
+      // fake psp 
+      currentTransaction.updateOperationStatus({
+        operationId,
+        status: OperationStatus.COMPLETED
+      });
+      // save the updated transaction
       return this.presenter.success(currentTransaction);
     } catch (error) {
       return this.presenter.functionnalError(error.message);
