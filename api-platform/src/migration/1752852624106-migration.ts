@@ -9,7 +9,7 @@ export class Migration1752852624106 implements MigrationInterface {
                 "external_ref" character varying NOT NULL,
                 "amount" integer NOT NULL,
                 "currency" public.currency_enum NOT NULL,
-                "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             );
         `);
   }

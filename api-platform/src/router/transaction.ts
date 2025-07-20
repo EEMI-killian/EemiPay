@@ -3,6 +3,7 @@ import { CreateTransactionUseCase } from "../usecase/Transaction/Create/createTr
 import { AppDataSource } from "../data-source";
 import { MerchantRepository } from "../repository/Merchant/merchant.repository";
 import { TransactionRepository } from "../repository/Transaction/transaction.repository";
+import { captureTransactionUseCase } from "../usecase/Transaction/Capture/captureTransaction.usecase";
 
 const router = express.Router();
 
@@ -39,6 +40,47 @@ router.post("/create", async (req, res) => {
       externalRef,
       amount,
       currency,
+    });
+    return result;
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/capture/:id", async (req, res) => {
+  const { id: transactionId } = req.params;
+  const { cardHolderName, cvv, expiryDate, cardNumber } = req.body;
+  const transactionRepository = new TransactionRepository(
+    AppDataSource.getRepository("Transaction"),
+  );
+  const merchantRepository = new MerchantRepository(
+    AppDataSource.getRepository("Merchant"),
+  );
+  const useCase = new captureTransactionUseCase(
+    transactionRepository,
+    {
+      success: async (transaction) => {
+        res.status(200).json(transaction);
+      },
+      notFound: async () => {
+        res.status(404).json({ error: "Transaction not found" });
+      },
+      merchantNotFound: async () => {
+        res.status(404).json({ error: "Merchant not found" });
+      },
+      functionnalError: async (error: string) => {
+        res.status(400).json({ error });
+      },
+    },
+    merchantRepository,
+  );
+  try {
+    const result = await useCase.execute({
+      transactionId,
+      cardHolderName,
+      cvv,
+      expiryDate,
+      cardNumber,
     });
     return result;
   } catch (error) {

@@ -74,7 +74,6 @@ export class TransactionAggregate implements ITransactionAggregate {
       status: OperationStatus.PENDING,
       createdAt: new Date(),
     };
-
     this.operations.push(operation);
 
     return {
@@ -133,7 +132,6 @@ export class TransactionAggregate implements ITransactionAggregate {
       status: OperationStatus.PENDING,
       createdAt: new Date(),
     };
-
     this.operations.push(operation);
 
     return {
