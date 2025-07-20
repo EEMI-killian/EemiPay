@@ -16,8 +16,5 @@ export interface IPspGateway {
       cardHolderName: string;
       cardCvc: string;
     };
-  }): Promise<{
-    success: boolean;
-    message: string;
-  }>;
+  }): Promise<{ success: boolean; message: string }>;
 }
