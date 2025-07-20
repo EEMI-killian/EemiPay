@@ -10,7 +10,7 @@ import { OperationStatus, TransactionType } from "../../../entity/Operation";
 import { IOperationRepository } from "../../../repository/Operation/operation.repository.interface";
 import { v4 as uuidv4 } from "uuid";
 
-export interface ICaptureTransactionPresenter<
+interface ICaptureTransactionPresenter<
   SuccessType,
   NotFoundType,
   FunctionalErrorType,
