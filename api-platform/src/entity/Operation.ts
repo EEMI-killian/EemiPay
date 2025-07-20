@@ -32,10 +32,10 @@ export class Operation {
   })
   currency: CurrencyEnum;
 
-  @Column()
+  @Column({ name: "customer_payment_method_id" })
   customerPaymentMethodId: string;
 
-  @Column()
+  @Column({ name: "merchant_iban" })
   merchantIban: string;
 
   @Column({
@@ -45,12 +45,14 @@ export class Operation {
   status: OperationStatus;
 
   @Column({
+    name: "created_at",
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
   })
   createdAt: Date;
 
   @Column({
+    name: "updated_at",
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
   })

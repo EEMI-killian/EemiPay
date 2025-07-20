@@ -4,6 +4,8 @@ import { AppDataSource } from "../data-source";
 import { MerchantRepository } from "../repository/Merchant/merchant.repository";
 import { TransactionRepository } from "../repository/Transaction/transaction.repository";
 import { captureTransactionUseCase } from "../usecase/Transaction/Capture/captureTransaction.usecase";
+import { OperationRepository } from "../repository/Operation/operation.repository";
+import { PaymentMethodRepository } from "../repository/PaymentMethod/paymentMethod.repository";
 
 const router = express.Router();
 
@@ -56,6 +58,12 @@ router.post("/capture/:id", async (req, res) => {
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );
+  const operationRepository = new OperationRepository(
+    AppDataSource.getRepository("Operation"),
+  );
+  const paymentMethodRepository = new PaymentMethodRepository(
+    AppDataSource.getRepository("PaymentMethod"),
+  );
   const useCase = new captureTransactionUseCase(
     transactionRepository,
     {
@@ -73,6 +81,8 @@ router.post("/capture/:id", async (req, res) => {
       },
     },
     merchantRepository,
+    paymentMethodRepository,
+    operationRepository,
   );
   try {
     const result = await useCase.execute({

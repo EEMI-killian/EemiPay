@@ -11,7 +11,7 @@ export class Migration1753011866189 implements MigrationInterface {
         `);
 
     await queryRunner.query(`
-            CREATE TABLE public.operations (
+            CREATE TABLE public.operation (
                 "id" character varying NOT NULL,
                 "type" public.transaction_type_enum NOT NULL,
                 "amount" integer NOT NULL,
@@ -21,16 +21,16 @@ export class Migration1753011866189 implements MigrationInterface {
                 "status" public.operation_status_enum NOT NULL,
                 "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT "PK_operations_id" PRIMARY KEY ("id")
+                CONSTRAINT "PK_operation_id" PRIMARY KEY ("id")
             )
         `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-            DROP TABLE public.operations
-            DROP TYPE public.transaction_type_enum
-            DROP TYPE public.operation_status_enum
+            DROP TABLE public.operation ;
+            DROP TYPE public.transaction_type_enum;
+            DROP TYPE public.operation_status_enum;
         `);
   }
 }

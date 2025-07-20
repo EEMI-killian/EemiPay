@@ -1,8 +1,11 @@
-import { F } from "@faker-js/faker/dist/airline-BUL6NtOJ";
 import { TransactionAggregate } from "../../../business/transaction.aggregate";
 import { IMerchantRepository } from "../../../repository/Merchant/merchant.repository.interface";
 import { ITransactionRepository } from "../../../repository/Transaction/transaction.repository.interface";
 import { ICaptureTransactionUseCase } from "./captureTransaction.usecase.interface";
+import { IPaymentMethodRepository } from "../../../repository/PaymentMethod/paymentMethod.repository.interface";
+import { OperationStatus, TransactionType } from "../../../entity/Operation";
+import { IOperationRepository } from "../../../repository/Operation/operation.repository.interface";
+import { v4 as uuidv4 } from "uuid";
 
 export interface ICaptureTransactionPresenter<
   SuccessType,
@@ -30,6 +33,8 @@ export class captureTransactionUseCase<
       FunctionalErrorType
     >,
     private merchantRepository: IMerchantRepository,
+    private paymentMethodRepository: IPaymentMethodRepository,
+    private operationRepository: IOperationRepository,
   ) {}
 
   async execute({
@@ -77,6 +82,24 @@ export class captureTransactionUseCase<
           expiryDate: expiryDate,
         },
         merchantIban: merchantInfo.iban,
+      });
+      const paymentMethodId = `paymentMethod-${uuidv4()}`;
+      await this.paymentMethodRepository.save({
+        id: paymentMethodId,
+        cardHolderName,
+        cvv,
+        expiryDate,
+        cardNumber,
+      });
+      await this.operationRepository.save({
+        id: currentTransaction.id,
+        createdAt: new Date(),
+        type: TransactionType.CAPTURE,
+        status: OperationStatus.PENDING,
+        merchantIban: merchantInfo.iban,
+        customerPaymentMethodId: paymentMethodId,
+        currency: transaction.currency,
+        amount: transaction.amount,
       });
       return this.presenter.success(currentTransaction);
     } catch (error) {

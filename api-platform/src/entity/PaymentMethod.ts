@@ -2,22 +2,23 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class PaymentMethod {
-  @PrimaryColumn()
+  @PrimaryColumn({ name: "id" })
   id: string;
 
-  @Column()
+  @Column({ name: "card_holder_name" })
   cardHolderName: string;
 
-  @Column()
+  @Column({ name: "card_number" })
   cardNumber: string;
 
-  @Column()
+  @Column({ name: "expiry_date" })
   expiryDate: string;
 
-  @Column()
+  @Column({ name: "cvv" })
   cvv: string;
 
   @Column({
+    name: "created_at",
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
   })
