@@ -6,6 +6,7 @@ import { TransactionRepository } from "../repository/Transaction/transaction.rep
 import { captureTransactionUseCase } from "../usecase/Transaction/Capture/captureTransaction.usecase";
 import { OperationRepository } from "../repository/Operation/operation.repository";
 import { PaymentMethodRepository } from "../repository/PaymentMethod/paymentMethod.repository";
+import { PspGateway } from "../gateway/psp/Psp.gateway";
 
 const router = express.Router();
 
@@ -64,6 +65,7 @@ router.post("/capture/:id", async (req, res) => {
   const paymentMethodRepository = new PaymentMethodRepository(
     AppDataSource.getRepository("PaymentMethod"),
   );
+  const pspGateway = new PspGateway();
   const useCase = new captureTransactionUseCase(
     transactionRepository,
     {
@@ -83,6 +85,7 @@ router.post("/capture/:id", async (req, res) => {
     merchantRepository,
     paymentMethodRepository,
     operationRepository,
+    pspGateway,
   );
   try {
     await useCase.execute({
