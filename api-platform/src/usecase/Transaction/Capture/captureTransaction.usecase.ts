@@ -9,6 +9,7 @@ import { IPaymentMethodRepository } from "../../../repository/PaymentMethod/paym
 import { OperationStatus, TransactionType } from "../../../entity/Operation";
 import { IOperationRepository } from "../../../repository/Operation/operation.repository.interface";
 import { v4 as uuidv4 } from "uuid";
+import { IPspGateway } from "../../../gateway/psp/Psp.gateway.interface";
 
 interface ICaptureTransactionPresenter<
   SuccessType,
@@ -38,6 +39,7 @@ export class captureTransactionUseCase<
     private merchantRepository: IMerchantRepository,
     private paymentMethodRepository: IPaymentMethodRepository,
     private operationRepository: IOperationRepository,
+    private pspGateway: IPspGateway,
   ) {}
 
   async execute({
@@ -134,6 +136,21 @@ export class captureTransactionUseCase<
       });
 
       // fake psp
+      const pspResponse = await this.pspGateway.makeTransaction({
+        merchantIban: merchantInfo.iban,
+        merchantName: merchantInfo.companyName,
+        amount: transaction.amount,
+        currency: transaction.currency,
+        cardInfo: {
+          cardNumber,
+          cardExpiry: expiryDate,
+          cardHolderName,
+          cardCvc: cvv,
+        },
+      });
+      if (!pspResponse.success) {
+        return await this.presenter.functionalError(pspResponse.message);
+      }
       currentTransaction.updateOperationStatus({
         operationId,
         status: OperationStatus.COMPLETED,
