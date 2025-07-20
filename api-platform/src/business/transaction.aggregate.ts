@@ -1,10 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
 import { ITransactionAggregate } from "./transaction.aggregate.interface";
 import { CurrencyEnum } from "../entity/Merchant";
+import { OperationStatus, TransactionType } from "../entity/Operation";
 
 type operation = {
   id: string;
-  type: "CAPTURE" | "REFUND";
+  type: TransactionType;
   amount: number;
   currency: CurrencyEnum;
   customerCardInfo: {
@@ -14,7 +15,7 @@ type operation = {
     cvv: string;
   };
   merchantIban: string;
-  status: "PENDING" | "COMPLETED" | "FAILED";
+  status: OperationStatus;
   createdAt: Date;
   updatedAt?: Date;
 };
@@ -65,12 +66,12 @@ export class TransactionAggregate implements ITransactionAggregate {
     }
     const operation: operation = {
       id: uuidv4(),
-      type: "CAPTURE",
+      type: TransactionType.CAPTURE,
       amount,
       currency,
       customerCardInfo,
       merchantIban,
-      status: "PENDING",
+      status: OperationStatus.PENDING,
       createdAt: new Date(),
     };
 
@@ -124,12 +125,12 @@ export class TransactionAggregate implements ITransactionAggregate {
     }
     const operation: operation = {
       id: uuidv4(),
-      type: "REFUND",
+      type: TransactionType.REFUND,
       amount,
       currency,
       customerCardInfo,
       merchantIban,
-      status: "PENDING",
+      status: OperationStatus.PENDING,
       createdAt: new Date(),
     };
 
@@ -145,7 +146,7 @@ export class TransactionAggregate implements ITransactionAggregate {
     status,
   }: {
     operationId: string;
-    status: "PENDING" | "COMPLETED" | "FAILED";
+    status: OperationStatus;
   }): { success: boolean; message: string } | { error: string } {
     const operation = this.operations.find((op) => op.id === operationId);
     if (!operation) {

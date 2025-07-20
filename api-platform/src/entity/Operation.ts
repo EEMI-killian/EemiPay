@@ -1,6 +1,17 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 import { CurrencyEnum } from "./Merchant";
 
+export enum TransactionType {
+  CAPTURE = "CAPTURE",
+  REFUND = "REFUND",
+}
+
+export enum OperationStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+}
+
 @Entity()
 export class Operation {
   @PrimaryColumn()
@@ -8,9 +19,9 @@ export class Operation {
 
   @Column({
     type: "enum",
-    enum: ["CAPTURE", "REFUND"],
+    enum: TransactionType,
   })
-  type: "CAPTURE" | "REFUND";
+  type: TransactionType;
 
   @Column()
   amount: number;
@@ -29,9 +40,9 @@ export class Operation {
 
   @Column({
     type: "enum",
-    enum: ["PENDING", "COMPLETED", "FAILED"],
+    enum: OperationStatus,
   })
-  status: "PENDING" | "COMPLETED" | "FAILED";
+  status: OperationStatus;
 
   @Column({
     type: "timestamp",

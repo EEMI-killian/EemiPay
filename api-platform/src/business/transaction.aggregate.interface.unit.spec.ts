@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import { test, describe, expect } from "@jest/globals";
 import { TransactionAggregate } from "./transaction.aggregate";
 import { CurrencyEnum } from "../entity/Merchant";
+import { OperationStatus } from "../entity/Operation";
 
 describe("TransactionAggregate", () => {
   test("it should create a transaction capture and refund it", () => {
@@ -31,7 +32,7 @@ describe("TransactionAggregate", () => {
     });
     const updateResult = transaction.updateOperationStatus({
       operationId: transaction.operations[0].id,
-      status: "COMPLETED",
+      status: OperationStatus.COMPLETED,
     });
     transaction.refund({
       amount: 50,
@@ -113,7 +114,7 @@ describe("TransactionAggregate", () => {
     });
     transaction.updateOperationStatus({
       operationId: transaction.operations[0].id,
-      status: "FAILED",
+      status: OperationStatus.FAILED,
     });
     const result = transaction.refund({
       amount: 50,
@@ -159,7 +160,7 @@ describe("TransactionAggregate", () => {
     });
     transaction.updateOperationStatus({
       operationId: transaction.operations[0].id,
-      status: "COMPLETED",
+      status: OperationStatus.COMPLETED,
     });
     const result = transaction.refund({
       amount: 150,
