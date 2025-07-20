@@ -17,7 +17,7 @@ export class Migration1753011595567 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-            DROP TABLE public.payment_methods ;
+            DROP TABLE public.payment_method ;
         `);
   }
 }

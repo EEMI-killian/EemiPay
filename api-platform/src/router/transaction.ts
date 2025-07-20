@@ -76,7 +76,7 @@ router.post("/capture/:id", async (req, res) => {
       merchantNotFound: async () => {
         return res.status(404).json({ error: "Merchant not found" });
       },
-      functionnalError: async (error: string) => {
+      functionalError: async (error: string) => {
         return res.status(400).json({ error });
       },
     },

@@ -18,7 +18,7 @@ interface ICaptureTransactionPresenter<
   success(transaction: TransactionAggregate): Promise<SuccessType>;
   notFound(): Promise<NotFoundType>;
   merchantNotFound(): Promise<NotFoundType>;
-  functionnalError(error: string): Promise<FunctionalErrorType>;
+  functionalError(error: string): Promise<FunctionalErrorType>;
 }
 
 export class captureTransactionUseCase<
@@ -146,7 +146,7 @@ export class captureTransactionUseCase<
 
       return await this.presenter.success(currentTransaction);
     } catch (error) {
-      return await this.presenter.functionnalError(error.message);
+      return await this.presenter.functionalError(error.message);
     }
   }
 }

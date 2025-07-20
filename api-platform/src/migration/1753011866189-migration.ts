@@ -30,8 +30,8 @@ export class Migration1753011866189 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
             DROP TABLE public.operation ;
-            DROP TYPE public.transaction_type_enum;
-            DROP TYPE public.operation_status_enum;
+            DROP TYPE public.transaction_type_enum ;
+            DROP TYPE public.operation_status_enum ;
         `);
   }
 }

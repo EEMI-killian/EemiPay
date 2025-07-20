@@ -82,6 +82,7 @@ describe("GenerateCredentialUsecase", () => {
       redirectionUrlCancel: faker.internet.url(),
       redirectionUrlConfirm: faker.internet.url(),
       createdAt: faker.date.past(),
+      iban: faker.finance.iban(),
     });
     mockedHashGateway.hash.mockResolvedValue("hashedSecret");
     mockedCredentialGateway.generate.mockResolvedValue({
