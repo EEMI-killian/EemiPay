@@ -154,6 +154,7 @@ describe("CreateMerchantUseCase", () => {
       contactPhone: faker.phone.number(),
       contactFirstName: faker.person.firstName(),
       contactLastName: faker.person.lastName(),
+      iban: faker.finance.iban(),
     });
     const result = await uc.execute({
       userId: `user_1`,

@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { ITransactionAggregate } from "./transaction.aggregate.interface";
 import { CurrencyEnum } from "../entity/Merchant";
-import { tr } from "@faker-js/faker/.";
 
 type operation = {
   id: string;
@@ -17,6 +16,7 @@ type operation = {
   merchantIban: string;
   status: "PENDING" | "COMPLETED" | "FAILED";
   createdAt: Date;
+  updatedAt?: Date;
 };
 
 export class TransactionAggregate implements ITransactionAggregate {
@@ -152,6 +152,7 @@ export class TransactionAggregate implements ITransactionAggregate {
       return { error: "Operation not found." };
     }
     operation.status = status;
+    operation.updatedAt = new Date();
     return { success: true, message: "Operation status updated successfully." };
   }
 }

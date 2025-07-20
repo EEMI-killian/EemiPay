@@ -29,4 +29,5 @@ type CreateMerchantUseCaseArgs = {
   contactFirstName: string;
   contactLastName: string;
   kbisUrl: string;
+  iban: string;
 };

@@ -44,6 +44,9 @@ export class Merchant {
   @Column({ name: "user_id" })
   userId: string;
 
+  @Column()
+  iban: string;
+
   @Column({
     name: "created_at",
     type: "timestamp",

@@ -56,6 +56,7 @@ describe("GetMerchantUseCase", () => {
       currency: CurrencyEnum.GBP,
       createdAt: faker.date.past(),
       kbisUrl: faker.internet.url(),
+      iban: faker.finance.iban(),
     });
     const uc = new GetMerchantUseCase(
       mockedMerchantRepository,

@@ -64,6 +64,7 @@ describe("UpdateMerchantUseCase", () => {
       currency: CurrencyEnum.GBP,
       createdAt: faker.date.past(),
       kbisUrl: faker.internet.url(),
+      iban: faker.finance.iban(),
     });
 
     mockedMerchantRepository.update.mockResolvedValue();

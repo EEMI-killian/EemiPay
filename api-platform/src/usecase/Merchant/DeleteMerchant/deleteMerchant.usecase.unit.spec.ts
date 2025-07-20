@@ -60,6 +60,7 @@ describe("DeleteMerchantUseCase", () => {
       contactLastName: faker.person.lastName(),
       createdAt: new Date(),
       kbisUrl: faker.internet.url(),
+      iban: faker.finance.iban(),
     });
     mockedMerchantRepository.delete.mockResolvedValue();
     const result = await uc.execute({ id: merchantId });

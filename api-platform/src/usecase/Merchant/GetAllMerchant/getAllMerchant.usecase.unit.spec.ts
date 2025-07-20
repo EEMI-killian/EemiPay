@@ -52,6 +52,7 @@ describe("GetAllMerchantUseCase", () => {
         currency: CurrencyEnum.GBP,
         createdAt: faker.date.past(),
         kbisUrl: faker.internet.url(),
+        iban: faker.finance.iban(),
       },
       {
         id: `merchant_${faker.string.uuid()}`,
@@ -66,6 +67,7 @@ describe("GetAllMerchantUseCase", () => {
         currency: CurrencyEnum.EUR,
         createdAt: faker.date.past(),
         kbisUrl: faker.internet.url(),
+        iban: faker.finance.iban(),
       },
     ];
     mockedMerchantRepository.getAll.mockResolvedValue(datafixtures);
