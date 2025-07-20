@@ -12,6 +12,7 @@ export class OperationRepository implements IOperationRepository {
 
   async save({
     id,
+    transactionId,
     createdAt,
     status,
     merchantIban,
@@ -21,6 +22,7 @@ export class OperationRepository implements IOperationRepository {
     type,
   }: {
     id: string;
+    transactionId: string;
     createdAt: Date;
     status: OperationStatus;
     merchantIban: string;
@@ -31,14 +33,33 @@ export class OperationRepository implements IOperationRepository {
   }): Promise<void> {
     const operation = this.operationRepository.create({
       id,
+      transactionId,
       status,
       createdAt,
       merchantIban,
       customerPaymentMethodId,
       currency,
       amount,
-      type, // Assuming the type is always CAPTURE for this operation
+      type,
     });
     await this.operationRepository.save(operation);
+  }
+  async updateOperationStatus({
+    operationId,
+    status,
+  }: {
+    operationId: string;
+    status: OperationStatus;
+  }): Promise<void> {
+    await this.operationRepository.update(operationId, {
+      status,
+      updatedAt: new Date(),
+    });
+  }
+  async findByTransactionId(transactionId: string): Promise<Operation[]> {
+    return this.operationRepository.find({
+      where: { transactionId },
+      order: { createdAt: "DESC" },
+    });
   }
 }

@@ -26,6 +26,9 @@ export class Operation {
   @Column()
   amount: number;
 
+  @Column({ name: "transaction_id" })
+  transactionId: string;
+
   @Column({
     type: "enum",
     enum: CurrencyEnum,

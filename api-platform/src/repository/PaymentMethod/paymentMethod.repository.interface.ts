@@ -1,3 +1,5 @@
+import { PaymentMethod } from "../../entity/PaymentMethod";
+
 export interface IPaymentMethodRepository {
   save({
     id,
@@ -12,4 +14,5 @@ export interface IPaymentMethodRepository {
     expiryDate: string;
     cardNumber: string;
   }): Promise<void>;
+  findById(id: string): Promise<PaymentMethod | null>;
 }

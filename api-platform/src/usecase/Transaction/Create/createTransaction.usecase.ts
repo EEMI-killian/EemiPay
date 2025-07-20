@@ -73,9 +73,6 @@ export class CreateTransactionUseCase<
       if (!merchant) {
         await this.presenter.notFound("Merchant not found");
       }
-
-      // i need to charge the real amount of transaction
-
       const transaction = new TransactionAggregate(
         `transaction-${uuidv4()}`,
         merchantId,

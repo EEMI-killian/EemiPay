@@ -1,9 +1,14 @@
 import { CurrencyEnum } from "../../entity/Merchant";
-import { OperationStatus, TransactionType } from "../../entity/Operation";
+import {
+  Operation,
+  OperationStatus,
+  TransactionType,
+} from "../../entity/Operation";
 
 export interface IOperationRepository {
   save({
     id,
+    transactionId,
     createdAt,
     status,
     merchantIban,
@@ -13,6 +18,7 @@ export interface IOperationRepository {
     type,
   }: {
     id: string;
+    transactionId: string;
     createdAt: Date;
     status: OperationStatus;
     merchantIban: string;
@@ -21,4 +27,12 @@ export interface IOperationRepository {
     amount: number;
     type: TransactionType;
   }): Promise<void>;
+  updateOperationStatus({
+    operationId,
+    status,
+  }: {
+    operationId: string;
+    status: OperationStatus;
+  }): Promise<void>;
+  findByTransactionId(transactionId: string): Promise<Operation[]>;
 }

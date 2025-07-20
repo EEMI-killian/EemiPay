@@ -1,4 +1,7 @@
-import { TransactionAggregate } from "../../../business/transaction.aggregate";
+import {
+  operation,
+  TransactionAggregate,
+} from "../../../business/transaction.aggregate";
 import { IMerchantRepository } from "../../../repository/Merchant/merchant.repository.interface";
 import { ITransactionRepository } from "../../../repository/Transaction/transaction.repository.interface";
 import { ICaptureTransactionUseCase } from "./captureTransaction.usecase.interface";
@@ -6,17 +9,16 @@ import { IPaymentMethodRepository } from "../../../repository/PaymentMethod/paym
 import { OperationStatus, TransactionType } from "../../../entity/Operation";
 import { IOperationRepository } from "../../../repository/Operation/operation.repository.interface";
 import { v4 as uuidv4 } from "uuid";
-import { set } from "zod";
 
 export interface ICaptureTransactionPresenter<
   SuccessType,
   NotFoundType,
   FunctionalErrorType,
 > {
-  success(transaction: TransactionAggregate): SuccessType;
-  notFound(): NotFoundType;
-  merchantNotFound(): NotFoundType;
-  functionnalError(error: string): FunctionalErrorType;
+  success(transaction: TransactionAggregate): Promise<SuccessType>;
+  notFound(): Promise<NotFoundType>;
+  merchantNotFound(): Promise<NotFoundType>;
+  functionnalError(error: string): Promise<FunctionalErrorType>;
 }
 
 export class captureTransactionUseCase<
@@ -54,14 +56,36 @@ export class captureTransactionUseCase<
     const transaction =
       await this.transactionRepository.findById(transactionId);
     if (!transaction) {
-      this.presenter.notFound();
+      return await this.presenter.notFound();
     }
 
     const merchantInfo = await this.merchantRepository.findById(
       transaction.merchantId,
     );
     if (!merchantInfo) {
-      this.presenter.merchantNotFound();
+      return await this.presenter.merchantNotFound();
+    }
+    let operations: operation[] = [];
+    const operationsFound =
+      await this.operationRepository.findByTransactionId(transactionId);
+
+    if (operationsFound) {
+      operations = await Promise.all(
+        operationsFound.map(async (op) => ({
+          id: op.id,
+          transactionId: op.transactionId,
+          type: op.type,
+          amount: op.amount,
+          currency: op.currency,
+          customerCardInfo: await this.paymentMethodRepository.findById(
+            op.customerPaymentMethodId,
+          ),
+          merchantIban: op.merchantIban,
+          status: op.status,
+          createdAt: op.createdAt,
+          updatedAt: op.updatedAt,
+        })),
+      );
     }
     try {
       const currentTransaction = new TransactionAggregate(
@@ -71,8 +95,9 @@ export class captureTransactionUseCase<
         transaction.amount,
         transaction.currency,
         transaction.createdAt,
-        [],
+        operations,
       );
+
       currentTransaction.capture({
         amount: transaction.amount,
         currency: transaction.currency,
@@ -84,7 +109,10 @@ export class captureTransactionUseCase<
         },
         merchantIban: merchantInfo.iban,
       });
+
+      const operationId = currentTransaction.operations[0].id;
       const paymentMethodId = `paymentMethod-${uuidv4()}`;
+
       await this.paymentMethodRepository.save({
         id: paymentMethodId,
         cardHolderName,
@@ -92,9 +120,10 @@ export class captureTransactionUseCase<
         expiryDate,
         cardNumber,
       });
-      const operationId = `operation-${uuidv4()}`;
+
       await this.operationRepository.save({
         id: operationId,
+        transactionId: currentTransaction.id,
         createdAt: new Date(),
         type: TransactionType.CAPTURE,
         status: OperationStatus.PENDING,
@@ -104,15 +133,20 @@ export class captureTransactionUseCase<
         amount: transaction.amount,
       });
 
-      // fake psp 
+      // fake psp
       currentTransaction.updateOperationStatus({
         operationId,
-        status: OperationStatus.COMPLETED
+        status: OperationStatus.COMPLETED,
       });
-      // save the updated transaction
-      return this.presenter.success(currentTransaction);
+
+      await this.operationRepository.updateOperationStatus({
+        operationId,
+        status: OperationStatus.COMPLETED,
+      });
+
+      return await this.presenter.success(currentTransaction);
     } catch (error) {
-      return this.presenter.functionnalError(error.message);
+      return await this.presenter.functionnalError(error.message);
     }
   }
 }

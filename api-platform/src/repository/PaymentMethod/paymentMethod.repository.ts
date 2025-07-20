@@ -26,4 +26,7 @@ export class PaymentMethodRepository implements IPaymentMethodRepository {
     });
     await this.paymentMethodRepository.save(paymentMethod);
   }
+  async findById(id: string): Promise<PaymentMethod | null> {
+    return this.paymentMethodRepository.findOne({ where: { id } });
+  }
 }

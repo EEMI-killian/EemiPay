@@ -68,16 +68,16 @@ router.post("/capture/:id", async (req, res) => {
     transactionRepository,
     {
       success: async (transaction) => {
-        res.status(200).json(transaction);
+        return res.status(200).json(transaction);
       },
       notFound: async () => {
-        res.status(404).json({ error: "Transaction not found" });
+        return res.status(404).json({ error: "Transaction not found" });
       },
       merchantNotFound: async () => {
-        res.status(404).json({ error: "Merchant not found" });
+        return res.status(404).json({ error: "Merchant not found" });
       },
       functionnalError: async (error: string) => {
-        res.status(400).json({ error });
+        return res.status(400).json({ error });
       },
     },
     merchantRepository,
@@ -85,14 +85,13 @@ router.post("/capture/:id", async (req, res) => {
     operationRepository,
   );
   try {
-    const result = await useCase.execute({
+    await useCase.execute({
       transactionId,
       cardHolderName,
       cvv,
       expiryDate,
       cardNumber,
     });
-    return result;
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }

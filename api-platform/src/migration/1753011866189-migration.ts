@@ -13,6 +13,7 @@ export class Migration1753011866189 implements MigrationInterface {
     await queryRunner.query(`
             CREATE TABLE public.operation (
                 "id" character varying NOT NULL,
+                "transaction_id" character varying NOT NULL,
                 "type" public.transaction_type_enum NOT NULL,
                 "amount" integer NOT NULL,
                 "currency" public.currency_enum NOT NULL,
