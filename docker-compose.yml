@@ -46,6 +46,17 @@ services:
       - postgresEemiPay
     volumes:
       - ./psp:/app
+  
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+    volumes:
+      - ./config/mongo:/data/db
 
 
  
