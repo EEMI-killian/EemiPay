@@ -73,8 +73,9 @@ export class CreateTransactionUseCase<
       if (!merchant) {
         await this.presenter.notFound("Merchant not found");
       }
+      const transactionId = `transaction-${uuidv4()}`;
       const transaction = new TransactionAggregate(
-        `transaction-${uuidv4()}`,
+        transactionId,
         merchantId,
         externalRef,
         amount,
@@ -92,7 +93,7 @@ export class CreateTransactionUseCase<
       });
 
       return await this.presenter.success(
-        `http://localhost:3051/transaction/capture/${transaction.id}`,
+        `http://localhost:5174/transaction/?transactionId=${transactionId}`,
       );
     } catch (error) {
       return await this.presenter.functionalError(error.message);

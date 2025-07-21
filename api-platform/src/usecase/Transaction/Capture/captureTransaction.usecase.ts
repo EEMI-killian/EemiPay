@@ -135,7 +135,7 @@ export class captureTransactionUseCase<
         amount: transaction.amount,
       });
 
-      // fake psp
+
       const pspResponse = await this.pspGateway.makeTransaction({
         merchantIban: merchantInfo.iban,
         merchantName: merchantInfo.companyName,
