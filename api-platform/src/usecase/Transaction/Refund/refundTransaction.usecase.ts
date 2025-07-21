@@ -106,6 +106,16 @@ export class RefundTransactionUseCase<
         currentTransaction.operations[currentTransaction.operations.length - 1]
           .id;
 
+      await this.paymentMethodRepository.save({
+        transactionId: currentTransaction.id,
+        operationId,
+        id: paymentMethodId,
+        cardHolderName: operations[0].customerCardInfo.cardHolderName,
+        cvv: operations[0].customerCardInfo.cvv,
+        expiryDate: operations[0].customerCardInfo.expiryDate,
+        cardNumber: operations[0].customerCardInfo.cardNumber,
+      });
+
       await this.operationRepository.save({
         id: operationId,
         transactionId: currentTransaction.id,

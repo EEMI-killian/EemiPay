@@ -5,6 +5,8 @@ import {
   IMerchantRepository,
   IUpdateMerchantArgs,
 } from "./merchant.repository.interface";
+import mongoose from "mongoose";
+import { ModelDocument } from "../../mongoSchema";
 
 export class MerchantRepository implements IMerchantRepository {
   constructor(private merchantRepository: Repository<Merchant>) {
@@ -14,6 +16,31 @@ export class MerchantRepository implements IMerchantRepository {
   async create(args: ICreateMerchantArgs): Promise<void> {
     const merchant = this.merchantRepository.create(args);
     await this.merchantRepository.save(merchant);
+
+    await mongoose.connect(
+      "mongodb://mongo:mongo@mongodb:27017/eemi-pay?authSource=admin",
+    );
+    const merchantData = {
+      merchantId: args.id,
+      companyName: args.companyName,
+      createdAt: new Date(),
+      redirectionUrlConfirm: args.redirectionUrlConfirm,
+      redirectionUrlCancel: args.redirectionUrlCancel,
+      currency: args.currency,
+      contactEmail: args.contactEmail,
+      contactPhone: args.contactPhone,
+      contactFirstName: args.contactFirstName,
+      contactLastName: args.contactLastName,
+      kbisUrl: args.kbisUrl,
+      iban: args.iban,
+    };
+
+    await ModelDocument.findOneAndUpdate(
+      { userId: args.userId },
+      { $set: { merchant: merchantData } },
+      { new: true },
+    );
+    await mongoose.disconnect();
   }
 
   async findByCompanyName(companyName: string): Promise<Merchant | null> {

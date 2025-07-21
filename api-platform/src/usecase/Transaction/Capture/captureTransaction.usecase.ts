@@ -116,6 +116,8 @@ export class captureTransactionUseCase<
       const paymentMethodId = `paymentMethod-${uuidv4()}`;
 
       await this.paymentMethodRepository.save({
+        transactionId: currentTransaction.id,
+        operationId,
         id: paymentMethodId,
         cardHolderName,
         cvv,
