@@ -7,6 +7,7 @@ import { captureTransactionUseCase } from "../usecase/Transaction/Capture/captur
 import { OperationRepository } from "../repository/Operation/operation.repository";
 import { PaymentMethodRepository } from "../repository/PaymentMethod/paymentMethod.repository";
 import { PspGateway } from "../gateway/psp/Psp.gateway";
+import { RefundTransactionUseCase } from "../usecase/Transaction/Refund/refundTransaction.usecase";
 
 const router = express.Router();
 
@@ -95,6 +96,52 @@ router.post("/capture/:id", async (req, res) => {
       expiryDate,
       cardNumber,
     });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/refund/:id", async (req, res) => {
+  const { id: transactionId } = req.params;
+  const { amountToRefund } = req.body;
+  const transactionRepository = new TransactionRepository(
+    AppDataSource.getRepository("Transaction"),
+  );
+  const merchantRepository = new MerchantRepository(
+    AppDataSource.getRepository("Merchant"),
+  );
+  const operationRepository = new OperationRepository(
+    AppDataSource.getRepository("Operation"),
+  );
+  const paymentMethodRepository = new PaymentMethodRepository(
+    AppDataSource.getRepository("PaymentMethod"),
+  );
+  const pspGateway = new PspGateway();
+
+  const useCase = new RefundTransactionUseCase(
+    transactionRepository,
+    {
+      success: async (transaction) => {
+        return res.status(200).json(transaction);
+      },
+      notFound: async () => {
+        return res.status(404).json({ error: "Transaction not found" });
+      },
+      merchantNotFound: async () => {
+        return res.status(404).json({ error: "Merchant not found" });
+      },
+      functionalError: async (error: string) => {
+        return res.status(400).json({ error });
+      },
+    },
+    merchantRepository,
+    operationRepository,
+    paymentMethodRepository,
+    pspGateway,
+  );
+
+  try {
+    await useCase.execute({ amountToRefund, transactionId });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
