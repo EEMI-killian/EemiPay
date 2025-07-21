@@ -1,4 +1,5 @@
 import * as express from "express";
+import * as cors from "cors"
 import * as bodyParser from "body-parser";
 import { Request, Response } from "express";
 import { AppDataSource } from "./data-source";
@@ -11,6 +12,7 @@ AppDataSource.initialize()
   .then(async () => {
     const app = express();
     app.use(bodyParser.json());
+    app.use(cors());
     app.use("/user", userRouter);
     app.use("/transaction", transactionRouter);
     app.use("/merchant", merchantRouter);
@@ -25,3 +27,4 @@ AppDataSource.initialize()
     });
   })
   .catch((error) => console.log(error));
+

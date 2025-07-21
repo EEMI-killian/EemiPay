@@ -6,6 +6,7 @@
   "devDependencies": {
     "@faker-js/faker": "^9.8.0",
     "@jest/globals": "^30.0.3",
+    "@types/cors": "^2.8.19",
     "@types/node": "^22.16.4",
     "knip": "^5.61.3",
     "prettier": "3.6.2",
@@ -16,6 +17,7 @@
   "dependencies": {
     "argon2": "^0.43.0",
     "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
     "jest": "^30.0.3",
     "nodemon": "^3.1.10",
