@@ -1,5 +1,5 @@
 import * as express from "express";
-import * as cors from "cors"
+import * as cors from "cors";
 import * as bodyParser from "body-parser";
 import { Request, Response } from "express";
 import { AppDataSource } from "./data-source";
@@ -27,4 +27,3 @@ AppDataSource.initialize()
     });
   })
   .catch((error) => console.log(error));
-
