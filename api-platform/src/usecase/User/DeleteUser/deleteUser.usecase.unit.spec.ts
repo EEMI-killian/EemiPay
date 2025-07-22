@@ -6,6 +6,7 @@ import {
   DeleteUserUseCase,
   IDeleteUserUseCasePresenter,
 } from "./deleteUser.usecase";
+import { UserRole } from "../../../entity/User";
 
 describe("DeleteUserUseCase", () => {
   const mockedPresenter: IDeleteUserUseCasePresenter<
@@ -49,6 +50,7 @@ describe("DeleteUserUseCase", () => {
       password: faker.internet.password(),
       isActive: false,
       createdAt: faker.date.past(),
+      roles: UserRole.ROLE_USER,
     });
     mockedUserRepository.delete.mockResolvedValue(null);
     const uc = new DeleteUserUseCase(mockedUserRepository, mockedPresenter);

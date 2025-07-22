@@ -6,6 +6,7 @@ import {
   UpdateUserPasswordUseCase,
 } from "./updateUserPassword.usecase";
 import { IHashGateway } from "../../../gateway/hash/hash.gateway.interface";
+import { UserRole } from "../../../entity/User";
 
 describe("UpdateUserPasswordUseCase", () => {
   const mockedPresenter: IUpdateUserPasswordUseCasePresenter<
@@ -63,6 +64,7 @@ describe("UpdateUserPasswordUseCase", () => {
       password: userArgs.inputOldPassword,
       isActive: true,
       createdAt: faker.date.past(),
+      roles: UserRole.ROLE_USER,
     });
     mockedUserRepository.updatePassword.mockResolvedValue(null);
     mockedHashGateway.compare.mockResolvedValue(true);
@@ -90,6 +92,7 @@ describe("UpdateUserPasswordUseCase", () => {
       password: faker.internet.password(),
       isActive: true,
       createdAt: faker.date.past(),
+      roles: UserRole.ROLE_USER,
     });
     mockedHashGateway.compare.mockResolvedValue(false);
     const uc = new UpdateUserPasswordUseCase(

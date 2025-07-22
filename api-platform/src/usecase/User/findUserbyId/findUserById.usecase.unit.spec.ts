@@ -5,6 +5,7 @@ import {
   FindUserByIdUseCase,
   IFindUserByIdUseCasePresenter,
 } from "./findUserById.usecase";
+import { UserRole } from "../../../entity/User";
 
 describe("FindUserByIdUseCase", () => {
   const mockedPresenter: IFindUserByIdUseCasePresenter<
@@ -48,6 +49,7 @@ describe("FindUserByIdUseCase", () => {
       password: faker.internet.password(),
       isActive: false,
       createdAt: faker.date.past(),
+      roles: UserRole.ROLE_USER,
     });
     const uc = new FindUserByIdUseCase(mockedUserRepository, mockedPresenter);
     const response = await uc.execute({ id: userId });

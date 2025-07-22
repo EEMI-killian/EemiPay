@@ -9,6 +9,7 @@ import { faker } from "@faker-js/faker";
 import { CurrencyEnum } from "../../../entity/Merchant";
 import { IKbisRepository } from "../../../repository/Kbis/KbisRepository.interface";
 import { UuidGateway } from "../../../gateway/uuid/uuid.gateway";
+import { UserRole } from "../../../entity/User";
 
 describe("CreateMerchantUseCase", () => {
   const mockedPresenter: ICreateMerchantUseCasePresenter<
@@ -80,6 +81,7 @@ describe("CreateMerchantUseCase", () => {
       lastName: faker.person.lastName(),
       createdAt: faker.date.past(),
       isActive: true,
+      roles: UserRole.ROLE_USER,
     });
     mockedMerchantRepository.findByCompanyName.mockResolvedValue(null);
     mockedMerchantRepository.create.mockResolvedValue();
@@ -142,6 +144,7 @@ describe("CreateMerchantUseCase", () => {
       lastName: faker.person.lastName(),
       createdAt: faker.date.past(),
       isActive: true,
+      roles: UserRole.ROLE_USER,
     });
     mockedMerchantRepository.findByCompanyName.mockResolvedValue({
       id: `merchant_${faker.string.uuid()}`,

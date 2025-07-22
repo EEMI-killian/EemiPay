@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { faker } from "@faker-js/faker";
 import { IHashGateway } from "../../../gateway/hash/hash.gateway.interface";
 import { UuidGateway } from "../../../gateway/uuid/uuid.gateway";
+import { UserRole } from "../../../entity/User";
 
 describe("CreateUserUseCase", () => {
   const mockedPresenter: ICreateUserUseCasePresenter<
@@ -67,6 +68,7 @@ describe("CreateUserUseCase", () => {
       password: userData.password,
       isActive: false,
       createdAt: new Date(),
+      roles: UserRole.ROLE_USER,
     });
     const uc = new CreateUserUseCase(
       mockedUserRepository,
@@ -88,6 +90,7 @@ describe("CreateUserUseCase", () => {
       password: userData.password,
       isActive: false,
       createdAt: new Date(),
+      roles: UserRole.ROLE_USER,
     });
     const uc = new CreateUserUseCase(
       mockedUserRepository,
