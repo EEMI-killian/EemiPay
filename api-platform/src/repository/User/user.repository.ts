@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { User } from "../../entity/User";
+import { User, UserRole } from "../../entity/User";
 import {
   CreateUserRepositoryArgs,
   IUserRepository,
@@ -21,7 +21,15 @@ export class UserRepository implements IUserRepository {
   }
 
   async create(args: CreateUserRepositoryArgs): Promise<void> {
-    const user = this.userRepository.create(args);
+    const user = this.userRepository.create({
+      id: args.id,
+      firstName: args.firstName,
+      lastName: args.lastName,
+      email: args.email,
+      password: args.password,
+      isActive: false,
+      roles: UserRole.ROLE_USER,
+    });
     await this.userRepository.save(user);
     await mongoose.connect(
       "mongodb://mongo:mongo@mongodb:27017/eemi-pay?authSource=admin",

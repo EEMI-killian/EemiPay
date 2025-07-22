@@ -1,11 +1,15 @@
+import { en } from "@faker-js/faker/.";
 import "reflect-metadata";
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
-  OneToOne,
   PrimaryColumn,
 } from "typeorm";
+
+export enum UserRole {
+  ROLE_USER = "ROLE_USER",
+  ROLE_ADMIN = "ROLE_ADMIN",
+}
 
 @Entity()
 export class User {
@@ -26,6 +30,14 @@ export class User {
 
   @Column({ name: "is_active", default: false })
   isActive!: boolean;
+
+  @Column({
+    name: "roles",
+    type: "enum",
+    enum: UserRole,
+    default: UserRole.ROLE_USER,
+  })
+  roles!: UserRole;
 
   @Column({
     name: "created_at",
