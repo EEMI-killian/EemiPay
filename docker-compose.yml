@@ -34,7 +34,9 @@ services:
     volumes:
       - ./api-platform:/app
       - /Users/killianangely/Downloads:/app/uploads
-  
+    environment:
+      - JWT_SECRET=your_jwt_secret
+
   psp:
     container_name: psp
     build:

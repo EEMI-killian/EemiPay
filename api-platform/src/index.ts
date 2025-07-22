@@ -7,12 +7,14 @@ import userRouter from "./router/user";
 import merchantRouter from "./router/merchant";
 import credentialRouter from "./router/credential";
 import transactionRouter from "./router/transaction";
+import loginRouter from "./router/login";
 
 AppDataSource.initialize()
   .then(async () => {
     const app = express();
     app.use(bodyParser.json());
     app.use(cors());
+    app.use("/",loginRouter);
     app.use("/user", userRouter);
     app.use("/transaction", transactionRouter);
     app.use("/merchant", merchantRouter);

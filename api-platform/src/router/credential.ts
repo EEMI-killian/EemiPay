@@ -7,10 +7,12 @@ import { CredentialRepository } from "../repository/Credential/CredentialReposit
 import { HashGateway } from "../gateway/hash/hash.gateway";
 import { RotateCredentialUsecase } from "../usecase/Credential/Rotate/rotateCredential.usecase";
 import { DeleteCredentialUseCase } from "../usecase/Credential/Delete/deleteCredential.usecase";
+import { checkRole } from "../middlewares/checkRole";
+import { checkAuth } from "../middlewares/checkAuth";
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/", checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
   const credentialGateway = new CredentialGateway();
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
@@ -50,7 +52,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.post("/rotate", async (req, res) => {
+router.post("/rotate", checkAuth, checkRole(["ROLE_USER", "ROLE_ADMIN"]), async (req, res) => {
   const credentialGateway = new CredentialGateway();
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
@@ -90,7 +92,7 @@ router.post("/rotate", async (req, res) => {
   }
 });
 
-router.delete("/", async (req, res) => {
+router.delete("/", checkAuth, checkRole(["ROLE_USER", "ROLE_ADMIN"]), async (req, res) => {
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );

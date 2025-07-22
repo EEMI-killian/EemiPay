@@ -8,10 +8,12 @@ import { OperationRepository } from "../repository/Operation/operation.repositor
 import { PaymentMethodRepository } from "../repository/PaymentMethod/paymentMethod.repository";
 import { PspGateway } from "../gateway/psp/Psp.gateway";
 import { RefundTransactionUseCase } from "../usecase/Transaction/Refund/refundTransaction.usecase";
+import { checkRole } from "../middlewares/checkRole";
+import { checkAuth } from "../middlewares/checkAuth";
 
 const router = express.Router();
 
-router.post("/create", async (req, res) => {
+router.post("/create",checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
   const { merchantId, externalRef, amount, currency } = req.body;
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
@@ -51,7 +53,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
-router.post("/capture/:id", async (req, res) => {
+router.post("/capture/:id",checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
   const { id: transactionId } = req.params;
   const { cardHolderName, cvv, expiryDate, cardNumber } = req.body;
   const transactionRepository = new TransactionRepository(
@@ -101,7 +103,7 @@ router.post("/capture/:id", async (req, res) => {
   }
 });
 
-router.post("/refund/:id", async (req, res) => {
+router.post("/refund/:id", checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
   const { id: transactionId } = req.params;
   const { amountToRefund } = req.body;
   const transactionRepository = new TransactionRepository(

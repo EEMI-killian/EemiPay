@@ -9,10 +9,12 @@ import { UserRepository } from "../repository/User/user.repository";
 import { DeleteMerchantUseCase } from "../usecase/Merchant/DeleteMerchant/deleteMerchant.usecase";
 import { KbisRepository } from "../repository/Kbis/KbisRepository";
 import { UuidGateway } from "../gateway/uuid/uuid.gateway";
+import { checkAuth } from "../middlewares/checkAuth";
+import { checkRole } from "../middlewares/checkRole";
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/",checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );
@@ -21,7 +23,7 @@ router.post("/", async (req, res) => {
   );
   const kbisRepository = new KbisRepository();
   const uuidGateway = new UuidGateway();
-
+  
   const uc = new CreateMerchantUseCase(
     merchantRepository,
     userRepository,
@@ -53,7 +55,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/",checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );
@@ -76,7 +78,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id",checkAuth, checkRole(["ROLE_ADMIN", "ROLE_USER"]), async (req, res) => {
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );
@@ -104,7 +106,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id",checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );

@@ -7,6 +7,8 @@ import { UpdateUserPasswordUseCase } from "../usecase/User/updateUserPassword/up
 import { FindUserByIdUseCase } from "../usecase/User/findUserbyId/findUserById.usecase";
 import { HashGateway } from "../gateway/hash/hash.gateway";
 import { UuidGateway } from "../gateway/uuid/uuid.gateway";
+import { checkAuth } from "../middlewares/checkAuth";
+import { checkRole } from "../middlewares/checkRole";
 
 const router = express.Router();
 
@@ -44,7 +46,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",checkAuth, checkRole(["ROLE_ADMIN"]),async (req, res) => {
   const userId = req.params.id;
   const userRepository = new UserRepository(
     AppDataSource.getRepository("User"),
