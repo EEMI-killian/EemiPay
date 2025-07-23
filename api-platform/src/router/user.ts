@@ -73,8 +73,8 @@ router.delete("/:id",checkAuth, checkRole(["ROLE_ADMIN"]),async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
-  const userId = req.params.id;
+router.get("/",checkAuth, checkRole(["ROLE_USER", "ROLE_ADMIN"]), async (req, res ) => {
+  const userId = req.user.id
   const userRepository = new UserRepository(
     AppDataSource.getRepository("User"),
   );
@@ -94,7 +94,8 @@ router.get("/:id", async (req, res) => {
   });
 
   try {
-    return await uc.execute({ id: userId });
+    const result = await uc.execute({ id: userId });
+    return result;
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }

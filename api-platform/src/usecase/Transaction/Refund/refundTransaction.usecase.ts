@@ -126,6 +126,7 @@ export class RefundTransactionUseCase<
         customerPaymentMethodId: paymentMethodId,
         currency: transaction.currency,
         amount: amountToRefund,
+        lastFourDigits: operations[0].customerCardInfo.cardNumber.slice(-4),
       });
 
       const pspResponse = await this.pspGateway.makeTransaction({

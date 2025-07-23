@@ -10,4 +10,7 @@ export interface ITransactionRepository {
     currency: CurrencyEnum;
   }): Promise<void>;
   findById(transactionId: string): Promise<Transaction | null>;
+  findAllTransactionsByMerchantId(
+    merchantId: string,
+  ): Promise<Transaction[]>;
 }

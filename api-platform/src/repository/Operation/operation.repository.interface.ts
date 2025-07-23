@@ -13,6 +13,7 @@ export interface IOperationRepository {
     status,
     merchantIban,
     customerPaymentMethodId,
+    lastFourDigits,
     currency,
     amount,
     type,
@@ -23,6 +24,7 @@ export interface IOperationRepository {
     status: OperationStatus;
     merchantIban: string;
     customerPaymentMethodId: string;
+    lastFourDigits: string;
     currency: CurrencyEnum;
     amount: number;
     type: TransactionType;

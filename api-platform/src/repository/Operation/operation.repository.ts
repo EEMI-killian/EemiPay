@@ -19,6 +19,7 @@ export class OperationRepository implements IOperationRepository {
     status,
     merchantIban,
     customerPaymentMethodId,
+    lastFourDigits,
     currency,
     amount,
     type,
@@ -29,6 +30,7 @@ export class OperationRepository implements IOperationRepository {
     status: OperationStatus;
     merchantIban: string;
     customerPaymentMethodId: string;
+    lastFourDigits: string;
     currency: CurrencyEnum;
     amount: number;
     type: TransactionType;
@@ -40,6 +42,7 @@ export class OperationRepository implements IOperationRepository {
       createdAt,
       merchantIban,
       customerPaymentMethodId,
+      lastFourDigits,
       currency,
       amount,
       type,
@@ -71,6 +74,8 @@ export class OperationRepository implements IOperationRepository {
             amount,
           "merchant.transactions.$[transaction].operations.$[operation].type":
             type,
+          "merchant.transactions.$[transaction].operations.$[operation].lastFourDigits":
+            lastFourDigits,
         },
       },
       {

@@ -55,6 +55,13 @@ export class Operation {
   createdAt: Date;
 
   @Column({
+    name: "last_four_digits",
+    type: "varchar",
+    nullable: true,
+  })
+  lastFourDigits: string;
+
+  @Column({
     name: "updated_at",
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",

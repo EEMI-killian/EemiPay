@@ -20,8 +20,9 @@ export async function checkAuth(req, res, next) {
   const user = await new UserRepository(AppDataSource.getRepository("User")).findById(payload.sub);
   if (!user) return res.sendStatus(401);
 
+
   req.user = user;
-console.log("User authenticated:", user.id);
+
   next();
     } catch (error) {
         console.error("Authentication error:", error);

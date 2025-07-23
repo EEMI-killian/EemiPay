@@ -1,13 +1,12 @@
 import { Repository } from "typeorm";
-import { CurrencyEnum } from "../../entity/Merchant";
+import { CurrencyEnum, Merchant } from "../../entity/Merchant";
 import { Transaction } from "../../entity/Transaction";
 import mongoose from "mongoose";
 import { ModelDocument } from "../../mongoSchema";
-import { tr } from "@faker-js/faker/.";
+import { ITransactionRepository } from "./transaction.repository.interface";
 
-export class TransactionRepository {
+export class TransactionRepository implements ITransactionRepository {
   constructor(private transactionRepository: Repository<Transaction>) {
-    this.transactionRepository = transactionRepository;
   }
   async save({
     id,
@@ -59,6 +58,13 @@ export class TransactionRepository {
   async findById(transactionId: string): Promise<Transaction | null> {
     return this.transactionRepository.findOne({
       where: { id: transactionId },
+    });
+  }
+
+  async findAllTransactionsByMerchantId(merchantId: string): Promise<Transaction[]> {
+    return this.transactionRepository.find({
+      where: { merchantId },
+      order: { createdAt: "DESC" },
     });
   }
 }

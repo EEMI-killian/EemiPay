@@ -10,6 +10,10 @@ import { PspGateway } from "../gateway/psp/Psp.gateway";
 import { RefundTransactionUseCase } from "../usecase/Transaction/Refund/refundTransaction.usecase";
 import { checkRole } from "../middlewares/checkRole";
 import { checkAuth } from "../middlewares/checkAuth";
+import { FindAllTransactionByMerchantIdUseCase } from "../usecase/Transaction/FindAllByMerchantId/findAllTransactionByMerchantId.usecase";
+import { Operation } from "../entity/Operation";
+import { FindTransactionUseCase } from "../usecase/Transaction/Find/findTransaction.usecase.interface copy";
+import { FindTransactionByCompanyNameUseCase } from "../usecase/Transaction/FindByCompanyName/findTransactionByCompanyName.usecase";
 
 const router = express.Router();
 
@@ -103,7 +107,7 @@ router.post("/capture/:id",checkAuth, checkRole(["ROLE_USER"]), async (req, res)
   }
 });
 
-router.post("/refund/:id", checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
+router.post("/refund/:id", async (req, res) => {
   const { id: transactionId } = req.params;
   const { amountToRefund } = req.body;
   const transactionRepository = new TransactionRepository(
@@ -144,6 +148,96 @@ router.post("/refund/:id", checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res
 
   try {
     await useCase.execute({ amountToRefund, transactionId });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/",checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
+
+  const transactionRepository = new TransactionRepository(
+    AppDataSource.getRepository("Transaction"),
+  );
+  const useCase = new FindAllTransactionByMerchantIdUseCase(
+    transactionRepository,
+    {
+      success: async (transactions) => {
+        return res.status(200).json(transactions);
+      },
+      functionnalError: async () => {
+        return res.status(400).json({ error: "Functional error" });
+      },
+    },
+  );
+
+  try {
+    const merchantId: string = req.body.merchantId;
+    const result = await useCase.execute(merchantId);
+    return result;
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+);
+
+router.get("/:id", checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
+  const { id: transactionId } = req.params;
+  const operationRepository = new OperationRepository(
+    AppDataSource.getRepository(Operation),
+  );
+  
+  const useCase = new FindTransactionUseCase(
+    operationRepository,
+    {
+      success: async (transaction) => {
+        return res.status(200).json(transaction);
+      },
+      notFound: async () => {
+        return res.status(404).json({ error: "Transaction not found" });
+      },
+      functionalError: async (error: string) => {
+        return res.status(400).json({ error });
+      },
+    }
+  );
+
+  try {
+    const result = await useCase.execute(transactionId);
+    return result;
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+router.get("/company/:companyName", checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
+  const { companyName } = req.params;
+  const transactionRepository = new TransactionRepository(
+    AppDataSource.getRepository("Transaction"),
+  );
+  const merchantRepository = new MerchantRepository(
+    AppDataSource.getRepository("Merchant"),
+  );
+
+  const useCase = new FindTransactionByCompanyNameUseCase(
+    merchantRepository,
+    transactionRepository,
+    {
+      success: async (transactions) => {
+        return res.status(200).json(transactions);
+      },
+      notFound: async () => {
+        return res.status(404).json({ error: "No transactions found for this company" });
+      },
+      functionalError: async (error: string) => {
+        return res.status(400).json({ error });
+      },
+    }
+  );
+
+  try {
+    const result = await useCase.execute(companyName);
+    return result;
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }

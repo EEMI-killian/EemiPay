@@ -5,13 +5,14 @@ import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import type { Merchant } from '@/types/merchant';
 import { useRoute } from 'vue-router';
+import router from '@/router';
 const route = useRoute()
 
 
 
 const merchant = ref<Merchant | null>(null);
 const errorMessage = ref('');
-  async function getAllMerchant() {
+  async function getMerchantInfo() {
       try {
           const response : Merchant = await axios.get(`http://localhost:3051/merchant/${ route.params.id }`, {
               headers: {
@@ -20,14 +21,14 @@ const errorMessage = ref('');
           }).then(res => res.data);
           console.log(response);
           merchant.value = response;
-      } catch (error: any) {
+      } catch (error : any) {
           if (error.response) {
               errorMessage.value = error.message ;
           }
       }
   }
 onMounted(() => {
-    getAllMerchant();
+    getMerchantInfo();
 });
 
 async function activateMerchant() {
@@ -38,7 +39,20 @@ async function activateMerchant() {
             }
         });
         console.log(response.data);
-        await getAllMerchant();
+        await getMerchantInfo();
+    } catch (error: any) {
+        errorMessage.value = error.message;
+    }
+}
+
+async function deleteMerchant() {
+    try {
+        await axios.delete(`http://localhost:3051/merchant/${route.params.id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token_eemiPay')}`
+            }
+        });
+        router.push('/merchants');
     } catch (error: any) {
         errorMessage.value = error.message;
     }
@@ -64,6 +78,9 @@ async function activateMerchant() {
         </li>
         <li v-if="merchant && !merchant.isActive">
             <button @click="activateMerchant">Activer</button>
+        </li>
+        <li>
+            <button @click="deleteMerchant">Supprimer</button>
         </li>
     
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>

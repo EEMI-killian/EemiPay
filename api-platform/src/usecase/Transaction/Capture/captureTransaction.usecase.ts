@@ -135,6 +135,7 @@ export class captureTransactionUseCase<
         customerPaymentMethodId: paymentMethodId,
         currency: transaction.currency,
         amount: transaction.amount,
+        lastFourDigits: cardNumber.slice(-4),
       });
 
       const pspResponse = await this.pspGateway.makeTransaction({

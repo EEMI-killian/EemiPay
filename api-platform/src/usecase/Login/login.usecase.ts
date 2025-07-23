@@ -30,10 +30,10 @@ export class LoginUsecase<SuccessType, PasswordErrorType, UserNotFoundErrorType,
     if (!isPasswordValid) {
       return await this.presenter.passwordError();
     }
-    const merchant = await this.merchantRepository.findById(user.id);
-    if (!merchant?.isActive) {
-      return await this.presenter.userInactive();
-    }
+    // const merchant = await this.merchantRepository.findById(user.id);
+    // if (!merchant?.isActive) {
+    //   return await this.presenter.userInactive();
+    // }
     try {
       const token = await this.jwtGateways.sign(user.roles, user.id);
       return await this.presenter.success(token);

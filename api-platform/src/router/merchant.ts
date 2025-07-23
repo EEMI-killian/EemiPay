@@ -57,7 +57,7 @@ router.post("/",checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
   }
 });
 
-router.get("/",checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
+router.get("/", async (req, res) => {
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );

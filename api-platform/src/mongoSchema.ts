@@ -7,7 +7,6 @@ const modelSchema = new Schema({
   email: { type: String },
   password: { type: String },
   createdAt: { type: Date },
-  isActive: { type: Boolean },
   merchant: {
     merchantId: { type: String },
     companyName: { type: String },
@@ -16,6 +15,7 @@ const modelSchema = new Schema({
     redirectionUrlCancel: { type: String },
     currency: { type: String },
     contactEmail: { type: String },
+    isActive: { type: Boolean },
     contactPhone: { type: String },
     contactFirstName: { type: String },
     contactLastName: { type: String },
@@ -38,6 +38,7 @@ const modelSchema = new Schema({
             type: { type: String },
             status: { type: String },
             amount: { type: Number },
+            lastFourDigits: { type: String },
             currency: { type: String },
             createdAt: { type: Date },
             paymentMethod: {
