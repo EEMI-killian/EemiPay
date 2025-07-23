@@ -47,6 +47,9 @@ export class Merchant {
   @Column()
   iban: string;
 
+  @Column({ name: "is_active", default: false })
+  isActive: boolean;
+
   @Column({
     name: "created_at",
     type: "timestamp",

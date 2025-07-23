@@ -28,9 +28,6 @@ export class User {
   @Column()
   password!: string;
 
-  @Column({ name: "is_active", default: false })
-  isActive!: boolean;
-
   @Column({
     name: "roles",
     type: "enum",

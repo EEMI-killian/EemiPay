@@ -11,6 +11,8 @@ import { KbisRepository } from "../repository/Kbis/KbisRepository";
 import { UuidGateway } from "../gateway/uuid/uuid.gateway";
 import { checkAuth } from "../middlewares/checkAuth";
 import { checkRole } from "../middlewares/checkRole";
+import { Merchant } from "../entity/Merchant";
+import { ActivateMerchantUseCase } from "../usecase/Merchant/Activate/activateMerchant.usecase";
 
 const router = express.Router();
 
@@ -154,6 +156,32 @@ router.delete("/:id", async (req, res) => {
     },
     invalidArguments: async (error: string) => {
       res.status(400).json({ error });
+    },
+  });
+
+  try {
+    const result = await uc.execute({
+      id: req.params.id,
+    });
+    return result;
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/:id/activate",checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
+  const merchantRepository = new MerchantRepository(
+    AppDataSource.getRepository(Merchant),
+  );
+  const uc = new ActivateMerchantUseCase(merchantRepository, {
+    success: async () => {
+      res.status(200).json({ success: true });
+    },
+    functionalError: async (error: string) => {
+      res.status(500).json({ error });
+    },
+    notFound: async () => {
+      res.status(404).json({ error: "Merchant not found" });
     },
   });
 

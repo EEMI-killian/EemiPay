@@ -1,4 +1,3 @@
-import { I } from "@faker-js/faker/dist/airline-BUL6NtOJ";
 import { IGetAllMerchantUseCase } from "./getAllMerchant.usecase.interface";
 import { IMerchantRepository } from "../../../repository/Merchant/merchant.repository.interface";
 import { Merchant } from "../../../entity/Merchant";

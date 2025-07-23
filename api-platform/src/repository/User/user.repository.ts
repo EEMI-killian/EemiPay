@@ -27,7 +27,6 @@ export class UserRepository implements IUserRepository {
       lastName: args.lastName,
       email: args.email,
       password: args.password,
-      isActive: false,
       roles: UserRole.ROLE_USER,
     });
     await this.userRepository.save(user);
@@ -41,7 +40,6 @@ export class UserRepository implements IUserRepository {
       email: args.email,
       password: args.password,
       createdAt: new Date(),
-      isActive: false,
     }).save();
     await mongoose.disconnect();
   }

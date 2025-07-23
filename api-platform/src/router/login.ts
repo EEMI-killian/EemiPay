@@ -5,6 +5,8 @@ import { UserRepository } from "../repository/User/user.repository";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
 import { JwtGateway } from "../gateway/jwt/jwt.gateway";
+import { Merchant } from "../entity/Merchant";
+import { MerchantRepository } from "../repository/Merchant/merchant.repository";
 
 const router = express.Router();
 
@@ -15,11 +17,15 @@ router.post("/login", async (req, res) => {
     const userRepository = new UserRepository(
         AppDataSource.getRepository(User)
     );
+    const merchantRepository = new MerchantRepository(
+        AppDataSource.getRepository(Merchant)
+    );
     const hashGateway = new HashGateway();
     const jwtGateway = new JwtGateway(process.env.JWT_SECRET);
 
     const uc = new LoginUsecase(
         userRepository,
+        merchantRepository,
         jwtGateway,
         hashGateway,
         {

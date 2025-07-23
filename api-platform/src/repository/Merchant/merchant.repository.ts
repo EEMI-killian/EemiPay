@@ -14,7 +14,24 @@ export class MerchantRepository implements IMerchantRepository {
   }
 
   async create(args: ICreateMerchantArgs): Promise<void> {
-    const merchant = this.merchantRepository.create(args);
+    const merchant = this.merchantRepository.create(
+      {
+        id: args.id,
+        companyName: args.companyName,
+        redirectionUrlConfirm: args.redirectionUrlConfirm,
+        redirectionUrlCancel: args.redirectionUrlCancel,
+        currency: args.currency,
+        kbisUrl: args.kbisUrl,
+        contactEmail: args.contactEmail,
+        contactPhone: args.contactPhone,
+        contactFirstName: args.contactFirstName,
+        contactLastName: args.contactLastName,
+        userId: args.userId,
+        iban: args.iban,
+        isActive: false,
+        createdAt: new Date(),
+      }
+    );
     await this.merchantRepository.save(merchant);
 
     await mongoose.connect(
@@ -68,6 +85,14 @@ export class MerchantRepository implements IMerchantRepository {
     const merchant = await this.merchantRepository.findOne({ where: { id } });
     if (merchant) {
       await this.merchantRepository.remove(merchant);
+    }
+  }
+
+  async activate(id: string): Promise<void> {
+    const merchant = await this.merchantRepository.findOne({ where: { id } });
+    if (merchant) {
+      merchant.isActive = true;
+      await this.merchantRepository.save(merchant);
     }
   }
 }

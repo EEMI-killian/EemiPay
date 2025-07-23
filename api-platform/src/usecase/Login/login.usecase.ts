@@ -1,5 +1,6 @@
 import { IHashGateway } from "../../gateway/hash/hash.gateway.interface";
 import { IJwtGateway } from "../../gateway/jwt/jwt.gateway.interface";
+import { MerchantRepository } from "../../repository/Merchant/merchant.repository";
 import { UserRepository } from "../../repository/User/user.repository";
 import { ILoginUsecase } from "./login.usecase.interface";
 
@@ -12,7 +13,7 @@ export interface ILoginUsecasePresenter<SuccessType, PasswordErrorType, UserNotF
 }
 
 export class LoginUsecase<SuccessType, PasswordErrorType, UserNotFoundErrorType, UserInactiveErrorType, FunctionalErrorType>  implements ILoginUsecase<SuccessType, PasswordErrorType, UserNotFoundErrorType, UserInactiveErrorType, FunctionalErrorType> {
-  constructor(private userRepository: UserRepository, private jwtGateways: IJwtGateway , private  hashGateway: IHashGateway, private presenter: ILoginUsecasePresenter<SuccessType, PasswordErrorType, UserNotFoundErrorType, UserInactiveErrorType, FunctionalErrorType>) {}
+  constructor(private userRepository: UserRepository,private merchantRepository: MerchantRepository, private jwtGateways: IJwtGateway , private  hashGateway: IHashGateway, private presenter: ILoginUsecasePresenter<SuccessType, PasswordErrorType, UserNotFoundErrorType, UserInactiveErrorType, FunctionalErrorType>) {}
 
   async execute(email: string, password: string): Promise<SuccessType | PasswordErrorType | UserNotFoundErrorType | UserInactiveErrorType | FunctionalErrorType> {
     try {
@@ -29,8 +30,8 @@ export class LoginUsecase<SuccessType, PasswordErrorType, UserNotFoundErrorType,
     if (!isPasswordValid) {
       return await this.presenter.passwordError();
     }
-
-    if (!user.isActive) {
+    const merchant = await this.merchantRepository.findById(user.id);
+    if (!merchant?.isActive) {
       return await this.presenter.userInactive();
     }
     try {

@@ -7,6 +7,7 @@ export interface IMerchantRepository {
   getAll(): Promise<Merchant[]>;
   delete(id: string): Promise<void>;
   update(args: IUpdateMerchantArgs): Promise<void>;
+  activate(id: string): Promise<void>;
 }
 
 export type IUpdateMerchantArgs = {
