@@ -46,60 +46,70 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.delete("/:id",checkAuth, checkRole(["ROLE_ADMIN"]),async (req, res) => {
-  const userId = req.params.id;
-  const userRepository = new UserRepository(
-    AppDataSource.getRepository("User"),
-  );
-  const uc = new DeleteUserUseCase(userRepository, {
-    success: async () => {
-      res.status(204).send();
-    },
-    functionalError: async (error: string) => {
-      res.status(400).json({ error });
-    },
-    notFound: async () => {
-      res.status(404).json({ error: "User not found" });
-    },
-    invalidArguments: async (error: string) => {
-      res.status(400).json({ error });
-    },
-  });
+router.delete(
+  "/:id",
+  checkAuth,
+  checkRole(["ROLE_ADMIN"]),
+  async (req, res) => {
+    const userId = req.params.id;
+    const userRepository = new UserRepository(
+      AppDataSource.getRepository("User"),
+    );
+    const uc = new DeleteUserUseCase(userRepository, {
+      success: async () => {
+        res.status(204).send();
+      },
+      functionalError: async (error: string) => {
+        res.status(400).json({ error });
+      },
+      notFound: async () => {
+        res.status(404).json({ error: "User not found" });
+      },
+      invalidArguments: async (error: string) => {
+        res.status(400).json({ error });
+      },
+    });
 
-  try {
-    return await uc.execute({ id: userId });
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+    try {
+      return await uc.execute({ id: userId });
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 
-router.get("/",checkAuth, checkRole(["ROLE_USER", "ROLE_ADMIN"]), async (req, res ) => {
-  const userId = req.user.id
-  const userRepository = new UserRepository(
-    AppDataSource.getRepository("User"),
-  );
-  const uc = new FindUserByIdUseCase(userRepository, {
-    success: async (user) => {
-      res.status(200).json(user);
-    },
-    functionalError: async (error: string) => {
-      res.status(400).json({ error });
-    },
-    notFound: async () => {
-      res.status(404).json({ error: "User not found" });
-    },
-    invalidArguments: async (error: string) => {
-      res.status(400).json({ error });
-    },
-  });
+router.get(
+  "/",
+  checkAuth,
+  checkRole(["ROLE_USER", "ROLE_ADMIN"]),
+  async (req, res) => {
+    const userId = req.user.id;
+    const userRepository = new UserRepository(
+      AppDataSource.getRepository("User"),
+    );
+    const uc = new FindUserByIdUseCase(userRepository, {
+      success: async (user) => {
+        res.status(200).json(user);
+      },
+      functionalError: async (error: string) => {
+        res.status(400).json({ error });
+      },
+      notFound: async () => {
+        res.status(404).json({ error: "User not found" });
+      },
+      invalidArguments: async (error: string) => {
+        res.status(400).json({ error });
+      },
+    });
 
-  try {
-    const result = await uc.execute({ id: userId });
-    return result;
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+    try {
+      const result = await uc.execute({ id: userId });
+      return result;
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 
 router.patch("/reset-password/:id", async (req, res) => {
   const userId = req.params.id;

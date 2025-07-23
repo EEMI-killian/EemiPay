@@ -14,24 +14,22 @@ export class MerchantRepository implements IMerchantRepository {
   }
 
   async create(args: ICreateMerchantArgs): Promise<void> {
-    const merchant = this.merchantRepository.create(
-      {
-        id: args.id,
-        companyName: args.companyName,
-        redirectionUrlConfirm: args.redirectionUrlConfirm,
-        redirectionUrlCancel: args.redirectionUrlCancel,
-        currency: args.currency,
-        kbisUrl: args.kbisUrl,
-        contactEmail: args.contactEmail,
-        contactPhone: args.contactPhone,
-        contactFirstName: args.contactFirstName,
-        contactLastName: args.contactLastName,
-        userId: args.userId,
-        iban: args.iban,
-        isActive: false,
-        createdAt: new Date(),
-      }
-    );
+    const merchant = this.merchantRepository.create({
+      id: args.id,
+      companyName: args.companyName,
+      redirectionUrlConfirm: args.redirectionUrlConfirm,
+      redirectionUrlCancel: args.redirectionUrlCancel,
+      currency: args.currency,
+      kbisUrl: args.kbisUrl,
+      contactEmail: args.contactEmail,
+      contactPhone: args.contactPhone,
+      contactFirstName: args.contactFirstName,
+      contactLastName: args.contactLastName,
+      userId: args.userId,
+      iban: args.iban,
+      isActive: false,
+      createdAt: new Date(),
+    });
     await this.merchantRepository.save(merchant);
 
     await mongoose.connect(

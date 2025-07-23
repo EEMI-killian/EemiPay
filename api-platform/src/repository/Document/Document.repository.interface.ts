@@ -1,3 +1,3 @@
 export interface IDocumentRepository {
-    execute(id: string): Promise<any>;
+  execute(id: string): Promise<any>;
 }

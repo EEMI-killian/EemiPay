@@ -1,10 +1,6 @@
 import { en } from "@faker-js/faker/.";
 import "reflect-metadata";
-import {
-  Entity,
-  Column,
-  PrimaryColumn,
-} from "typeorm";
+import { Entity, Column, PrimaryColumn } from "typeorm";
 
 export enum UserRole {
   ROLE_USER = "ROLE_USER",

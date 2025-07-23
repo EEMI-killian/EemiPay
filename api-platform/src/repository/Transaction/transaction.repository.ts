@@ -6,8 +6,7 @@ import { ModelDocument } from "../../mongoSchema";
 import { ITransactionRepository } from "./transaction.repository.interface";
 
 export class TransactionRepository implements ITransactionRepository {
-  constructor(private transactionRepository: Repository<Transaction>) {
-  }
+  constructor(private transactionRepository: Repository<Transaction>) {}
   async save({
     id,
     merchantId,
@@ -61,7 +60,9 @@ export class TransactionRepository implements ITransactionRepository {
     });
   }
 
-  async findAllTransactionsByMerchantId(merchantId: string): Promise<Transaction[]> {
+  async findAllTransactionsByMerchantId(
+    merchantId: string,
+  ): Promise<Transaction[]> {
     return this.transactionRepository.find({
       where: { merchantId },
       order: { createdAt: "DESC" },

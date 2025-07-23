@@ -14,7 +14,7 @@ AppDataSource.initialize()
     const app = express();
     app.use(bodyParser.json());
     app.use(cors());
-    app.use("/",loginRouter);
+    app.use("/", loginRouter);
     app.use("/user", userRouter);
     app.use("/transaction", transactionRouter);
     app.use("/merchant", merchantRouter);

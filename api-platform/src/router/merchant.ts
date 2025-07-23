@@ -16,7 +16,7 @@ import { ActivateMerchantUseCase } from "../usecase/Merchant/Activate/activateMe
 
 const router = express.Router();
 
-router.post("/",checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
+router.post("/", checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );
@@ -25,7 +25,7 @@ router.post("/",checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
   );
   const kbisRepository = new KbisRepository();
   const uuidGateway = new UuidGateway();
-  
+
   const uc = new CreateMerchantUseCase(
     merchantRepository,
     userRepository,
@@ -80,35 +80,40 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id",checkAuth, checkRole(["ROLE_ADMIN", "ROLE_USER"]), async (req, res) => {
-  const merchantRepository = new MerchantRepository(
-    AppDataSource.getRepository("Merchant"),
-  );
+router.get(
+  "/:id",
+  checkAuth,
+  checkRole(["ROLE_ADMIN", "ROLE_USER"]),
+  async (req, res) => {
+    const merchantRepository = new MerchantRepository(
+      AppDataSource.getRepository("Merchant"),
+    );
 
-  const uc = new GetMerchantUseCase(merchantRepository, {
-    success: async (merchant) => {
-      res.status(200).json(merchant);
-    },
-    notFound: async () => {
-      res.status(404).json({ error: "Merchant not found" });
-    },
-    invalidArguments: async (error: string) => {
-      res.status(400).json({ error });
-    },
-    functionalError: async (error: string) => {
-      res.status(500).json({ error });
-    },
-  });
+    const uc = new GetMerchantUseCase(merchantRepository, {
+      success: async (merchant) => {
+        res.status(200).json(merchant);
+      },
+      notFound: async () => {
+        res.status(404).json({ error: "Merchant not found" });
+      },
+      invalidArguments: async (error: string) => {
+        res.status(400).json({ error });
+      },
+      functionalError: async (error: string) => {
+        res.status(500).json({ error });
+      },
+    });
 
-  try {
-    const result = await uc.execute({ id: req.params.id });
-    return result;
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+    try {
+      const result = await uc.execute({ id: req.params.id });
+      return result;
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 
-router.patch("/:id",checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
+router.patch("/:id", checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );
@@ -169,30 +174,35 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.post("/:id/activate",checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
-  const merchantRepository = new MerchantRepository(
-    AppDataSource.getRepository(Merchant),
-  );
-  const uc = new ActivateMerchantUseCase(merchantRepository, {
-    success: async () => {
-      res.status(200).json({ success: true });
-    },
-    functionalError: async (error: string) => {
-      res.status(500).json({ error });
-    },
-    notFound: async () => {
-      res.status(404).json({ error: "Merchant not found" });
-    },
-  });
-
-  try {
-    const result = await uc.execute({
-      id: req.params.id,
+router.post(
+  "/:id/activate",
+  checkAuth,
+  checkRole(["ROLE_ADMIN"]),
+  async (req, res) => {
+    const merchantRepository = new MerchantRepository(
+      AppDataSource.getRepository(Merchant),
+    );
+    const uc = new ActivateMerchantUseCase(merchantRepository, {
+      success: async () => {
+        res.status(200).json({ success: true });
+      },
+      functionalError: async (error: string) => {
+        res.status(500).json({ error });
+      },
+      notFound: async () => {
+        res.status(404).json({ error: "Merchant not found" });
+      },
     });
-    return result;
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+
+    try {
+      const result = await uc.execute({
+        id: req.params.id,
+      });
+      return result;
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 
 export default router;

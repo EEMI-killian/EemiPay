@@ -17,95 +17,105 @@ import { FindTransactionByCompanyNameUseCase } from "../usecase/Transaction/Find
 
 const router = express.Router();
 
-router.post("/create",checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
-  const { merchantId, externalRef, amount, currency } = req.body;
-  const merchantRepository = new MerchantRepository(
-    AppDataSource.getRepository("Merchant"),
-  );
-  const transactionRepository = new TransactionRepository(
-    AppDataSource.getRepository("Transaction"),
-  );
+router.post(
+  "/create",
+  checkAuth,
+  checkRole(["ROLE_USER"]),
+  async (req, res) => {
+    const { merchantId, externalRef, amount, currency } = req.body;
+    const merchantRepository = new MerchantRepository(
+      AppDataSource.getRepository("Merchant"),
+    );
+    const transactionRepository = new TransactionRepository(
+      AppDataSource.getRepository("Transaction"),
+    );
 
-  const useCase = new CreateTransactionUseCase(
-    merchantRepository,
-    transactionRepository,
-    {
-      success: async (paymentUrl: string) => {
-        res.status(201).json({ paymentUrl });
+    const useCase = new CreateTransactionUseCase(
+      merchantRepository,
+      transactionRepository,
+      {
+        success: async (paymentUrl: string) => {
+          res.status(201).json({ paymentUrl });
+        },
+        functionalError: async (error: string) => {
+          res.status(400).json({ error });
+        },
+        invalidArguments: async (error: string) => {
+          res.status(400).json({ error });
+        },
+        notFound: async (error: string) => {
+          res.status(404).json({ error });
+        },
       },
-      functionalError: async (error: string) => {
-        res.status(400).json({ error });
-      },
-      invalidArguments: async (error: string) => {
-        res.status(400).json({ error });
-      },
-      notFound: async (error: string) => {
-        res.status(404).json({ error });
-      },
-    },
-  );
-  try {
-    const result = await useCase.execute({
-      merchantId,
-      externalRef,
-      amount,
-      currency,
-    });
-    return result;
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+    );
+    try {
+      const result = await useCase.execute({
+        merchantId,
+        externalRef,
+        amount,
+        currency,
+      });
+      return result;
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 
-router.post("/capture/:id",checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
-  const { id: transactionId } = req.params;
-  const { cardHolderName, cvv, expiryDate, cardNumber } = req.body;
-  const transactionRepository = new TransactionRepository(
-    AppDataSource.getRepository("Transaction"),
-  );
-  const merchantRepository = new MerchantRepository(
-    AppDataSource.getRepository("Merchant"),
-  );
-  const operationRepository = new OperationRepository(
-    AppDataSource.getRepository("Operation"),
-  );
-  const paymentMethodRepository = new PaymentMethodRepository(
-    AppDataSource.getRepository("PaymentMethod"),
-  );
-  const pspGateway = new PspGateway();
-  const useCase = new captureTransactionUseCase(
-    transactionRepository,
-    {
-      success: async (transaction) => {
-        return res.status(200).json(transaction);
+router.post(
+  "/capture/:id",
+  checkAuth,
+  checkRole(["ROLE_USER"]),
+  async (req, res) => {
+    const { id: transactionId } = req.params;
+    const { cardHolderName, cvv, expiryDate, cardNumber } = req.body;
+    const transactionRepository = new TransactionRepository(
+      AppDataSource.getRepository("Transaction"),
+    );
+    const merchantRepository = new MerchantRepository(
+      AppDataSource.getRepository("Merchant"),
+    );
+    const operationRepository = new OperationRepository(
+      AppDataSource.getRepository("Operation"),
+    );
+    const paymentMethodRepository = new PaymentMethodRepository(
+      AppDataSource.getRepository("PaymentMethod"),
+    );
+    const pspGateway = new PspGateway();
+    const useCase = new captureTransactionUseCase(
+      transactionRepository,
+      {
+        success: async (transaction) => {
+          return res.status(200).json(transaction);
+        },
+        notFound: async () => {
+          return res.status(404).json({ error: "Transaction not found" });
+        },
+        merchantNotFound: async () => {
+          return res.status(404).json({ error: "Merchant not found" });
+        },
+        functionalError: async (error: string) => {
+          return res.status(400).json({ error });
+        },
       },
-      notFound: async () => {
-        return res.status(404).json({ error: "Transaction not found" });
-      },
-      merchantNotFound: async () => {
-        return res.status(404).json({ error: "Merchant not found" });
-      },
-      functionalError: async (error: string) => {
-        return res.status(400).json({ error });
-      },
-    },
-    merchantRepository,
-    paymentMethodRepository,
-    operationRepository,
-    pspGateway,
-  );
-  try {
-    await useCase.execute({
-      transactionId,
-      cardHolderName,
-      cvv,
-      expiryDate,
-      cardNumber,
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+      merchantRepository,
+      paymentMethodRepository,
+      operationRepository,
+      pspGateway,
+    );
+    try {
+      await useCase.execute({
+        transactionId,
+        cardHolderName,
+        cvv,
+        expiryDate,
+        cardNumber,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 
 router.post("/refund/:id", async (req, res) => {
   const { id: transactionId } = req.params;
@@ -153,8 +163,7 @@ router.post("/refund/:id", async (req, res) => {
   }
 });
 
-router.get("/",checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
-
+router.get("/", checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
   const transactionRepository = new TransactionRepository(
     AppDataSource.getRepository("Transaction"),
   );
@@ -177,29 +186,25 @@ router.get("/",checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
-}
-);
+});
 
 router.get("/:id", checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
   const { id: transactionId } = req.params;
   const operationRepository = new OperationRepository(
     AppDataSource.getRepository(Operation),
   );
-  
-  const useCase = new FindTransactionUseCase(
-    operationRepository,
-    {
-      success: async (transaction) => {
-        return res.status(200).json(transaction);
-      },
-      notFound: async () => {
-        return res.status(404).json({ error: "Transaction not found" });
-      },
-      functionalError: async (error: string) => {
-        return res.status(400).json({ error });
-      },
-    }
-  );
+
+  const useCase = new FindTransactionUseCase(operationRepository, {
+    success: async (transaction) => {
+      return res.status(200).json(transaction);
+    },
+    notFound: async () => {
+      return res.status(404).json({ error: "Transaction not found" });
+    },
+    functionalError: async (error: string) => {
+      return res.status(400).json({ error });
+    },
+  });
 
   try {
     const result = await useCase.execute(transactionId);
@@ -209,38 +214,44 @@ router.get("/:id", checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
   }
 });
 
+router.get(
+  "/company/:companyName",
+  checkAuth,
+  checkRole(["ROLE_ADMIN"]),
+  async (req, res) => {
+    const { companyName } = req.params;
+    const transactionRepository = new TransactionRepository(
+      AppDataSource.getRepository("Transaction"),
+    );
+    const merchantRepository = new MerchantRepository(
+      AppDataSource.getRepository("Merchant"),
+    );
 
-router.get("/company/:companyName", checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
-  const { companyName } = req.params;
-  const transactionRepository = new TransactionRepository(
-    AppDataSource.getRepository("Transaction"),
-  );
-  const merchantRepository = new MerchantRepository(
-    AppDataSource.getRepository("Merchant"),
-  );
+    const useCase = new FindTransactionByCompanyNameUseCase(
+      merchantRepository,
+      transactionRepository,
+      {
+        success: async (transactions) => {
+          return res.status(200).json(transactions);
+        },
+        notFound: async () => {
+          return res
+            .status(404)
+            .json({ error: "No transactions found for this company" });
+        },
+        functionalError: async (error: string) => {
+          return res.status(400).json({ error });
+        },
+      },
+    );
 
-  const useCase = new FindTransactionByCompanyNameUseCase(
-    merchantRepository,
-    transactionRepository,
-    {
-      success: async (transactions) => {
-        return res.status(200).json(transactions);
-      },
-      notFound: async () => {
-        return res.status(404).json({ error: "No transactions found for this company" });
-      },
-      functionalError: async (error: string) => {
-        return res.status(400).json({ error });
-      },
+    try {
+      const result = await useCase.execute(companyName);
+      return result;
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
     }
-  );
-
-  try {
-    const result = await useCase.execute(companyName);
-    return result;
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+  },
+);
 
 export default router;

@@ -52,82 +52,92 @@ router.post("/", checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
   }
 });
 
-router.post("/rotate", checkAuth, checkRole(["ROLE_USER", "ROLE_ADMIN"]), async (req, res) => {
-  const credentialGateway = new CredentialGateway();
-  const merchantRepository = new MerchantRepository(
-    AppDataSource.getRepository("Merchant"),
-  );
-  const credentialRepository = new CredentialRepository(
-    AppDataSource.getRepository("Credential"),
-  );
-  const hashGateway = new HashGateway();
-  const presenter = {
-    success: async (credential) => {
-      res.status(200).json(credential);
-    },
-    functionalError: async (error) => {
-      res.status(400).json({ error });
-    },
-    notFound: async () => {
-      res.status(404).json({ error: "Merchant not found" });
-    },
-    invalidArguments: async (error) => {
-      res.status(400).json({ error });
-    },
-  };
+router.post(
+  "/rotate",
+  checkAuth,
+  checkRole(["ROLE_USER", "ROLE_ADMIN"]),
+  async (req, res) => {
+    const credentialGateway = new CredentialGateway();
+    const merchantRepository = new MerchantRepository(
+      AppDataSource.getRepository("Merchant"),
+    );
+    const credentialRepository = new CredentialRepository(
+      AppDataSource.getRepository("Credential"),
+    );
+    const hashGateway = new HashGateway();
+    const presenter = {
+      success: async (credential) => {
+        res.status(200).json(credential);
+      },
+      functionalError: async (error) => {
+        res.status(400).json({ error });
+      },
+      notFound: async () => {
+        res.status(404).json({ error: "Merchant not found" });
+      },
+      invalidArguments: async (error) => {
+        res.status(400).json({ error });
+      },
+    };
 
-  const uc = new RotateCredentialUsecase(
-    credentialGateway,
-    presenter,
-    merchantRepository,
-    credentialRepository,
-    hashGateway,
-  );
+    const uc = new RotateCredentialUsecase(
+      credentialGateway,
+      presenter,
+      merchantRepository,
+      credentialRepository,
+      hashGateway,
+    );
 
-  try {
-    const result = await uc.execute(req.body);
-    return result;
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+    try {
+      const result = await uc.execute(req.body);
+      return result;
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 
-router.delete("/", checkAuth, checkRole(["ROLE_USER", "ROLE_ADMIN"]), async (req, res) => {
-  const merchantRepository = new MerchantRepository(
-    AppDataSource.getRepository("Merchant"),
-  );
-  const credentialRepository = new CredentialRepository(
-    AppDataSource.getRepository("Credential"),
-  );
-  const presenter = {
-    success: async () => {
-      res.status(204).send();
-    },
-    functionalError: async (error) => {
-      res.status(400).json({ error });
-    },
-    notFound: async () => {
-      res.status(404).json({ error: "Credential not found" });
-    },
-    invalidArguments: async (error) => {
-      res.status(400).json({ error });
-    },
-  };
+router.delete(
+  "/",
+  checkAuth,
+  checkRole(["ROLE_USER", "ROLE_ADMIN"]),
+  async (req, res) => {
+    const merchantRepository = new MerchantRepository(
+      AppDataSource.getRepository("Merchant"),
+    );
+    const credentialRepository = new CredentialRepository(
+      AppDataSource.getRepository("Credential"),
+    );
+    const presenter = {
+      success: async () => {
+        res.status(204).send();
+      },
+      functionalError: async (error) => {
+        res.status(400).json({ error });
+      },
+      notFound: async () => {
+        res.status(404).json({ error: "Credential not found" });
+      },
+      invalidArguments: async (error) => {
+        res.status(400).json({ error });
+      },
+    };
 
-  const uc = new DeleteCredentialUseCase(
-    merchantRepository,
-    credentialRepository,
-    presenter,
-  );
+    const uc = new DeleteCredentialUseCase(
+      merchantRepository,
+      credentialRepository,
+      presenter,
+    );
 
-  try {
-    await uc.execute({
-      appId: req.body.appId,
-      merchantId: req.body.merchantId,
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+    try {
+      await uc.execute({
+        appId: req.body.appId,
+        merchantId: req.body.merchantId,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 
 export default router;

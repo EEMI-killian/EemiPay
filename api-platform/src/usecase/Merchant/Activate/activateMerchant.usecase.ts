@@ -11,12 +11,13 @@ interface IActivateMerchantUseCasePresenter<
   notFound: () => Promise<NotFoundType>;
 }
 
-
 export class ActivateMerchantUseCase<
   SuccessType,
   FunctionalErrorType,
   NotFoundType,
-> implements IActivateMerchantUseCase<SuccessType, FunctionalErrorType, NotFoundType>{
+> implements
+    IActivateMerchantUseCase<SuccessType, FunctionalErrorType, NotFoundType>
+{
   constructor(
     private readonly merchantRepository: IMerchantRepository,
     private readonly presenter: IActivateMerchantUseCasePresenter<
@@ -25,22 +26,21 @@ export class ActivateMerchantUseCase<
       NotFoundType
     >,
   ) {}
-  async execute({ id }: { id: string }): Promise<
-    | SuccessType
-    | FunctionalErrorType
-    | NotFoundType
-  > {
+  async execute({
+    id,
+  }: {
+    id: string;
+  }): Promise<SuccessType | FunctionalErrorType | NotFoundType> {
     const merchant = await this.merchantRepository.findById(id);
     if (!merchant) {
       return this.presenter.notFound();
     }
 
     try {
-      await this.merchantRepository.activate(id)
+      await this.merchantRepository.activate(id);
       return this.presenter.success();
-    }
-    catch (error) {
+    } catch (error) {
       return this.presenter.functionalError(error.message);
     }
-}
+  }
 }
