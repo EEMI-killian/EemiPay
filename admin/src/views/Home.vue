@@ -28,12 +28,13 @@ const formatNumber = (num: number): string => {
 }
 
 const formatCurrency = (amount: number): string => {
+  // Convertir les centimes en euros
+  const amountInEuros = amount / 100
   return new Intl.NumberFormat('fr-FR', {
     style: 'currency',
     currency: 'EUR',
-  }).format(amount)
+  }).format(amountInEuros)
 }
-
 onMounted(() => {
   axios
     .get('http://localhost:3051/analytics', {
