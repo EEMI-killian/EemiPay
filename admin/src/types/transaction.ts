@@ -1,3 +1,5 @@
+import type { Operation } from "./operation";
+
 export type Transaction = {
     id: string;
     merchantId: string;
@@ -5,4 +7,5 @@ export type Transaction = {
     amount: number;
     currency: "EUR" | "USD" | "GBP";
     createdAt: Date;
+    operations: Operation[];
 }

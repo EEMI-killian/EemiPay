@@ -6,7 +6,7 @@ export type Merchant = {
   contactFirstName: string;
   contactLastName: string;
   iban: string;
-  createdAt: string;
+  createdAt:  Date;
   currency: "EUR" | "USD" | "GBP";
   kbisUrl: string;
   redirectUrlConfirm: string;

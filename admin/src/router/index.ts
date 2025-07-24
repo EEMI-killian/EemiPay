@@ -5,7 +5,7 @@ import Merchant from '@/views/Merchant.vue'
 import Merchants from '@/views/Merchants.vue'
 import Transactions from '@/views/Transactions.vue'
 import Transaction from '@/views/Transaction.vue'
-import Profil  from '@/views/Profil.vue'
+import Profile  from '@/views/Profile.vue'
 
 const routes = [
   { path: '/', component: HomeView , meta: { requireAuth: true } },
@@ -14,7 +14,7 @@ const routes = [
   { path: '/merchants', component: Merchants , meta: { requireAuth: true } },
   { path: '/transactions', component: Transactions , meta: { requireAuth: true } },
   { path: '/transaction/:id', component: Transaction , meta: { requireAuth: true } },
-  { path: '/profil', component: Profil , meta: { requireAuth: true } }
+  { path: '/profile', component: Profile , meta: { requireAuth: true } }
 ]
 const router = createRouter({
   history: createWebHistory(),
