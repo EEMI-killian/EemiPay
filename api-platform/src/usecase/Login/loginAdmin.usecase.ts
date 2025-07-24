@@ -18,7 +18,7 @@ export interface ILoginUsecasePresenter<
   functionalError: (error: Error) => Promise<FunctionalErrorType>;
 }
 
-export class LoginUsecase<
+export class LoginAdminUsecase<
   SuccessType,
   PasswordErrorType,
   UserNotFoundErrorType,
@@ -35,7 +35,6 @@ export class LoginUsecase<
 {
   constructor(
     private userRepository: UserRepository,
-    private merchantRepository: MerchantRepository,
     private jwtGateways: IJwtGateway,
     private hashGateway: IHashGateway,
     private presenter: ILoginUsecasePresenter<
@@ -63,6 +62,12 @@ export class LoginUsecase<
         return await this.presenter.userNotFound();
       }
 
+
+      if(user.roles == "ROLE_USER") {
+        return await this.presenter.userNotFound();
+      }
+
+
       const isPasswordValid = await this.hashGateway.compare({
         stringAlreadyHashed: user?.password || "",
         input: password,
@@ -71,10 +76,6 @@ export class LoginUsecase<
       if (!isPasswordValid) {
         return await this.presenter.passwordError();
       }
-      // const merchant = await this.merchantRepository.findById(user.id);
-      // if (!merchant?.isActive) {
-      //   return await this.presenter.userInactive();
-      // }
       try {
         const token = await this.jwtGateways.sign(user.roles, user.id);
         return await this.presenter.success(token);

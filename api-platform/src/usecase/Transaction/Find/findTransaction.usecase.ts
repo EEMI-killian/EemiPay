@@ -1,5 +1,6 @@
 import { IFindTransactionUseCase } from "./findTransaction.usecase.interface";
 import { OperationRepository } from "../../../repository/Operation/operation.repository";
+import { TransactionRepository } from "../../../repository/Transaction/transaction.repository";
 
 export interface IFindTransactionUseCasePresenter<
   SuccessType,
@@ -20,6 +21,7 @@ export class FindTransactionUseCase<
 {
   constructor(
     private readonly operationRepository: OperationRepository,
+    private readonly transactionRepository: TransactionRepository,
     private readonly presenter: IFindTransactionUseCasePresenter<
       SuccessType,
       FunctionalErrorType,
@@ -27,14 +29,25 @@ export class FindTransactionUseCase<
     >,
   ) {}
 
-  async execute(transactionId: string): Promise<any | null> {
+  async execute(transactionId: string): Promise<SuccessType | FunctionalErrorType | NotFoundType> {
     try {
-      const transaction =
-        await this.operationRepository.findByTransactionId(transactionId);
+      const transaction = await this.transactionRepository.findById(transactionId);
       if (!transaction) {
         return await this.presenter.notFound();
       }
-      return await this.presenter.success(transaction);
+      const operations  = await this.operationRepository.findByTransactionId(transactionId);
+      if (!operations) {
+        return await this.presenter.success({
+          ...transaction,
+          operations: [],
+        }
+       
+        );
+      }
+      return await this.presenter.success({
+        ...transaction,
+        operations,
+      });
     } catch (error) {
       return await this.presenter.functionalError(error.message);
     }

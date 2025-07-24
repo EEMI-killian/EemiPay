@@ -17,6 +17,7 @@ import { ActivateMerchantUseCase } from "../usecase/Merchant/Activate/activateMe
 const router = express.Router();
 
 router.post("/", checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
+  const userId = req.user.id; 
   const merchantRepository = new MerchantRepository(
     AppDataSource.getRepository("Merchant"),
   );
@@ -36,7 +37,7 @@ router.post("/", checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
         res.status(201).json({ success: true });
       },
       error: async (error: string) => {
-        res.status(400).json({ error });
+        res.status(422).json({ error });
       },
       alreadyExists: async () => {
         res.status(409).json({ error: "Merchant already exists" });
@@ -50,7 +51,19 @@ router.post("/", checkAuth, checkRole(["ROLE_USER"]), async (req, res) => {
     },
   );
   try {
-    const result = await uc.execute(req.body);
+    const result = await uc.execute({
+      userId,
+      companyName:req.body?.companyName,
+      redirectionUrlCancel: req.body?.redirectionUrlCancel,
+      redirectionUrlConfirm: req.body?.redirectionUrlConfirm,
+      currency: req.body?.currency,
+      kbisUrl: req.body?.kbisUrl,
+      contactEmail: req.body?.contactEmail,
+      contactPhone: req.body?.contactPhone,
+      contactFirstName: req.body?.contactFirstName,
+      contactLastName: req.body?.contactLastName,
+      iban: req.body?.iban,
+    });
     return result;
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

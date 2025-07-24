@@ -12,15 +12,14 @@ import { checkRole } from "../middlewares/checkRole";
 import { checkAuth } from "../middlewares/checkAuth";
 import { FindAllTransactionByMerchantIdUseCase } from "../usecase/Transaction/FindAllByMerchantId/findAllTransactionByMerchantId.usecase";
 import { Operation } from "../entity/Operation";
-import { FindTransactionUseCase } from "../usecase/Transaction/Find/findTransaction.usecase.interface copy";
+import { FindTransactionUseCase } from "../usecase/Transaction/Find/findTransaction.usecase"
 import { FindTransactionByCompanyNameUseCase } from "../usecase/Transaction/FindByCompanyName/findTransactionByCompanyName.usecase";
+import { Transaction } from "../entity/Transaction";
 
 const router = express.Router();
 
 router.post(
   "/create",
-  checkAuth,
-  checkRole(["ROLE_USER"]),
   async (req, res) => {
     const { merchantId, externalRef, amount, currency } = req.body;
     const merchantRepository = new MerchantRepository(
@@ -64,8 +63,6 @@ router.post(
 
 router.post(
   "/capture/:id",
-  checkAuth,
-  checkRole(["ROLE_USER"]),
   async (req, res) => {
     const { id: transactionId } = req.params;
     const { cardHolderName, cvv, expiryDate, cardNumber } = req.body;
@@ -193,8 +190,11 @@ router.get("/:id", checkAuth, checkRole(["ROLE_ADMIN"]), async (req, res) => {
   const operationRepository = new OperationRepository(
     AppDataSource.getRepository(Operation),
   );
+  const transactionRepository = new TransactionRepository(
+    AppDataSource.getRepository(Transaction),
+  );
 
-  const useCase = new FindTransactionUseCase(operationRepository, {
+  const useCase = new FindTransactionUseCase(operationRepository, transactionRepository, {
     success: async (transaction) => {
       return res.status(200).json(transaction);
     },
