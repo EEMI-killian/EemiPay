@@ -8,6 +8,8 @@ import merchantRouter from "./router/merchant";
 import credentialRouter from "./router/credential";
 import transactionRouter from "./router/transaction";
 import loginRouter from "./router/login";
+import documentRouter from "./router/document";
+import analyticsRouter from "./router/analytics";
 
 AppDataSource.initialize()
   .then(async () => {
@@ -15,6 +17,8 @@ AppDataSource.initialize()
     app.use(bodyParser.json());
     app.use(cors());
     app.use("/", loginRouter);
+    app.use("/document", documentRouter);
+    app.use("/analytics", analyticsRouter);
     app.use("/user", userRouter);
     app.use("/transaction", transactionRouter);
     app.use("/merchant", merchantRouter);

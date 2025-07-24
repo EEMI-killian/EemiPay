@@ -9,6 +9,7 @@ import { RotateCredentialUsecase } from "../usecase/Credential/Rotate/rotateCred
 import { DeleteCredentialUseCase } from "../usecase/Credential/Delete/deleteCredential.usecase";
 import { checkRole } from "../middlewares/checkRole";
 import { checkAuth } from "../middlewares/checkAuth";
+import { GetCredentialByMerchantIdUseCase } from "../usecase/Credential/GetByMerchantId/getCredentialByMerchantId.usecase";
 
 const router = express.Router();
 
@@ -139,5 +140,61 @@ router.delete(
     }
   },
 );
+
+router.get(
+  "/:id",
+  checkAuth,
+  checkRole(["ROLE_USER", "ROLE_ADMIN"]),
+  async (req, res) => {
+    const merchantId = req.params.id;
+    
+    if (!merchantId) {
+      return res.status(400).json({ error: "Merchant ID is required" });
+    }
+
+    try {
+      const credentialRepository = new CredentialRepository(
+        AppDataSource.getRepository("Credential"),
+      );
+
+      // Flag pour vérifier si une réponse a déjà été envoyée
+      let responseSent = false;
+
+      const presenter = {
+        success: async (credentials) => {
+          if (!responseSent) {
+            responseSent = true;
+            return res.status(200).json(credentials);
+          }
+        },
+        functionalError: async (error) => {
+          if (!responseSent) {
+            responseSent = true;
+            return res.status(400).json({ error });
+          }
+        },
+        notFound: async () => {
+          if (!responseSent) {
+            responseSent = true;
+            return res.status(404).json({ error: "Credentials not found" });
+          }
+        },
+      };
+
+      const uc = new GetCredentialByMerchantIdUseCase(
+        credentialRepository,
+        presenter,
+      );
+
+      await uc.execute(merchantId);
+      
+    } catch (error) {
+      if (!res.headersSent) {
+        return res.status(500).json({ error: "Internal server error" });
+      }
+    }
+  },
+);
+
 
 export default router;

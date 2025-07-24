@@ -19,7 +19,7 @@ import { Transaction } from "../entity/Transaction";
 const router = express.Router();
 
 router.post(
-  "/create",
+  "/create", 
   async (req, res) => {
     const { merchantId, externalRef, amount, currency } = req.body;
     const merchantRepository = new MerchantRepository(
@@ -114,7 +114,7 @@ router.post(
   },
 );
 
-router.post("/refund/:id", async (req, res) => {
+router.post("/refund/:id", checkAuth ,checkRole(["ROLE_USER"]), async (req, res) => {
   const { id: transactionId } = req.params;
   const { amountToRefund } = req.body;
   const transactionRepository = new TransactionRepository(

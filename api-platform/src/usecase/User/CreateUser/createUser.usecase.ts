@@ -1,9 +1,10 @@
 import { IUserRepository } from "../../../repository/User/user.repository.interface";
 import * as z from "zod";
-import { User } from "../../../entity/User";
+import { User, UserRole } from "../../../entity/User";
 import { IHashGateway } from "../../../gateway/hash/hash.gateway.interface";
 import { IUuidGateway } from "../../../gateway/uuid/uuid.gateway.interface";
 import { ICreateUserUseCase } from "./createUser.usecase.interface";
+import { IJwtGateway } from "../../../gateway/jwt/jwt.gateway.interface";
 
 const schema = z.object({
   email: z.string().email(),
@@ -49,6 +50,7 @@ export class CreateUserUseCase<
     >,
     private readonly hashGateway: IHashGateway,
     private readonly uuidGateway: IUuidGateway,
+    private readonly jwtGateway: IJwtGateway,
   ) {}
 
   async execute(
@@ -80,7 +82,8 @@ export class CreateUserUseCase<
         firstName: validatedData.firstName,
         lastName: validatedData.lastName,
       });
-      return await this.presenter.success(userId);
+      const token = await this.jwtGateway.sign(UserRole.ROLE_USER, userId);
+      return await this.presenter.success(token);
     } catch (error) {
       return await this.presenter.functionalError(error.message);
     }

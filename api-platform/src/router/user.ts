@@ -9,6 +9,7 @@ import { HashGateway } from "../gateway/hash/hash.gateway";
 import { UuidGateway } from "../gateway/uuid/uuid.gateway";
 import { checkAuth } from "../middlewares/checkAuth";
 import { checkRole } from "../middlewares/checkRole";
+import { JwtGateway } from "../gateway/jwt/jwt.gateway";
 
 const router = express.Router();
 
@@ -18,6 +19,9 @@ router.post("/", async (req, res) => {
   );
   const hashGateway = new HashGateway();
   const uuidGateway = new UuidGateway();
+  const jwtGateway = new JwtGateway(
+    process.env.JWT_SECRET
+  );
   const uc = new CreateUserUseCase(
     userRepository,
     {
@@ -36,6 +40,7 @@ router.post("/", async (req, res) => {
     },
     hashGateway,
     uuidGateway,
+    jwtGateway,
   );
 
   try {

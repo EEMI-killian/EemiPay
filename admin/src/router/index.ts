@@ -5,16 +5,16 @@ import Merchant from '@/views/Merchant.vue'
 import Merchants from '@/views/Merchants.vue'
 import Transactions from '@/views/Transactions.vue'
 import Transaction from '@/views/Transaction.vue'
-import Profile  from '@/views/Profile.vue'
+import Profile from '@/views/Profile.vue'
 
 const routes = [
-  { path: '/', component: HomeView , meta: { requireAuth: true } },
-  { path: '/login', component: LoginView , meta: { public : true } },
-  { path: '/merchant/:id', component: Merchant , meta: { requireAuth: true } },
-  { path: '/merchants', component: Merchants , meta: { requireAuth: true } },
-  { path: '/transactions', component: Transactions , meta: { requireAuth: true } },
-  { path: '/transaction/:id', component: Transaction , meta: { requireAuth: true } },
-  { path: '/profile', component: Profile , meta: { requireAuth: true } }
+  { path: '/', component: HomeView, meta: { requireAuth: true } },
+  { path: '/login', component: LoginView, meta: { public: true } },
+  { path: '/merchant/:id', component: Merchant, meta: { requireAuth: true } },
+  { path: '/merchants', component: Merchants, meta: { requireAuth: true } },
+  { path: '/transactions', component: Transactions, meta: { requireAuth: true } },
+  { path: '/transaction/:id', component: Transaction, meta: { requireAuth: true } },
+  { path: '/profile', component: Profile, meta: { requireAuth: true } },
 ]
 const router = createRouter({
   history: createWebHistory(),
@@ -22,13 +22,12 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('token_eemiPay') 
+  const isAuthenticated = !!localStorage.getItem('token_eemiPay')
   if (to.meta.requireAuth && !isAuthenticated) {
     next({ path: '/login' })
   } else {
     next()
   }
 })
-
 
 export default router

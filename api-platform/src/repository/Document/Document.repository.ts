@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 import { ModelDocument } from "../../mongoSchema";
+import { IDocumentRepository } from "./Document.repository.interface";
 
-export class DocumentRepository {
+export class DocumentRepository implements IDocumentRepository {
   constructor() {}
 
-  async getDocumentById(id: string): Promise<any> {
+  async findById(id: string): Promise<any> {
     try {
       await mongoose.connect(
         "mongodb://mongo:mongo@mongodb:27017/eemi-pay?authSource=admin",

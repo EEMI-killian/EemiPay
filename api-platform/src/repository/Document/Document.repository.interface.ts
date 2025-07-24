@@ -1,3 +1,3 @@
 export interface IDocumentRepository {
-  execute(id: string): Promise<any>;
+  findById(id: string): Promise<any>;
 }

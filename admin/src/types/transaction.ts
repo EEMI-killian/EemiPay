@@ -1,11 +1,11 @@
-import type { Operation } from "./operation";
+import type { Operation } from './operation'
 
 export type Transaction = {
-    id: string;
-    merchantId: string;
-    externalRef: string;
-    amount: number;
-    currency: "EUR" | "USD" | "GBP";
-    createdAt: Date;
-    operations: Operation[];
+  id: string
+  merchantId: string
+  externalRef: string
+  amount: number
+  currency: 'EUR' | 'USD' | 'GBP'
+  createdAt: Date
+  operations: Operation[]
 }

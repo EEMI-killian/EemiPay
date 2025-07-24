@@ -11,15 +11,13 @@ async function pay() {
   const transactionId = new URLSearchParams(window.location.search).get('transactionId')
 
   try {
-    console.log(
-      {
-        cardNumber: cardNumber.value,
-        expiryDate: expiryDate.value,
-        cvv: cvv.value,
-        cardHolderName: cardHolderName.value,
-      }
-    )
-    
+    console.log({
+      cardNumber: cardNumber.value,
+      expiryDate: expiryDate.value,
+      cvv: cvv.value,
+      cardHolderName: cardHolderName.value,
+    })
+
     const paymentData = {
       cardNumber: cardNumber.value,
       expiryDate: expiryDate.value,
@@ -28,17 +26,16 @@ async function pay() {
     }
 
     const response = await axios.post(
-      `http://localhost:3051/transaction/capture/${transactionId}`, 
+      `http://localhost:3051/transaction/capture/${transactionId}`,
       paymentData,
       {
         headers: {
-          'Content-Type': 'application/json'
-        }
-      }
+          'Content-Type': 'application/json',
+        },
+      },
     )
-    
+
     window.location.href = 'http://localhost:5173/success'
-    
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Payment error:', error.response?.data || error.message)
@@ -53,31 +50,25 @@ async function pay() {
   <main class="payment-container">
     <h1>Payment Form Powered by EemiPay</h1>
     <form @submit.prevent="pay()" class="payment-form">
-      <input 
-        type="text" 
-        v-model="cardNumber" 
-        placeholder="Card Number" 
+      <input
+        type="text"
+        v-model="cardNumber"
+        placeholder="Card Number"
         required
         class="form-input"
       />
-      <input 
-        type="text" 
-        v-model="expiryDate" 
-        placeholder="Expiry Date (MM/YY)" 
+      <input
+        type="text"
+        v-model="expiryDate"
+        placeholder="Expiry Date (MM/YY)"
         required
         class="form-input"
       />
-      <input 
-        type="text" 
-        v-model="cvv" 
-        placeholder="CVV" 
-        required
-        class="form-input"
-      />
-      <input 
-        type="text" 
-        v-model="cardHolderName" 
-        placeholder="Card Holder Name" 
+      <input type="text" v-model="cvv" placeholder="CVV" required class="form-input" />
+      <input
+        type="text"
+        v-model="cardHolderName"
+        placeholder="Card Holder Name"
         required
         class="form-input"
       />
